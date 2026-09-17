@@ -1,0 +1,7 @@
+{
+  "name": "SSTFácil - Gestión SST SG-SST",
+  "description": "Sistema integral de gestión de seguridad y salud en el trabajo con matriz GTC 45, Decreto 1072 y Resolución 0312 para Taller Los Andes S.A.S.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
