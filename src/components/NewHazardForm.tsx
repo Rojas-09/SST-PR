@@ -142,7 +142,7 @@ export function NewHazardForm({
           <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block">
             MATRIZ GTC 45 • DECRETO 1072 • Inspección Operativa
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5 font-chivo">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-0.5">
             Registrar Nuevo Peligro
           </h1>
           <p className="text-xs text-slate-600 mt-1">
@@ -154,14 +154,14 @@ export function NewHazardForm({
           <button
             type="button"
             onClick={() => onNavigate('diagnostico-0312')}
-            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-semibold rounded flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+            className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[12.5px] font-medium rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
           >
             <Shield className="w-3.5 h-3.5 text-blue-600" /> SG-SST Res. 0312
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+            className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[12.5px] font-medium rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-500" /> Limpiar
           </button>
@@ -186,7 +186,7 @@ export function NewHazardForm({
                     <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                     UBICACIÓN FÍSICA VERIFICADA
                   </span>
-                  <h3 className="text-base font-bold text-white font-chivo mt-0.5">
+                  <h3 className="text-base font-bold text-white mt-0.5">
                     Taller Central - Nave Principal Mecanizado
                   </h3>
                   <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
@@ -202,7 +202,7 @@ export function NewHazardForm({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <span className="text-amber-600 font-bold">🏢</span>
-                <h3 className="text-sm font-bold text-slate-900 font-chivo">
+                <h3 className="text-[13px] font-bold text-slate-900">
                   1. Área y Actividad Operativa
                 </h3>
               </div>
@@ -275,7 +275,7 @@ export function NewHazardForm({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <span className="text-red-600 font-bold">⚠️</span>
-                <h3 className="text-sm font-bold text-slate-900 font-chivo">
+                <h3 className="text-[13px] font-bold text-slate-900">
                   2. Clasificación del Peligro (GTC 45)
                 </h3>
               </div>
@@ -357,7 +357,7 @@ export function NewHazardForm({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <span className="text-slate-700 font-bold">🛡️</span>
-                <h3 className="text-sm font-bold text-slate-900 font-chivo">
+                <h3 className="text-[13px] font-bold text-slate-900">
                   3. Jerarquía de Controles Existentes
                 </h3>
               </div>
@@ -429,7 +429,7 @@ export function NewHazardForm({
               <div className="flex items-center gap-2">
                 <span className="text-amber-600 font-bold font-mono">🧮</span>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 font-chivo leading-tight">
+                  <h3 className="text-[13px] font-bold text-slate-900 leading-tight">
                     Evaluación GTC 45
                   </h3>
                   <span className="text-[10px] text-slate-500 font-mono">Valoración matemática en vivo</span>
@@ -517,7 +517,7 @@ export function NewHazardForm({
                     <span className="text-[9px] font-mono uppercase tracking-wider text-red-700 font-bold block">
                       NIVEL DE RIESGO (NR)
                     </span>
-                    <h4 className="text-sm font-black text-red-950 uppercase tracking-wide font-chivo">
+                    <h4 className="text-[13px] font-bold text-red-950 uppercase tracking-wide">
                       {evaluacion.levelText}
                     </h4>
                   </div>
@@ -546,7 +546,7 @@ export function NewHazardForm({
             <div>
               <button
                 type="submit"
-                className="w-full py-3 px-4 bg-[#8D4B00] hover:bg-[#6E3900] active:scale-[0.99] text-white font-extrabold rounded text-sm tracking-wide flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                className="w-full py-3 px-4 bg-[#1877F2] hover:bg-[#1464CC] active:scale-[0.99] text-white font-semibold rounded-lg text-[13.5px] tracking-wide flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
               >
                 {saveSuccess ? (
                   <>

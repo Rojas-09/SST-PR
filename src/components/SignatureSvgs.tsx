@@ -53,3 +53,25 @@ export function QrAuditStamp({ code = "MINTRAD-2025-V02-BOG" }: { code?: string 
     </div>
   );
 }
+
+export function DigitalSignatureStamp({
+  name = "Ing. Carlos Méndez",
+  role = "Especialista SST",
+  license = "SST-2021-9982"
+}: {
+  name?: string;
+  role?: string;
+  license?: string;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <SignatureCarlosMendez className="w-36 h-10 text-slate-800" />
+      <div className="hidden sm:flex flex-col border-l border-slate-300 pl-2 text-left">
+        <span className="text-[10px] font-bold text-slate-700 font-sans">{name}</span>
+        <span className="text-[9px] text-slate-500 font-sans">{role}</span>
+        <span className="text-[8.5px] font-mono text-slate-400">Lic. {license}</span>
+      </div>
+    </div>
+  );
+}
+

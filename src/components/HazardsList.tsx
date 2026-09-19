@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { PlusCircle, Search, AlertOctagon, ArrowRight, ShieldCheck, Camera, CheckSquare } from 'lucide-react';
-import { HazardRecord, ActiveView } from '../types';
+import { HazardRecord, ActiveView, CompanyInfo } from '../types';
+import { ConstanciaTecnicaCard } from './ConstanciaTecnicaCard';
 
 interface HazardsListProps {
   hazards: HazardRecord[];
   searchQuery: string;
   onSelectHazard: (hazard: HazardRecord) => void;
   onNavigate: (view: ActiveView) => void;
+  company?: CompanyInfo;
+  onUpdateCompany?: (updated: CompanyInfo) => void;
 }
 
 export function HazardsList({
@@ -14,6 +17,8 @@ export function HazardsList({
   searchQuery,
   onSelectHazard,
   onNavigate,
+  company,
+  onUpdateCompany,
 }: HazardsListProps) {
   const [levelFilter, setLevelFilter] = useState<string>('ALL');
 
@@ -38,7 +43,7 @@ export function HazardsList({
           <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block">
             SISTEMA DE GESTIÓN SST • INVENTARIO TÉCNICO
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5 font-chivo">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-0.5">
             Peligros Identificados en Planta
           </h1>
           <p className="text-xs text-slate-600 mt-1">
@@ -48,7 +53,7 @@ export function HazardsList({
 
         <button
           onClick={() => onNavigate('registrar-nuevo')}
-          className="px-4 py-2 bg-[#8D4B00] hover:bg-[#6E3900] text-white text-xs font-bold rounded flex items-center gap-2 cursor-pointer transition-colors shadow-xs"
+          className="px-4 py-2 bg-[#1877F2] hover:bg-[#1464CC] text-white text-[13px] font-medium rounded-lg flex items-center gap-2 cursor-pointer transition-colors shadow-2xs"
         >
           <PlusCircle className="w-4 h-4" /> Registrar Nuevo Peligro
         </button>
@@ -106,7 +111,7 @@ export function HazardsList({
           return (
             <div
               key={hazard.id}
-              className="bg-white rounded-lg border border-slate-200 shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+              className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
             >
               <div>
                 {/* Photo Header if available */}
@@ -141,7 +146,7 @@ export function HazardsList({
                     <span className="text-slate-600 font-semibold">{hazard.code}</span>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-snug font-chivo group-hover:text-[#D97706] transition-colors">
+                  <h3 className="text-[15px] font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
                     {hazard.title}
                   </h3>
 
@@ -176,7 +181,7 @@ export function HazardsList({
 
                 <button
                   onClick={() => onSelectHazard(hazard)}
-                  className="px-3 py-1.5 bg-[#0F172A] hover:bg-[#1E293B] text-white rounded text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="px-3.5 py-1.5 bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-lg text-[12.5px] font-medium flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
                 >
                   <span>Ver Ficha</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -186,6 +191,11 @@ export function HazardsList({
           );
         })}
       </div>
+
+      {/* Constancia Técnica y Responsabilidad Jurídica */}
+      {company && (
+        <ConstanciaTecnicaCard company={company} onUpdateCompany={onUpdateCompany} className="mt-8" />
+      )}
     </div>
   );
 }

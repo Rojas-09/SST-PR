@@ -2,24 +2,69 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-chivo: 'Chivo', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'Inter', system-ui, sans-serif;
 }
 
 @layer base {
-  body {
-    font-family: var(--font-sans);
-    background-color: #F8FAFC;
-    color: #0F172A;
+  *, *::before, *::after {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #1E293B;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, span, label, input, select, textarea, td, th, button, div, a, b, strong, code, pre, kbd, samp, small, table, tr {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   }
   
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-chivo);
+  /* Numerical tabular alignment keeping clean Inter font */
+  .font-mono-data, .font-mono, .tnum, code, pre {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-variant-numeric: tabular-nums;
   }
-  
-  .font-mono-data {
-    font-family: var(--font-mono);
-  }
+}
+
+/* Clay-like button styles */
+.btn-primary-clay {
+  background-color: #1877F2;
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary-clay:hover {
+  background-color: #1464CC;
+}
+
+.btn-secondary-clay {
+  background-color: #FFFFFF;
+  color: #334155;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-secondary-clay:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
 }
 
 /* Custom print styles for printing official matrix */
@@ -33,4 +78,3 @@
     padding: 0 !important;
   }
 }
-

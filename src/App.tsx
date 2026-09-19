@@ -1,30 +1,47 @@
 import { useState } from 'react';
-import { initialCompany, initialHazards } from './data/initialData';
-import { HazardRecord, CompanyInfo, ActiveView } from './types';
+import { initialCompany, initialHazards, initialIncapacidades, initialCapacitaciones } from './data/initialData';
+import { HazardRecord, CompanyInfo, ActiveView, IncapacidadRecord, CapacitacionRecord } from './types';
 import { Sidebar } from './components/Sidebar';
-import { TopHeader } from './components/TopHeader';
+import { ClayTopHeader } from './components/ClayTopHeader';
+import { ClayDashboardView } from './components/ClayDashboardView';
+import { DashboardInicioView } from './components/DashboardInicioView';
+import { ActasEntregaView } from './components/ActasEntregaView';
+import { CapacitacionesView } from './components/CapacitacionesView';
+import { CalendarioVencimientos } from './components/CalendarioVencimientos';
+import { FloatingAssistant } from './components/FloatingAssistant';
+import { ContactsModal } from './components/ContactsModal';
+import { SettingsModal } from './components/SettingsModal';
 import { HazardDetail } from './components/HazardDetail';
 import { MatrixView } from './components/MatrixView';
 import { NewHazardForm } from './components/NewHazardForm';
 import { HazardsList } from './components/HazardsList';
 import { DiagnosticoRes0312 } from './components/DiagnosticoRes0312';
 import { ActaEntregaModal } from './components/ActaEntregaModal';
+import { GestionPeligrosSplitView } from './components/GestionPeligrosSplitView';
+import { AusentismoView } from './components/AusentismoView';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
   const [company, setCompany] = useState<CompanyInfo>(initialCompany);
   const [hazards, setHazards] = useState<HazardRecord[]>(initialHazards);
-  const [activeView, setActiveView] = useState<ActiveView>('peligro-detalle');
+  const [incapacidades, setIncapacidades] = useState<IncapacidadRecord[]>(initialIncapacidades);
+  const [capacitaciones, setCapacitaciones] = useState<CapacitacionRecord[]>(initialCapacitaciones);
+  const [activeView, setActiveView] = useState<ActiveView>('inicio');
   const [selectedHazard, setSelectedHazard] = useState<HazardRecord>(initialHazards[0]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isActaModalOpen, setIsActaModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  
+  // Floating Assistant state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isContactsOpen, setIsContactsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Critical hazards count
   const criticalCount = hazards.filter((h) => h.evaluacion.level === 'NIVEL_I').length;
 
   const handleSelectHazard = (hazard: HazardRecord) => {
     setSelectedHazard(hazard);
-    setActiveView('peligro-detalle');
+    setActiveView('gestion-peligros');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -38,6 +55,21 @@ export default function App() {
   const handleSaveNewHazard = (newHazard: HazardRecord) => {
     setHazards((prev) => [newHazard, ...prev]);
     setSelectedHazard(newHazard);
+    setActiveView('gestion-peligros');
+  };
+
+  const handleAddIncapacidad = (nueva: IncapacidadRecord) => {
+    setIncapacidades((prev) => [nueva, ...prev]);
+  };
+
+  const handleAddCapacitacion = (nueva: CapacitacionRecord) => {
+    setCapacitaciones((prev) => [nueva, ...prev]);
+  };
+
+  const handleUpdateCapacitacion = (actualizada: CapacitacionRecord) => {
+    setCapacitaciones((prev) =>
+      prev.map((c) => (c.id === actualizada.id ? actualizada : c))
+    );
   };
 
   const handleConfirmDelivery = (hazardId: string, recipientName: string, recipientId: string) => {
@@ -75,110 +107,256 @@ export default function App() {
     }
   };
 
-  const handleFilterCritical = () => {
-    const firstCritical = hazards.find((h) => h.evaluacion.level === 'NIVEL_I');
-    if (firstCritical) {
-      handleSelectHazard(firstCritical);
-    } else {
-      setActiveView('peligros-lista');
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#F1F5F9] text-slate-800 flex font-sans antialiased selection:bg-amber-200 selection:text-amber-900">
-      {/* Desktop & Mobile Sidebar */}
-      <div className={`${isMobileSidebarOpen ? 'block' : 'hidden'} md:block fixed md:static inset-y-0 left-0 z-40`}>
-        <Sidebar
-          activeView={activeView}
-          onNavigate={(view) => {
-            setActiveView(view);
-            setIsMobileSidebarOpen(false);
-          }}
+    <div className="min-h-screen bg-slate-100 md:bg-[#18191E] md:p-3 lg:p-5 flex items-center justify-center font-sans antialiased text-slate-800 text-[13px]">
+      {/* Outer Application Card matching Clay layout */}
+      <div className="w-full max-w-[1550px] min-h-screen md:min-h-[92vh] bg-white md:rounded-2xl md:shadow-2xl md:border md:border-slate-700/20 flex overflow-hidden relative">
+        {/* Desktop Sidebar */}
+        <div className="hidden md:block shrink-0 z-10">
+          <Sidebar
+            activeView={activeView}
+            onNavigate={(view) => {
+              setActiveView(view);
+              setIsMobileSidebarOpen(false);
+            }}
+            company={company}
+            hazardCount={hazards.length}
+            incapacidadCount={incapacidades.length}
+            criticalCount={criticalCount}
+            capacitacionesCount={capacitaciones.length}
+            onToggleChat={() => setIsChatOpen((prev) => !prev)}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+          />
+        </div>
+
+        {/* Mobile Sliding Drawer Sidebar */}
+        {isMobileSidebarOpen && (
+          <div className="fixed inset-0 z-50 md:hidden flex">
+            <div
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+            />
+            <div className="relative w-64 bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
+              <Sidebar
+                activeView={activeView}
+                onNavigate={(view) => {
+                  setActiveView(view);
+                  setIsMobileSidebarOpen(false);
+                }}
+                company={company}
+                hazardCount={hazards.length}
+                incapacidadCount={incapacidades.length}
+                criticalCount={criticalCount}
+                capacitacionesCount={capacitaciones.length}
+                onToggleChat={() => {
+                  setIsChatOpen((prev) => !prev);
+                  setIsMobileSidebarOpen(false);
+                }}
+                onOpenSettings={() => {
+                  setIsSettingsOpen(true);
+                  setIsMobileSidebarOpen(false);
+                }}
+                onOpenNewHazard={() => {
+                  setActiveView('registrar-nuevo');
+                  setIsMobileSidebarOpen(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen md:max-h-[92vh] relative bg-white">
+          {/* Top Header matching Clay */}
+          <ClayTopHeader
+            company={company}
+            criticalCount={criticalCount}
+            onNavigate={setActiveView}
+            onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+          />
+
+          {/* Dynamic Views with 13px font across all text and paragraphs */}
+          <main className="flex-1 pb-10">
+            {/* Executive Dashboard with Recharts and Integrated AI Copilot */}
+            {activeView === 'inicio' && (
+              <DashboardInicioView
+                hazards={hazards}
+                incapacidades={incapacidades}
+                company={company}
+                capacitaciones={capacitaciones}
+                onNavigate={setActiveView}
+                onSelectHazard={handleSelectHazard}
+                onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+              />
+            )}
+
+            {/* Primary GTC 45 Matrix Table / Grid */}
+            {activeView === 'matriz-gtc45' && (
+              <ClayDashboardView
+                hazards={hazards}
+                incapacidades={incapacidades}
+                company={company}
+                onSelectHazard={handleSelectHazard}
+                onNavigate={setActiveView}
+                onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+                onAskCopilot={(query) => {
+                  setIsChatOpen(true);
+                }}
+              />
+            )}
+
+            {/* Actas Oficiales de Dotación y Entrega de EPP (Dec. 1072 Art. 2.2.4.6.24) */}
+            {activeView === 'actas-entrega' && (
+              <ActasEntregaView
+                hazards={hazards}
+                company={company}
+                onSelectHazard={handleSelectHazard}
+                onNavigate={setActiveView}
+                onOpenActaModalForHazard={(hazard) => {
+                  setSelectedHazard(hazard);
+                  setIsActaModalOpen(true);
+                }}
+              />
+            )}
+
+            {/* Split Hazard View (Detailed GTC 45 controls & intervention) */}
+            {activeView === 'gestion-peligros' && (
+              <GestionPeligrosSplitView
+                hazards={hazards}
+                company={company}
+                selectedHazardId={selectedHazard.id}
+                onSelectHazard={handleSelectHazard}
+                onUpdateHazard={handleUpdateHazard}
+                onNavigate={setActiveView}
+                onOpenActaModal={() => setIsActaModalOpen(true)}
+              />
+            )}
+
+            {activeView === 'peligro-detalle' && (
+              <HazardDetail
+                hazard={selectedHazard}
+                company={company}
+                onBack={() => setActiveView('gestion-peligros')}
+                onNavigate={setActiveView}
+                onUpdateHazard={handleUpdateHazard}
+                onOpenActaModal={() => setIsActaModalOpen(true)}
+                onUpdateCompany={setCompany}
+              />
+            )}
+
+            {/* Ausentismo e Incapacidades (DIRECTO Y PROMINENTE) */}
+            {activeView === 'ausentismo' && (
+              <AusentismoView
+                company={company}
+                incapacidades={incapacidades}
+                onAddIncapacidad={handleAddIncapacidad}
+              />
+            )}
+
+            {activeView === 'registrar-nuevo' && (
+              <NewHazardForm
+                company={company}
+                onSaveHazard={handleSaveNewHazard}
+                onNavigate={setActiveView}
+              />
+            )}
+
+            {activeView === 'peligros-lista' && (
+              <HazardsList
+                hazards={hazards}
+                searchQuery=""
+                onSelectHazard={handleSelectHazard}
+                onNavigate={setActiveView}
+                company={company}
+                onUpdateCompany={setCompany}
+              />
+            )}
+
+            {activeView === 'diagnostico-0312' && (
+              <DiagnosticoRes0312
+                company={company}
+                onUpdateCompany={setCompany}
+              />
+            )}
+
+            {/* Plan Anual de Capacitación y Entrenamiento en Peligros GTC 45 (Res. 0312 Est. 2.2.1) */}
+            {activeView === 'capacitaciones' && (
+              <CapacitacionesView
+                capacitaciones={capacitaciones}
+                hazards={hazards}
+                company={company}
+                onNavigate={setActiveView}
+                onSelectHazard={handleSelectHazard}
+                onAddCapacitacion={handleAddCapacitacion}
+                onUpdateCapacitacion={handleUpdateCapacitacion}
+              />
+            )}
+
+            {/* Vista Completa de Calendario y Fechas Clave SG-SST */}
+            {activeView === 'calendario' && (
+              <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+                <CalendarioVencimientos
+                  hazards={hazards}
+                  incapacidades={incapacidades}
+                  company={company}
+                  capacitaciones={capacitaciones}
+                  onNavigate={setActiveView}
+                  onSelectHazard={handleSelectHazard}
+                />
+              </div>
+            )}
+          </main>
+        </div>
+
+        {/* Floating AI Assistant Widget */}
+        <FloatingAssistant
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
           company={company}
-          hazardCount={hazards.length}
+          hazards={hazards}
+          onSelectHazard={handleSelectHazard}
+        />
+
+        {/* Floating trigger button if assistant is closed */}
+        {!isChatOpen && (
+          <button
+            type="button"
+            onClick={() => setIsChatOpen(true)}
+            className="fixed bottom-5 right-5 z-40 bg-[#1877F2] hover:bg-[#1464CC] text-white p-3 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition-transform hover:scale-105"
+            title="Abrir Asistente SST Copilot"
+          >
+            <Sparkles className="w-4 h-4 text-white" />
+            <span className="text-[12.5px] font-medium pr-1">SST Copilot</span>
+          </button>
+        )}
+
+        {/* Contacts Modal */}
+        <ContactsModal
+          isOpen={isContactsOpen}
+          onClose={() => setIsContactsOpen(false)}
+          company={company}
+        />
+
+        {/* Settings Modal */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          company={company}
+          onUpdateCompany={setCompany}
+        />
+
+        {/* EPP Official Delivery Modal */}
+        <ActaEntregaModal
+          isOpen={isActaModalOpen}
+          onClose={() => setIsActaModalOpen(false)}
+          hazard={selectedHazard}
+          company={company}
+          onConfirmDelivery={handleConfirmDelivery}
         />
       </div>
-
-      {/* Backdrop for mobile sidebar */}
-      {isMobileSidebarOpen && (
-        <div
-          onClick={() => setIsMobileSidebarOpen(false)}
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-30 md:hidden"
-        />
-      )}
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-        {/* Top Header */}
-        <TopHeader
-          company={company}
-          criticalCount={criticalCount}
-          searchQuery={searchQuery}
-          onSearchChange={(q) => {
-            setSearchQuery(q);
-            if (q && activeView !== 'peligros-lista') {
-              setActiveView('peligros-lista');
-            }
-          }}
-          onFilterCritical={handleFilterCritical}
-        />
-
-        {/* Dynamic Views */}
-        <main className="flex-1 pb-16">
-          {activeView === 'peligro-detalle' && (
-            <HazardDetail
-              hazard={selectedHazard}
-              company={company}
-              onBack={() => setActiveView('peligros-lista')}
-              onNavigate={setActiveView}
-              onUpdateHazard={handleUpdateHazard}
-              onOpenActaModal={() => setIsActaModalOpen(true)}
-            />
-          )}
-
-          {activeView === 'matriz-gtc45' && (
-            <MatrixView
-              hazards={hazards}
-              company={company}
-              onSelectHazard={handleSelectHazard}
-              onNavigate={setActiveView}
-            />
-          )}
-
-          {activeView === 'registrar-nuevo' && (
-            <NewHazardForm
-              company={company}
-              onSaveHazard={handleSaveNewHazard}
-              onNavigate={setActiveView}
-            />
-          )}
-
-          {activeView === 'peligros-lista' && (
-            <HazardsList
-              hazards={hazards}
-              searchQuery={searchQuery}
-              onSelectHazard={handleSelectHazard}
-              onNavigate={setActiveView}
-            />
-          )}
-
-          {activeView === 'diagnostico-0312' && (
-            <DiagnosticoRes0312
-              company={company}
-              onUpdateCompany={setCompany}
-            />
-          )}
-        </main>
-      </div>
-
-      {/* EPP Official Delivery Modal */}
-      <ActaEntregaModal
-        isOpen={isActaModalOpen}
-        onClose={() => setIsActaModalOpen(false)}
-        hazard={selectedHazard}
-        company={company}
-        onConfirmDelivery={handleConfirmDelivery}
-      />
     </div>
   );
 }
