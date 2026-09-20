@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -29,10 +29,43 @@ interface DiagnosticoRes0312Props {
 }
 
 export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0312Props) {
+  // Helper to parse risk class from string or number
+  const parseRiskClassNumber = (clase: string | undefined): number => {
+    if (!clase) return 4;
+    if (clase.includes('V') && !clase.includes('IV')) return 5;
+    if (clase.includes('IV')) return 4;
+    if (clase.includes('III')) return 3;
+    if (clase.includes('II')) return 2;
+    if (clase.includes('I')) return 1;
+    return 4;
+  };
+
+  // Helper to calculate official regime under Resolution 0312/2019
+  const determineLegalRegime = (workers: number, riskClass: number): '60' | '21' | '7' => {
+    // 1. Más de 50 trabajadores (cualquier riesgo) -> 60 Estándares (Art. 16)
+    // 2. Riesgo IV o V (incluso con 1 a 50 trabajadores) -> 60 Estándares (Art. 16)
+    // 3. 11 a 50 trabajadores con Riesgo I, II o III -> 21 Estándares (Art. 9)
+    // 4. 1 a 10 trabajadores con Riesgo I, II o III -> 7 Estándares (Art. 3)
+    if (workers > 50 || riskClass >= 4) {
+      return '60';
+    }
+    if (workers >= 11) {
+      return '21';
+    }
+    return '7';
+  };
+
+  const initialRisk = parseRiskClassNumber(company.claseRiesgo);
+  const initialWorkers = company.trabajadores || 8;
+
   // Classification parameters state
-  const [workerCount, setWorkerCount] = useState<number>(8);
-  const [threshold, setThreshold] = useState<'1_10' | '11_50' | 'mas_50'>('1_10');
-  const [selectedRiskClass, setSelectedRiskClass] = useState<number>(4); // Preselected Risk IV
+  const [workerCount, setWorkerCount] = useState<number>(initialWorkers);
+  const [threshold, setThreshold] = useState<'1_10' | '11_50' | 'mas_50'>(() => {
+    if (initialWorkers <= 10) return '1_10';
+    if (initialWorkers <= 50) return '11_50';
+    return 'mas_50';
+  });
+  const [selectedRiskClass, setSelectedRiskClass] = useState<number>(initialRisk);
   const [saveSuccessNotification, setSaveSuccessNotification] = useState<boolean>(false);
 
   // Economic activity
@@ -72,8 +105,22 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
     },
   ];
 
-  // Regime selection state: user can explicitly choose between 60, 21, and 7 standards
-  const [selectedRegime, setSelectedRegime] = useState<'60' | '21' | '7'>('60');
+  // Regime selection state: automatically defaults to legal resolution 0312 requirement
+  const [selectedRegime, setSelectedRegime] = useState<'60' | '21' | '7'>(() =>
+    determineLegalRegime(initialWorkers, initialRisk)
+  );
+
+  // Sincronización si la configuración de la empresa se actualiza externamente (ej. modal ajustes)
+  useEffect(() => {
+    const updatedRisk = parseRiskClassNumber(company.claseRiesgo);
+    const updatedWorkers = company.trabajadores || 8;
+    setWorkerCount(updatedWorkers);
+    setSelectedRiskClass(updatedRisk);
+    if (updatedWorkers <= 10) setThreshold('1_10');
+    else if (updatedWorkers <= 50) setThreshold('11_50');
+    else setThreshold('mas_50');
+    setSelectedRegime(determineLegalRegime(updatedWorkers, updatedRisk));
+  }, [company.trabajadores, company.claseRiesgo]);
 
   // Dynamic calculation of legal regime
   let applicableStandardsCount = selectedRegime === '60' ? 60 : selectedRegime === '21' ? 21 : 7;
@@ -358,24 +405,50 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
     };
   }, [compliancePercentage]);
 
+  const applyClassificationChange = (newWorkers: number, newRiskClass: number) => {
+    setWorkerCount(newWorkers);
+    setSelectedRiskClass(newRiskClass);
+
+    if (newWorkers <= 10) setThreshold('1_10');
+    else if (newWorkers <= 50) setThreshold('11_50');
+    else setThreshold('mas_50');
+
+    // Modificación automática del régimen Res. 0312 según tamaño y riesgo
+    const autoRegime = determineLegalRegime(newWorkers, newRiskClass);
+    setSelectedRegime(autoRegime);
+
+    // Sincronizar persistentemente con la información central de la empresa
+    const riskMap: Record<number, string> = {
+      1: 'RIESGO CLASE I',
+      2: 'RIESGO CLASE II',
+      3: 'RIESGO CLASE III',
+      4: 'RIESGO CLASE IV',
+      5: 'RIESGO CLASE V',
+    };
+
+    onUpdateCompany({
+      ...company,
+      trabajadores: newWorkers,
+      claseRiesgo: riskMap[newRiskClass] || `RIESGO CLASE ${newRiskClass}`,
+    });
+  };
+
   const handleSelectThreshold = (selected: '1_10' | '11_50' | 'mas_50') => {
-    setThreshold(selected);
-    if (selected === '1_10') setWorkerCount(8);
-    if (selected === '11_50') setWorkerCount(25);
-    if (selected === 'mas_50') setWorkerCount(65);
+    let targetWorkers = 8;
+    if (selected === '1_10') targetWorkers = 8;
+    if (selected === '11_50') targetWorkers = 25;
+    if (selected === 'mas_50') targetWorkers = 65;
+    applyClassificationChange(targetWorkers, selectedRiskClass);
   };
 
   const handleWorkerInputChange = (val: string) => {
     const num = parseInt(val, 10);
-    if (isNaN(num)) {
-      setWorkerCount(1);
-      return;
-    }
-    const clamped = Math.max(1, Math.min(999, num));
-    setWorkerCount(clamped);
-    if (clamped <= 10) setThreshold('1_10');
-    else if (clamped <= 50) setThreshold('11_50');
-    else setThreshold('mas_50');
+    const clamped = isNaN(num) ? 1 : Math.max(1, Math.min(999, num));
+    applyClassificationChange(clamped, selectedRiskClass);
+  };
+
+  const handleSelectRiskClass = (riskId: number) => {
+    applyClassificationChange(workerCount, riskId);
   };
 
   const handleSaveActa = () => {
@@ -575,7 +648,7 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
                 return (
                   <div
                     key={item.id}
-                    onClick={() => setSelectedRiskClass(item.id)}
+                    onClick={() => handleSelectRiskClass(item.id)}
                     className={`flex items-center justify-between px-3 py-2 rounded-lg border cursor-pointer transition-all ${
                       isSelected
                         ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-600/20'
@@ -617,6 +690,30 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
                 );
               })}
             </div>
+          </div>
+        </div>
+
+        {/* Panel de Régimen Determinado Automáticamente por Ley */}
+        <div className="px-5 py-3.5 bg-blue-50/80 border-t border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[12.5px]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs">
+              ✓
+            </div>
+            <div>
+              <span className="font-semibold text-blue-950">
+                Régimen Determinado Automáticamente:
+              </span>{' '}
+              <span className="font-bold text-blue-700">
+                {applicableStandardsCount} Estándares Mínimos
+              </span>{' '}
+              <span className="text-slate-600 font-normal">
+                ({legalArticle})
+              </span>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-blue-200 text-blue-800 text-[11.5px] font-medium shadow-2xs self-start sm:self-auto shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Sincronizado con nómina ({workerCount}) y riesgo (Clase {selectedRiskClass})</span>
           </div>
         </div>
 

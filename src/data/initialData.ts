@@ -5,6 +5,7 @@ export const initialCompany: CompanyInfo = {
   name: 'Taller Los Andes S.A.S.',
   nit: '901.458.210-3',
   claseRiesgo: 'RIESGO CLASE IV',
+  trabajadores: 8,
   ciiu: 'CIIU 4520: Mantenimiento y reparación de vehículos automotores',
   sede: 'Sede Operativa Principal - Patio 2 (Bogotá D.C.)',
   responsableSST: {

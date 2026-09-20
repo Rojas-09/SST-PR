@@ -90,6 +90,7 @@ export interface CompanyInfo {
   claseRiesgo: string;
   ciiu: string;
   sede: string;
+  trabajadores?: number;
   responsableSST: {
     nombre: string;
     cargo: string;

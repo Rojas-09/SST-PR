@@ -45,6 +45,14 @@ export function Sidebar({
   onOpenSettings,
   onOpenNewHazard,
 }: SidebarProps) {
+  // Cálculo dinámico de estándares aplicables según régimen Res. 0312
+  const riskNum = company.claseRiesgo?.includes('V') && !company.claseRiesgo?.includes('IV') ? 5 :
+                  company.claseRiesgo?.includes('IV') ? 4 :
+                  company.claseRiesgo?.includes('III') ? 3 :
+                  company.claseRiesgo?.includes('II') ? 2 : 1;
+  const workers = company.trabajadores || 8;
+  const applicableStandards = workers > 50 || riskNum >= 4 ? 60 : (workers >= 11 ? 21 : 7);
+
   return (
     <aside className="w-60 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full select-none font-sans py-4 px-3 text-[13px]">
       <div className="space-y-4">
@@ -68,7 +76,7 @@ export function Sidebar({
 
         {/* Primary Navigation in Spanish with Key SG-SST Names */}
         <nav className="space-y-0.5">
-          {/* Inicio / Resumen General */}
+          {/* Inicio */}
           <button
             type="button"
             onClick={() => onNavigate('inicio')}
@@ -78,16 +86,13 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <Home className={`w-4 h-4 shrink-0 ${activeView === 'inicio' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
-              <span className="truncate">Inicio / Resumen</span>
+              <span>Inicio</span>
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
-              Panel
-            </span>
           </button>
 
-          {/* Matriz GTC 45 (Riesgos) */}
+          {/* Matriz GTC 45 */}
           <button
             type="button"
             onClick={() => onNavigate('matriz-gtc45')}
@@ -97,16 +102,16 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <LayoutGrid className="w-4 h-4 text-slate-600 shrink-0" strokeWidth={1.75} />
-              <span className="truncate">Matriz GTC 45</span>
+              <span>Matriz GTC 45</span>
             </div>
             <span className="text-[11px] font-mono text-slate-500 shrink-0">
               {hazardCount}
             </span>
           </button>
 
-          {/* Gestión de Peligros e Intervención */}
+          {/* Peligros */}
           <button
             type="button"
             onClick={() => onNavigate('gestion-peligros')}
@@ -116,18 +121,18 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <AlertTriangle className="w-4 h-4 text-slate-600 shrink-0" strokeWidth={1.75} />
-              <span className="truncate">Gestión de Peligros</span>
+              <span>Peligros</span>
             </div>
             {criticalCount > 0 && (
-              <span className="text-[10px] font-medium bg-red-100 text-red-700 px-1.5 py-0.5 rounded-md shrink-0">
-                {criticalCount} crít.
+              <span className="text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200/60 px-1.5 py-0.5 rounded shrink-0">
+                {criticalCount}
               </span>
             )}
           </button>
 
-          {/* Incapacidades y Ausentismo */}
+          {/* Incapacidades */}
           <button
             type="button"
             onClick={() => onNavigate('ausentismo')}
@@ -137,16 +142,16 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <Calendar className="w-4 h-4 text-purple-600 shrink-0" strokeWidth={1.75} />
-              <span className="truncate">Incapacidades</span>
+              <span>Incapacidades</span>
             </div>
-            <span className="text-[11px] font-medium bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-md shrink-0">
-              {incapacidadCount} casos
+            <span className="text-[11px] font-mono text-slate-500 shrink-0">
+              {incapacidadCount}
             </span>
           </button>
 
-          {/* Diagnóstico Res. 0312 */}
+          {/* Estándares 0312 */}
           <button
             type="button"
             onClick={() => onNavigate('diagnostico-0312')}
@@ -156,16 +161,16 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
-              <span className="truncate">Diagnóstico 0312</span>
+              <span>Estándares 0312</span>
             </div>
-            <span className="text-[11px] font-mono text-emerald-700 shrink-0 font-medium">
-              60 Est.
+            <span className="text-[10px] font-mono font-medium text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded shrink-0">
+              {applicableStandards}
             </span>
           </button>
 
-          {/* Entrega de EPP y Firmas */}
+          {/* Entrega EPP */}
           <button
             type="button"
             onClick={() => onNavigate('actas-entrega')}
@@ -175,16 +180,13 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <ShieldCheck className={`w-4 h-4 shrink-0 ${activeView === 'actas-entrega' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
-              <span className="truncate">Actas y Entrega EPP</span>
+              <span>Entrega EPP</span>
             </div>
-            <span className="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
-              Legal
-            </span>
           </button>
 
-          {/* Capacitaciones SST */}
+          {/* Capacitaciones */}
           <button
             type="button"
             onClick={() => onNavigate('capacitaciones')}
@@ -194,16 +196,16 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <GraduationCap className={`w-4 h-4 shrink-0 ${activeView === 'capacitaciones' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
-              <span className="truncate">Capacitaciones SST</span>
+              <span>Capacitaciones</span>
             </div>
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200/60">
-              Plan ({capacitacionesCount})
+            <span className="text-[11px] font-mono text-slate-500 shrink-0">
+              {capacitacionesCount}
             </span>
           </button>
 
-          {/* Calendario SST */}
+          {/* Calendario */}
           <button
             type="button"
             onClick={() => onNavigate('calendario')}
@@ -213,16 +215,13 @@ export function Sidebar({
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <CalendarDays className={`w-4 h-4 shrink-0 ${activeView === 'calendario' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
-              <span className="truncate">Calendario SST</span>
+              <span>Calendario</span>
             </div>
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/60">
-              Agenda
-            </span>
           </button>
 
-          {/* Próximos Vencimientos */}
+          {/* Vencimientos */}
           <button
             type="button"
             onClick={() => {
@@ -232,13 +231,13 @@ export function Sidebar({
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 80);
             }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left text-slate-700 hover:bg-amber-50/60 hover:text-amber-900"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           >
-            <div className="flex items-center gap-3 truncate">
+            <div className="flex items-center gap-3">
               <Clock className="w-4 h-4 text-amber-600 shrink-0" strokeWidth={1.75} />
-              <span className="truncate">Próximos Vencimientos</span>
+              <span>Vencimientos</span>
             </div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200/60">
               Alertas
             </span>
           </button>

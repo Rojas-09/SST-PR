@@ -61,7 +61,7 @@ export function SettingsModal({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-[11px] font-medium text-slate-500 mb-1">
                 NIT
@@ -70,6 +70,21 @@ export function SettingsModal({
                 type="text"
                 value={formData.nit}
                 onChange={(e) => setFormData({ ...formData, nit: e.target.value })}
+                className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-slate-400 text-xs font-mono-data"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-500 mb-1">
+                N° Trabajadores
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="9999"
+                value={formData.trabajadores ?? 8}
+                onChange={(e) => setFormData({ ...formData, trabajadores: parseInt(e.target.value, 10) || 1 })}
                 className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:border-slate-400 text-xs font-mono-data"
                 required
               />
