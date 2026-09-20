@@ -108,78 +108,76 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 md:bg-[#18191E] md:p-3 lg:p-5 flex items-center justify-center font-sans antialiased text-slate-800 text-[13px]">
-      {/* Outer Application Card matching Clay layout */}
-      <div className="w-full max-w-[1550px] min-h-screen md:min-h-[92vh] bg-white md:rounded-2xl md:shadow-2xl md:border md:border-slate-700/20 flex overflow-hidden relative">
-        {/* Desktop Sidebar */}
-        <div className="hidden md:block shrink-0 z-10">
-          <Sidebar
-            activeView={activeView}
-            onNavigate={(view) => {
-              setActiveView(view);
-              setIsMobileSidebarOpen(false);
-            }}
-            company={company}
-            hazardCount={hazards.length}
-            incapacidadCount={incapacidades.length}
-            criticalCount={criticalCount}
-            capacitacionesCount={capacitaciones.length}
-            onToggleChat={() => setIsChatOpen((prev) => !prev)}
-            onOpenSettings={() => setIsSettingsOpen(true)}
-            onOpenNewHazard={() => setActiveView('registrar-nuevo')}
-          />
-        </div>
+    <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 text-[13px] relative">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex flex-col shrink-0 h-screen z-10">
+        <Sidebar
+          activeView={activeView}
+          onNavigate={(view) => {
+            setActiveView(view);
+            setIsMobileSidebarOpen(false);
+          }}
+          company={company}
+          hazardCount={hazards.length}
+          incapacidadCount={incapacidades.length}
+          criticalCount={criticalCount}
+          capacitacionesCount={capacitaciones.length}
+          onToggleChat={() => setIsChatOpen((prev) => !prev)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+        />
+      </div>
 
-        {/* Mobile Sliding Drawer Sidebar */}
-        {isMobileSidebarOpen && (
-          <div className="fixed inset-0 z-50 md:hidden flex">
-            <div
-              onClick={() => setIsMobileSidebarOpen(false)}
-              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+      {/* Mobile Sliding Drawer Sidebar */}
+      {isMobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          <div
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+          />
+          <div className="relative w-64 bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
+            <Sidebar
+              activeView={activeView}
+              onNavigate={(view) => {
+                setActiveView(view);
+                setIsMobileSidebarOpen(false);
+              }}
+              company={company}
+              hazardCount={hazards.length}
+              incapacidadCount={incapacidades.length}
+              criticalCount={criticalCount}
+              capacitacionesCount={capacitaciones.length}
+              onToggleChat={() => {
+                setIsChatOpen((prev) => !prev);
+                setIsMobileSidebarOpen(false);
+              }}
+              onOpenSettings={() => {
+                setIsSettingsOpen(true);
+                setIsMobileSidebarOpen(false);
+              }}
+              onOpenNewHazard={() => {
+                setActiveView('registrar-nuevo');
+                setIsMobileSidebarOpen(false);
+              }}
             />
-            <div className="relative w-64 bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
-              <Sidebar
-                activeView={activeView}
-                onNavigate={(view) => {
-                  setActiveView(view);
-                  setIsMobileSidebarOpen(false);
-                }}
-                company={company}
-                hazardCount={hazards.length}
-                incapacidadCount={incapacidades.length}
-                criticalCount={criticalCount}
-                capacitacionesCount={capacitaciones.length}
-                onToggleChat={() => {
-                  setIsChatOpen((prev) => !prev);
-                  setIsMobileSidebarOpen(false);
-                }}
-                onOpenSettings={() => {
-                  setIsSettingsOpen(true);
-                  setIsMobileSidebarOpen(false);
-                }}
-                onOpenNewHazard={() => {
-                  setActiveView('registrar-nuevo');
-                  setIsMobileSidebarOpen(false);
-                }}
-              />
-            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen md:max-h-[92vh] relative bg-white">
-          {/* Top Header matching Clay */}
-          <ClayTopHeader
-            company={company}
-            criticalCount={criticalCount}
-            onNavigate={setActiveView}
-            onOpenNewHazard={() => setActiveView('registrar-nuevo')}
-            onOpenSettings={() => setIsSettingsOpen(true)}
-            onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
-          />
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative bg-white">
+        {/* Top Header matching Clay */}
+        <ClayTopHeader
+          company={company}
+          criticalCount={criticalCount}
+          onNavigate={setActiveView}
+          onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+        />
 
-          {/* Dynamic Views with 13px font across all text and paragraphs */}
-          <main className="flex-1 pb-10">
+        {/* Dynamic Views with single scroll container */}
+        <main className="flex-1 overflow-y-auto bg-slate-50/50 pb-16">
             {/* Executive Dashboard with Recharts and Integrated AI Copilot */}
             {activeView === 'inicio' && (
               <DashboardInicioView
@@ -357,6 +355,5 @@ export default function App() {
           onConfirmDelivery={handleConfirmDelivery}
         />
       </div>
-    </div>
-  );
-}
+    );
+  }

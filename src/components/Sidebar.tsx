@@ -54,7 +54,7 @@ export function Sidebar({
   const applicableStandards = workers > 50 || riskNum >= 4 ? 60 : (workers >= 11 ? 21 : 7);
 
   return (
-    <aside className="w-60 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full select-none font-sans py-4 px-3 text-[13px]">
+    <aside className="w-60 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full overflow-y-auto select-none font-sans py-4 px-3 text-[13px]">
       <div className="space-y-4">
         {/* Clay-style Brand Logo Header */}
         <div className="px-2 py-1 flex items-center justify-between">
