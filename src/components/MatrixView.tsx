@@ -117,7 +117,7 @@ export function MatrixView({
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 p-6 space-y-4">
       {/* Export notification popup */}
       {exportNotice && (
-        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-sm shadow-xl border border-amber-500/40 text-xs font-mono-data flex items-center gap-2 z-50 animate-bounce">
+        <div className="fixed bottom-6 right-6 left-6 sm:left-auto sm:max-w-[calc(100vw-3rem)] bg-slate-900 text-white px-4 py-3 rounded-sm shadow-xl border border-amber-500/40 text-xs font-mono-data flex items-center gap-2 z-50 animate-bounce">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{exportNotice}</span>
         </div>
@@ -214,18 +214,18 @@ export function MatrixView({
       {/* TABLA DENTRO DE MATRIZ TÉCNICA */}
       <div className="max-w-7xl mx-auto bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs mb-6">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-[13px]">
+          <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200 text-[12px] font-semibold text-slate-700">
-                <th className="py-3 px-3.5 border-r border-slate-100 whitespace-nowrap">Proceso</th>
-                <th className="py-3 px-3.5 border-r border-slate-100 whitespace-nowrap">Actividad</th>
-                <th className="py-3 px-3.5 border-r border-slate-100 min-w-[200px]">Peligro Identificado</th>
-                <th className="py-3 px-3.5 border-r border-slate-100 min-w-[200px]">Efectos Posibles</th>
-                <th className="py-3 px-3 text-center border-r border-slate-100 w-10">P</th>
-                <th className="py-3 px-3 text-center border-r border-slate-100 w-10">S</th>
-                <th className="py-3 px-3 text-center border-r border-slate-100 w-12">P×S</th>
-                <th className="py-3 px-3.5 border-r border-slate-100 w-28 whitespace-nowrap text-center">Nivel</th>
-                <th className="py-3 px-3.5 min-w-[240px]">Plan de Intervención</th>
+                <th className="py-3 px-2 border-r border-slate-100 w-[8%]">Proceso</th>
+                <th className="py-3 px-2 border-r border-slate-100 w-[8%]">Actividad</th>
+                <th className="py-3 px-2 border-r border-slate-100 w-[15%]">Peligro Identificado</th>
+                <th className="py-3 px-2 border-r border-slate-100 w-[14%]">Efectos Posibles</th>
+                <th className="py-2 px-1 text-center border-r border-slate-100 w-[4%]">P</th>
+                <th className="py-2 px-1 text-center border-r border-slate-100 w-[4%]">S</th>
+                <th className="py-2 px-1 text-center border-r border-slate-100 w-[5%]">P×S</th>
+                <th className="py-2 px-1.5 border-r border-slate-100 w-[9%] text-center">Nivel</th>
+                <th className="py-3 px-2 w-[33%]">Plan de Intervención</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-[12.5px]">
@@ -286,26 +286,26 @@ export function MatrixView({
                     onClick={() => onSelectHazard(hazard)}
                     className="hover:bg-amber-50/30 transition-colors cursor-pointer"
                   >
-                    <td className="py-2.5 px-3 font-medium text-slate-900 border-r border-slate-100 whitespace-nowrap">
+                    <td data-label="Proceso" className="py-2.5 px-2 font-medium text-slate-900 border-r border-slate-100">
                       {procesoLabel}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 border-r border-slate-100 whitespace-nowrap">
+                    <td data-label="Actividad" className="py-2.5 px-2 text-slate-600 border-r border-slate-100">
                       {actividadLabel}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-800 font-medium border-r border-slate-100">
+                    <td data-label="Peligro Identificado" className="py-2.5 px-2 text-slate-800 font-medium border-r border-slate-100">
                       {peligroLabel}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-500 border-r border-slate-100 text-[11px]">
+                    <td data-label="Efectos Posibles" className="py-2.5 px-2 text-slate-500 border-r border-slate-100 text-[11px]">
                       {efectosLabel}
                     </td>
-                    <td className="py-2.5 px-3 text-center font-mono-data font-bold border-r border-slate-100">
+                    <td data-label="P" className="py-2.5 px-1 text-center font-mono-data font-bold border-r border-slate-100">
                       {p}
                     </td>
-                    <td className="py-2.5 px-3 text-center font-mono-data font-bold border-r border-slate-100">
+                    <td data-label="S" className="py-2.5 px-1 text-center font-mono-data font-bold border-r border-slate-100">
                       {s}
                     </td>
-                    <td
-                      className={`py-2.5 px-3 text-center font-mono-data font-bold border-r border-slate-100 ${
+                    <td data-label="P×S"
+                      className={`py-2.5 px-1 text-center font-mono-data font-bold border-r border-slate-100 ${
                         isCritical
                           ? 'text-red-600 bg-red-50/50'
                           : isAlto
@@ -317,7 +317,7 @@ export function MatrixView({
                     >
                       {pxs}
                     </td>
-                    <td className="py-2.5 px-3 border-r border-slate-100 whitespace-nowrap">
+                    <td data-label="Nivel" className="py-2.5 px-1.5 border-r border-slate-100 text-center">
                       {isCritical ? (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[2px] text-[10px] font-mono-data font-semibold bg-red-50 text-red-700 border border-red-200">
                           CRÍTICO
@@ -336,7 +336,7 @@ export function MatrixView({
                         </span>
                       )}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 text-[11px]">
+                    <td data-label="Plan de Intervención" className="py-2.5 px-2 text-slate-600 text-[11px]">
                       {planLabel}
                     </td>
                   </tr>

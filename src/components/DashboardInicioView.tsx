@@ -843,15 +843,15 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
         </div>
 
         <div className="overflow-x-auto mt-4">
-          <table className="w-full text-left border-collapse">
+          <table className="table-stack-lg w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider bg-slate-50/70">
-                <th className="py-2.5 px-3">Código</th>
-                <th className="py-2.5 px-3">Peligro y Efectos en Salud</th>
-                <th className="py-2.5 px-3">Área / Proceso</th>
-                <th className="py-2.5 px-3 text-center">Nivel Riesgo</th>
-                <th className="py-2.5 px-3">Plan de Intervención</th>
-                <th className="py-2.5 px-3 text-right">Acción</th>
+                <th className="py-2.5 px-2.5 w-[10%]">Código</th>
+                <th className="py-2.5 px-2.5 w-[26%]">Peligro y Efectos en Salud</th>
+                <th className="py-2.5 px-2.5 w-[13%]">Área / Proceso</th>
+                <th className="py-2.5 px-2.5 text-center w-[14%]">Nivel Riesgo</th>
+                <th className="py-2.5 px-2.5 w-[25%]">Plan de Intervención</th>
+                <th className="py-2.5 px-2.5 text-right w-[12%]">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -859,19 +859,19 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
                 const isCrit = hazard.evaluacion.level === 'NIVEL_I';
                 return (
                   <tr key={hazard.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3 px-3 font-mono font-medium text-slate-700 whitespace-nowrap">
+                    <td data-label="Código" className="py-3 px-2.5 font-mono font-medium text-slate-700">
                       {hazard.code}
                     </td>
-                    <td className="py-3 px-3">
+                    <td data-label="Peligro y Efectos en Salud" className="py-3 px-2.5">
                       <div className="font-semibold text-slate-900">{hazard.title}</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                      <div className="text-[11px] text-slate-500 mt-0.5">
                         {hazard.efectosSalud}
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-600 whitespace-nowrap">
+                    <td data-label="Área / Proceso" className="py-3 px-2.5 text-slate-600">
                       {hazard.zonaLugar.split('•')[0].trim()}
                     </td>
-                    <td className="py-3 px-3 text-center whitespace-nowrap">
+                    <td data-label="Nivel Riesgo" className="py-3 px-2.5 text-center">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold ${
                           isCrit
@@ -882,10 +882,10 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
                         NR {hazard.evaluacion.nr} • {hazard.evaluacion.levelText}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 max-w-xs truncate">
+                    <td data-label="Plan de Intervención" className="py-3 px-2.5 text-slate-700">
                       {hazard.planIntervencion.epp.titulo}
                     </td>
-                    <td className="py-3 px-3 text-right whitespace-nowrap">
+                    <td data-label="Acción" className="py-3 px-2.5 text-right">
                       <button
                         type="button"
                         onClick={() => {

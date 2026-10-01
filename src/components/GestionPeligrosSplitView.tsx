@@ -379,17 +379,17 @@ export function GestionPeligrosSplitView({
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse font-sans text-[13px]">
+            <table className="table-stack-lg w-full text-left border-collapse font-sans text-[13px]">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-100/70 text-[12px] font-sans font-semibold text-slate-600 uppercase tracking-wider">
-                  <th className="py-3 px-4 font-sans">Código / Proceso</th>
-                  <th className="py-3 px-4 font-sans">Peligro y Descripción</th>
-                  <th className="py-3 px-4 font-sans">Clasificación GTC 45</th>
-                  <th className="py-3 px-4 text-center font-sans">NP × NC = NR</th>
-                  <th className="py-3 px-4 text-center font-sans">Nivel de Riesgo</th>
-                  <th className="py-3 px-4 font-sans">Intervención Principal</th>
-                  <th className="py-3 px-4 text-center font-sans">Estado EPP</th>
-                  <th className="py-3 px-4 text-right font-sans">Acciones</th>
+                  <th className="py-3 px-2.5 font-sans w-[10%]">Código / Proceso</th>
+                  <th className="py-3 px-2.5 font-sans w-[18%]">Peligro y Descripción</th>
+                  <th className="py-3 px-2.5 font-sans w-[12%]">Clasificación GTC 45</th>
+                  <th className="py-3 px-2 font-sans text-center w-[9%]">NP × NC = NR</th>
+                  <th className="py-3 px-2 font-sans text-center w-[10%]">Nivel de Riesgo</th>
+                  <th className="py-3 px-2.5 font-sans w-[19%]">Intervención Principal</th>
+                  <th className="py-3 px-2 font-sans text-center w-[9%]">Estado EPP</th>
+                  <th className="py-3 px-2.5 font-sans text-right w-[13%]">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-[13px] font-sans">
@@ -402,51 +402,51 @@ export function GestionPeligrosSplitView({
                       setDisplayMode('SPLIT');
                     }}
                   >
-                    <td className="py-3 px-4 whitespace-nowrap font-sans">
+                    <td data-label="Código / Proceso" className="py-3 px-2.5 font-sans">
                       <div className="font-semibold text-slate-900 text-[13px] font-sans">{hazard.code}</div>
                       <div className="text-[12px] text-slate-500 font-sans font-normal">{hazard.proceso}</div>
                     </td>
 
-                    <td className="py-3 px-4 max-w-xs font-sans">
-                      <div className="font-medium text-slate-900 text-[13px] font-sans line-clamp-1">{hazard.title}</div>
-                      <div className="text-[12px] text-slate-500 font-sans font-normal line-clamp-1">{hazard.subtitle}</div>
+                    <td data-label="Peligro y Descripción" className="py-3 px-2.5 font-sans">
+                      <div className="font-medium text-slate-900 text-[13px] font-sans">{hazard.title}</div>
+                      <div className="text-[12px] text-slate-500 font-sans font-normal">{hazard.subtitle}</div>
                     </td>
 
-                    <td className="py-3 px-4 font-sans">
-                      <span className="px-2 py-0.5 rounded text-[12px] font-sans font-normal bg-slate-100 text-slate-700 border border-slate-200">
+                    <td data-label="Clasificación GTC 45" className="py-3 px-2.5 font-sans">
+                      <span className="px-2 py-0.5 rounded text-[12px] font-sans font-normal bg-slate-100 text-slate-700 border border-slate-200 inline-block">
                         {hazard.tipoPeligroGeneral}
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 text-center whitespace-nowrap font-sans">
+                    <td data-label="NP × NC = NR" className="py-3 px-2 text-center font-sans">
                       <span className="font-sans font-medium text-slate-800 text-[13px]">
                         {hazard.evaluacion.np} × {hazard.evaluacion.nc} = {hazard.evaluacion.nr}
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 text-center whitespace-nowrap font-sans">
+                    <td data-label="Nivel de Riesgo" className="py-3 px-2 text-center font-sans">
                       {renderLevelBadge(hazard.evaluacion.level)}
                     </td>
 
-                    <td className="py-3 px-4 max-w-xs font-sans">
-                      <div className="text-[12.5px] font-sans text-slate-700 line-clamp-1 font-normal">
+                    <td data-label="Intervención Principal" className="py-3 px-2.5 font-sans">
+                      <div className="text-[12.5px] font-sans text-slate-700 font-normal">
                         {hazard.planIntervencion.ingenieria.titulo || hazard.planIntervencion.administrativa.titulo}
                       </div>
                     </td>
 
-                    <td className="py-3 px-4 text-center whitespace-nowrap font-sans">
+                    <td data-label="Estado EPP" className="py-3 px-2 text-center font-sans">
                       {hazard.estadoEntregaEPP === 'FIRMADA' ? (
                         <span className="inline-flex items-center gap-1 text-[12px] font-sans text-emerald-700 font-normal">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Firmada
+                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Firmada
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 text-[12px] font-sans text-amber-700 font-normal">
-                          <Clock className="w-3.5 h-3.5" /> Pendiente
+                          <Clock className="w-3.5 h-3.5 shrink-0" /> Pendiente
                         </span>
                       )}
                     </td>
 
-                    <td className="py-3 px-4 text-right whitespace-nowrap font-sans">
+                    <td data-label="Acciones" className="py-3 px-2.5 text-right font-sans">
                       <button
                         type="button"
                         onClick={(e) => {

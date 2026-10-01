@@ -153,14 +153,14 @@ export function MainExplorerView({
 
       {/* Table */}
       <div className="border border-slate-200 rounded-xl overflow-x-auto bg-white shadow-2xs">
-        <table className="w-full text-left border-collapse text-[13px]">
+        <table className="table-stack w-full text-left border-collapse text-[13px]">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/50 text-[12px] font-semibold text-slate-600">
-              <th className="py-2.5 px-3">Nombre del Registro</th>
-              <th className="py-2.5 px-3">Nivel de Riesgo</th>
-              <th className="py-2.5 px-3">Responsable</th>
-              <th className="py-2.5 px-3">Última Edición</th>
-              <th className="py-2.5 px-3 text-right">Acción</th>
+              <th className="py-2.5 px-2.5 w-[34%]">Nombre del Registro</th>
+              <th className="py-2.5 px-2.5 w-[16%]">Nivel de Riesgo</th>
+              <th className="py-2.5 px-2.5 w-[20%]">Responsable</th>
+              <th className="py-2.5 px-2.5 w-[18%]">Última Edición</th>
+              <th className="py-2.5 px-2.5 text-right w-[12%]">Acción</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -173,11 +173,11 @@ export function MainExplorerView({
                 }}
                 className="hover:bg-slate-50/70 cursor-pointer transition-colors"
               >
-                <td className="py-3 px-3">
+                <td data-label="Nombre del Registro" className="py-3 px-3">
                   <span className="font-medium text-slate-900 block">{item.title}</span>
                   <span className="text-[11px] text-slate-400">{item.subLabel}</span>
                 </td>
-                <td className="py-3 px-3">
+                <td data-label="Nivel de Riesgo" className="py-3 px-3">
                   <span
                     className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium ${
                       item.isCritical
@@ -188,9 +188,9 @@ export function MainExplorerView({
                     {item.levelText}
                   </span>
                 </td>
-                <td className="py-3 px-3 text-slate-600">{item.contributor}</td>
-                <td className="py-3 px-3 text-slate-500">{item.updated}</td>
-                <td className="py-3 px-3 text-right">
+                <td data-label="Responsable" className="py-3 px-3 text-slate-600">{item.contributor}</td>
+                <td data-label="Última Edición" className="py-3 px-3 text-slate-500">{item.updated}</td>
+                <td data-label="Acción" className="py-3 px-3 text-right">
                   <span className="text-blue-600 hover:underline text-[12px] font-medium">
                     Ver detalle →
                   </span>

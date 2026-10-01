@@ -105,10 +105,10 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
   });
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-5 bg-white min-h-screen text-[13px] text-slate-800 font-sans">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-5 bg-white min-h-screen text-[13px] text-slate-800 font-sans">
       {/* Toast Notification */}
       {successToast && (
-        <div className="fixed top-4 right-4 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 text-[13px] shadow-xl animate-in fade-in">
+        <div className="fixed top-4 right-4 left-4 sm:left-auto sm:max-w-[calc(100vw-2rem)] z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 text-[13px] shadow-xl animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{successToast}</span>
         </div>
@@ -311,33 +311,33 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-[13px]">
+          <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 text-[12.5px] font-semibold text-slate-700">
-                <th className="py-3 px-3.5 whitespace-nowrap">Código</th>
-                <th className="py-3 px-3.5 whitespace-nowrap">Trabajador</th>
-                <th className="py-3 px-4 text-center whitespace-nowrap min-w-[170px]">Origen / ARL</th>
-                <th className="py-3 px-3.5 min-w-[220px]">CIE-10 & Diagnóstico</th>
-                <th className="py-3 px-3 text-center whitespace-nowrap">Días</th>
-                <th className="py-3 px-3.5 whitespace-nowrap">Vigencia</th>
-                <th className="py-3 px-3.5 text-center whitespace-nowrap">Estado</th>
-                <th className="py-3 px-3.5 text-right whitespace-nowrap">Costo Estimado</th>
+                <th className="py-3 px-2.5 w-[9%]">Código</th>
+                <th className="py-3 px-2.5 w-[15%]">Trabajador</th>
+                <th className="py-3 px-2.5 text-center w-[14%]">Origen / ARL</th>
+                <th className="py-3 px-2.5 w-[20%]">CIE-10 &amp; Diagnóstico</th>
+                <th className="py-3 px-1.5 text-center w-[5%]">Días</th>
+                <th className="py-3 px-2.5 w-[12%]">Vigencia</th>
+                <th className="py-3 px-2.5 text-center w-[13%]">Estado</th>
+                <th className="py-3 px-2.5 text-right w-[12%]">Costo Estimado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredIncapacidades.map((inc) => (
                 <tr key={inc.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3.5 px-3.5 font-medium text-blue-600 whitespace-nowrap">
+                  <td data-label="Código" className="py-3.5 px-2.5 font-medium text-blue-600">
                     {inc.codigo}
                   </td>
-                  <td className="py-3.5 px-3.5">
+                  <td data-label="Trabajador" className="py-3.5 px-2.5">
                     <span className="font-medium text-slate-900 block text-[13px]">{inc.empleado}</span>
                     <span className="text-[11.5px] text-slate-500">{inc.cargo} • C.C. {inc.cedula}</span>
                   </td>
-                  <td className="py-3.5 px-4 text-center">
+                  <td data-label="Origen / ARL" className="py-3.5 px-2.5 text-center">
                     <div className="flex flex-col items-center justify-center gap-1">
                       <span
-                        className={`inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium border shadow-2xs whitespace-nowrap ${
+                        className={`inline-flex items-center justify-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-medium border shadow-2xs ${
                           inc.tipo === 'ACCIDENTE_TRABAJO'
                             ? 'bg-amber-50 text-amber-900 border-amber-300/80'
                             : 'bg-indigo-50 text-indigo-900 border-indigo-200/80'
@@ -351,25 +351,25 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
                       </span>
                     </div>
                   </td>
-                  <td className="py-3.5 px-3.5">
+                  <td data-label="CIE-10 & Diagnóstico" className="py-3.5 px-2.5">
                     <span className="font-semibold text-slate-900 text-[12.5px]">
                       [{inc.codigoCIE10}]
                     </span>{' '}
                     <span className="text-slate-700 text-[13px]">{inc.diagnostico}</span>
                   </td>
-                  <td className="py-3.5 px-3 text-center font-bold text-slate-900 text-[13px]">
+                  <td data-label="Días" className="py-3.5 px-1.5 text-center font-bold text-slate-900 text-[13px]">
                     {inc.diasIncapacidad} d
                   </td>
-                  <td className="py-3.5 px-3.5 text-[12.5px] text-slate-600 whitespace-nowrap">
+                  <td data-label="Vigencia" className="py-3.5 px-2.5 text-[12.5px] text-slate-600">
                     {inc.fechaInicio} al {inc.fechaFin}
                   </td>
-                  <td className="py-3.5 px-3.5 text-center">
-                    <span className="inline-flex items-center justify-center gap-1 text-[11.5px] px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <td data-label="Estado" className="py-3.5 px-2.5 text-center">
+                    <span className="inline-flex items-center justify-center gap-1 text-[11.5px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       {inc.estado === 'RECONOCIDO' ? 'Reconocido' : inc.estado === 'EN_COBRO_ARL_EPS' ? 'En cobro ARL' : 'Radicado'}
                     </span>
                   </td>
-                  <td className="py-3.5 px-3.5 text-right font-medium text-slate-900 text-[13px] whitespace-nowrap">
+                  <td data-label="Costo Estimado" className="py-3.5 px-2.5 text-right font-medium text-slate-900 text-[13px]">
                     ${inc.costoAsumido.toLocaleString('es-CO')}
                   </td>
                 </tr>

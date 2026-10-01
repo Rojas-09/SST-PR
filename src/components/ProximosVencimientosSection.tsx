@@ -500,7 +500,7 @@ export function ProximosVencimientosSection({
       {/* Filter and Search Bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1">
         {/* Category Pill Filters */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full text-xs">
+        <div className="wrap-chips items-center gap-1.5 pb-1 max-w-full text-xs">
           <button
             type="button"
             onClick={() => setCategoriaFiltro('TODOS')}
@@ -613,15 +613,15 @@ export function ProximosVencimientosSection({
 
       {/* Main Table List of Vencimientos */}
       <div className="overflow-x-auto border border-slate-200 rounded-lg">
-        <table className="w-full text-left border-collapse">
+        <table className="table-stack-lg w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
-              <th className="py-2.5 px-3">Estado / Plazo</th>
-              <th className="py-2.5 px-3">Categoría</th>
-              <th className="py-2.5 px-3 min-w-[260px]">Obligación / Documento / Peligro</th>
-              <th className="py-2.5 px-3">Área / Responsable</th>
-              <th className="py-2.5 px-3">Sustento Legal</th>
-              <th className="py-2.5 px-3 text-right">Acción</th>
+              <th className="py-2.5 px-2.5 w-[11%]">Estado / Plazo</th>
+              <th className="py-2.5 px-2.5 w-[11%]">Categoría</th>
+              <th className="py-2.5 px-2.5 w-[32%]">Obligación / Documento / Peligro</th>
+              <th className="py-2.5 px-2.5 w-[16%]">Área / Responsable</th>
+              <th className="py-2.5 px-2.5 w-[13%]">Sustento Legal</th>
+              <th className="py-2.5 px-2.5 text-right w-[17%]">Acción</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-xs">
@@ -656,7 +656,7 @@ export function ProximosVencimientosSection({
                     }`}
                   >
                     {/* Urgencia / Días Restantes */}
-                    <td className="py-3 px-3 whitespace-nowrap">
+                    <td data-label="Estado / Plazo" className="py-3 px-2.5">
                       <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${urgBadge.indicator} shrink-0`} />
                         <span
@@ -671,17 +671,17 @@ export function ProximosVencimientosSection({
                     </td>
 
                     {/* Categoría */}
-                    <td className="py-3 px-3 whitespace-nowrap">
+                    <td data-label="Categoría" className="py-3 px-2.5">
                       <span
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] border font-medium ${catBadge.bg}`}
                       >
-                        <CatIcon className="w-3 h-3" />
+                        <CatIcon className="w-3 h-3 shrink-0" />
                         {catBadge.label}
                       </span>
                     </td>
 
                     {/* Título y Subtítulo */}
-                    <td className="py-3 px-3">
+                    <td data-label="Obligación / Documento / Peligro" className="py-3 px-2.5">
                       <div className="flex items-start gap-1.5">
                         {isCompletado && (
                           <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -694,7 +694,7 @@ export function ProximosVencimientosSection({
                           >
                             {item.titulo}
                           </div>
-                          <div className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             {item.subtitulo}
                           </div>
                         </div>
@@ -702,21 +702,21 @@ export function ProximosVencimientosSection({
                     </td>
 
                     {/* Área y Responsable */}
-                    <td className="py-3 px-3 whitespace-nowrap text-slate-600">
+                    <td data-label="Área / Responsable" className="py-3 px-2.5 text-slate-600">
                       <div className="text-slate-800 font-medium text-[11.5px]">{item.responsable}</div>
                       <div className="text-[10.5px] text-slate-400">{item.areaAfectada}</div>
                     </td>
 
                     {/* Normativa */}
-                    <td className="py-3 px-3 whitespace-nowrap">
-                      <span className="text-[10.5px] font-mono text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                    <td data-label="Sustento Legal" className="py-3 px-2.5">
+                      <span className="text-[10.5px] font-mono text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 inline-block">
                         {item.normativa}
                       </span>
                     </td>
 
                     {/* Acciones */}
-                    <td className="py-3 px-3 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td data-label="Acción" className="py-3 px-2.5 text-right">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
                         {/* Action navigation button */}
                         {item.tipoAccion !== 'ACCION_INTERNA' && (
                           <button

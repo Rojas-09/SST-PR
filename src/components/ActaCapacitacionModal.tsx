@@ -225,26 +225,26 @@ export function ActaCapacitacionModal({
             </div>
 
             <div className="overflow-x-auto border border-slate-200 rounded-lg shadow-2xs">
-              <table className="w-full text-left text-xs border-collapse">
+              <table className="table-stack w-full text-left text-xs border-collapse">
                 <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                   <tr>
-                    <th className="py-2.5 px-3 w-8">#</th>
-                    <th className="py-2.5 px-3">Nombre del Trabajador</th>
-                    <th className="py-2.5 px-3">Cédula</th>
-                    <th className="py-2.5 px-3">Cargo / Ocupación</th>
-                    <th className="py-2.5 px-3 text-center">Asistencia</th>
-                    <th className="py-2.5 px-3 text-center">Calificación (100)</th>
-                    <th className="py-2.5 px-3 text-center">Firma Trabajador</th>
+                    <th className="py-2.5 px-2.5 w-[5%]">#</th>
+                    <th className="py-2.5 px-2.5 w-[22%]">Nombre del Trabajador</th>
+                    <th className="py-2.5 px-2.5 w-[12%]">Cédula</th>
+                    <th className="py-2.5 px-2.5 w-[20%]">Cargo / Ocupación</th>
+                    <th className="py-2.5 px-2.5 text-center w-[15%]">Asistencia</th>
+                    <th className="py-2.5 px-2.5 text-center w-[13%]">Calificación (100)</th>
+                    <th className="py-2.5 px-2.5 text-center w-[13%]">Firma Trabajador</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 bg-white">
                   {capacitacion.asistentes.map((asistente, index) => (
                     <tr key={asistente.id} className="hover:bg-slate-50/60">
-                      <td className="py-2 px-3 text-slate-400 font-mono text-[11px]">{index + 1}</td>
-                      <td className="py-2 px-3 font-semibold text-slate-900">{asistente.nombre}</td>
-                      <td className="py-2 px-3 font-mono text-slate-600">{asistente.cedula}</td>
-                      <td className="py-2 px-3 text-slate-600">{asistente.cargo}</td>
-                      <td className="py-2 px-3 text-center">
+                      <td data-label="#" className="py-2 px-3 text-slate-400 font-mono text-[11px]">{index + 1}</td>
+                      <td data-label="Nombre del Trabajador" className="py-2 px-3 font-semibold text-slate-900">{asistente.nombre}</td>
+                      <td data-label="Cédula" className="py-2 px-3 font-mono text-slate-600">{asistente.cedula}</td>
+                      <td data-label="Cargo / Ocupación" className="py-2 px-3 text-slate-600">{asistente.cargo}</td>
+                      <td data-label="Asistencia" className="py-2 px-3 text-center">
                         {asistente.asistio ? (
                           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             <CheckCircle2 className="w-3 h-3" /> Asistió
@@ -255,7 +255,7 @@ export function ActaCapacitacionModal({
                           </span>
                         )}
                       </td>
-                      <td className="py-2 px-3 text-center font-mono font-bold">
+                      <td data-label="Calificación (100)" className="py-2 px-3 text-center font-mono font-bold">
                         {asistente.calificacion !== undefined ? (
                           <span className={asistente.calificacion >= 80 ? 'text-emerald-700' : 'text-amber-700'}>
                             {asistente.calificacion}/100
@@ -264,7 +264,7 @@ export function ActaCapacitacionModal({
                           <span className="text-slate-400">-</span>
                         )}
                       </td>
-                      <td className="py-2 px-3 text-center">
+                      <td data-label="Firma Trabajador" className="py-2 px-3 text-center">
                         {asistente.firmaRegistrada ? (
                           <span className="font-serif italic text-blue-800 text-[11px] font-semibold border-b border-blue-400 pb-0.5">
                             {asistente.nombre.split(' ')[0]} {asistente.nombre.split(' ')[1]?.[0]}. (Digital)

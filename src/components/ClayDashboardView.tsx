@@ -416,17 +416,17 @@ export function ClayDashboardView({
 
       {/* The Clay Table Container */}
       <div className="border border-slate-200 rounded-xl overflow-x-auto bg-white shadow-2xs">
-        <table className="w-full text-left border-collapse text-[13px]">
+        <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/50 text-[12px] font-semibold text-slate-600">
-              <th className="py-2.5 px-3 font-semibold">Nombre del Registro</th>
-              <th className="py-2.5 px-2.5 text-center w-12 font-semibold" title="Favorito">★</th>
-              <th className="py-2.5 px-3 font-semibold">Etiquetas / Estado</th>
-              <th className="py-2.5 px-3 font-semibold">Fecha de Creación</th>
-              <th className="py-2.5 px-3 font-semibold">Última Edición</th>
-              <th className="py-2.5 px-3 font-semibold">Responsable</th>
-              <th className="py-2.5 px-3 font-semibold">Acceso</th>
-              <th className="py-2.5 px-2 text-center w-10 font-semibold"></th>
+              <th className="py-2.5 px-2.5 font-semibold w-[22%]">Nombre del Registro</th>
+              <th className="py-2.5 px-1.5 text-center w-[4%] font-semibold" title="Favorito">★</th>
+              <th className="py-2.5 px-2.5 font-semibold w-[16%]">Etiquetas / Estado</th>
+              <th className="py-2.5 px-2.5 font-semibold w-[13%]">Fecha de Creación</th>
+              <th className="py-2.5 px-2.5 font-semibold w-[13%]">Última Edición</th>
+              <th className="py-2.5 px-2.5 font-semibold w-[14%]">Responsable</th>
+              <th className="py-2.5 px-2.5 font-semibold w-[10%]">Acceso</th>
+              <th className="py-2.5 px-1.5 text-center w-[8%] font-semibold"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -445,8 +445,8 @@ export function ClayDashboardView({
                   className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                 >
                   {/* Nombre & Icon */}
-                  <td className="py-3 px-3">
-                    <div className="flex items-center gap-2.5">
+                  <td data-label="Nombre del Registro" className="py-3 px-2">
+                    <div className="flex items-start gap-2">
                       <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
                         {row.category === 'incapacidades' ? (
                           <Calendar className="w-3.5 h-3.5 text-blue-600" />
@@ -456,8 +456,8 @@ export function ClayDashboardView({
                           <FileSpreadsheet className="w-3.5 h-3.5 text-slate-700" />
                         )}
                       </div>
-                      <div className="truncate max-w-sm">
-                        <span className="font-medium text-slate-900 group-hover:text-blue-600 truncate block">
+                      <div>
+                        <span className="font-medium text-slate-900 group-hover:text-blue-600 block">
                           {row.title}
                         </span>
                         <span className="text-[11px] font-mono-data text-slate-400">
@@ -468,7 +468,7 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Favorito Star */}
-                  <td className="py-3 px-2.5 text-center">
+                  <td data-label="Favorito" className="py-3 px-1 text-center">
                     <button
                       type="button"
                       onClick={(e) => toggleFavorite(row.id, e)}
@@ -484,7 +484,7 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Tags */}
-                  <td className="py-3 px-3">
+                  <td data-label="Etiquetas / Estado" className="py-3 px-3">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {row.tags.map((tag, idx) => (
                         <span
@@ -508,36 +508,36 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Creado el */}
-                  <td className="py-3 px-3 text-slate-500 text-[12.5px]">
+                  <td data-label="Fecha de Creación" className="py-3 px-3 text-slate-500 text-[12.5px]">
                     {row.createdAt}
                   </td>
 
                   {/* Última edición */}
-                  <td className="py-3 px-3 text-slate-500 text-[12.5px]">
+                  <td data-label="Última Edición" className="py-3 px-3 text-slate-500 text-[12.5px]">
                     {row.lastOpened}
                   </td>
 
                   {/* Responsable */}
-                  <td className="py-3 px-3">
+                  <td data-label="Responsable" className="py-3 px-3">
                     <div className="flex items-center gap-1.5">
                       <div className="w-5 h-5 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold flex items-center justify-center">
                         CM
                       </div>
-                      <span className="text-[12.5px] text-slate-700 truncate max-w-[120px]">
+                      <span className="text-[12.5px] text-slate-700">
                         {row.owner}
                       </span>
                     </div>
                   </td>
 
                   {/* Acceso */}
-                  <td className="py-3 px-3">
+                  <td data-label="Acceso" className="py-3 px-3">
                     <span className="text-[12px] text-slate-500 font-medium hover:text-slate-900">
                       {row.access}
                     </span>
                   </td>
 
                   {/* More Menu (...) with Context Menu matching Clay */}
-                  <td className="py-3 px-2 text-center relative">
+                  <td data-label="Acciones" className="py-3 px-2 text-center relative">
                     <button
                       type="button"
                       onClick={(e) => {

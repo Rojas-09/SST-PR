@@ -469,7 +469,7 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 bg-[#F8F9FF] min-h-screen text-slate-800">
       {/* Toast Notification on Save */}
       {saveSuccessNotification && (
-        <div className="fixed top-5 right-5 z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
           <div className="text-xs">
             <p className="font-bold">Diagnóstico Guardado y Acta Convalidada</p>
@@ -480,7 +480,7 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
 
       {/* Toast Notification on PDF Download */}
       {pdfDownloaded && (
-        <div className="fixed top-5 right-5 z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
           <FileDown className="w-5 h-5 text-amber-400 shrink-0" />
           <div className="text-xs">
             <p className="font-bold">Formato Técnico Generado (.pdf)</p>
@@ -884,7 +884,7 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
 
         {/* PHVA Filter Tabs */}
         <div className="px-3.5 pt-2.5 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5">
+          <div className="wrap-chips items-center gap-1.5 pb-2.5">
             {[
               { id: 'TODOS', label: 'Todos los Estándares', count: `${activeStandards.filter(s => evaluaciones[s.item]?.status === 'CUMPLE' || evaluaciones[s.item]?.status === 'NO_APLICA').length}/${activeStandards.length}` },
               { id: 'Planear', label: 'Planear', count: `${phaseStats.Planear.cumplidos}/${phaseStats.Planear.total}` },

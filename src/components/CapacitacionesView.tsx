@@ -630,28 +630,28 @@ export function CapacitacionesView({
                       </div>
 
                       <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-2xs">
-                        <table className="w-full text-left text-xs border-collapse">
+                        <table className="table-stack w-full text-left text-xs border-collapse">
                           <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
                             <tr>
-                              <th className="py-2.5 px-3">Trabajador</th>
-                              <th className="py-2.5 px-3">Cédula</th>
-                              <th className="py-2.5 px-3">Cargo</th>
-                              <th className="py-2.5 px-3 text-center">Estado Asistencia</th>
-                              <th className="py-2.5 px-3 text-center">Nota /100</th>
-                              <th className="py-2.5 px-3 text-center">Firma</th>
+                              <th className="py-2.5 px-2.5 w-[26%]">Trabajador</th>
+                              <th className="py-2.5 px-2.5 w-[12%]">Cédula</th>
+                              <th className="py-2.5 px-2.5 w-[24%]">Cargo</th>
+                              <th className="py-2.5 px-2.5 text-center w-[16%]">Estado Asistencia</th>
+                              <th className="py-2.5 px-2.5 text-center w-[10%]">Nota /100</th>
+                              <th className="py-2.5 px-2.5 text-center w-[12%]">Firma</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-200">
                             {cap.asistentes.map((asistente) => (
                               <tr key={asistente.id} className="hover:bg-slate-50/80">
-                                <td className="py-2 px-3 font-semibold text-slate-900">
+                                <td data-label="Trabajador" className="py-2 px-3 font-semibold text-slate-900">
                                   {asistente.nombre}
                                 </td>
-                                <td className="py-2 px-3 font-mono text-slate-600">
+                                <td data-label="Cédula" className="py-2 px-3 font-mono text-slate-600">
                                   {asistente.cedula}
                                 </td>
-                                <td className="py-2 px-3 text-slate-600">{asistente.cargo}</td>
-                                <td className="py-2 px-3 text-center">
+                                <td data-label="Cargo" className="py-2 px-3 text-slate-600">{asistente.cargo}</td>
+                                <td data-label="Estado Asistencia" className="py-2 px-3 text-center">
                                   <button
                                     type="button"
                                     onClick={() => handleToggleAttendance(cap.id, asistente.id)}
@@ -671,7 +671,7 @@ export function CapacitacionesView({
                                     )}
                                   </button>
                                 </td>
-                                <td className="py-2 px-3 text-center font-mono font-bold">
+                                <td data-label="Nota /100" className="py-2 px-3 text-center font-mono font-bold">
                                   {asistente.asistio ? (
                                     <span className="text-emerald-700">
                                       {asistente.calificacion || 95}/100
@@ -680,7 +680,7 @@ export function CapacitacionesView({
                                     <span className="text-slate-400">-</span>
                                   )}
                                 </td>
-                                <td className="py-2 px-3 text-center">
+                                <td data-label="Firma" className="py-2 px-3 text-center">
                                   {asistente.firmaRegistrada ? (
                                     <span className="font-serif italic text-blue-800 text-[11px] font-semibold">
                                       Firma digital OK

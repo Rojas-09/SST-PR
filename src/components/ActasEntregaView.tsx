@@ -267,15 +267,15 @@ export function ActasEntregaView({
       {/* Main Actas Table with consistent font-sans and 13px font-size */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden font-sans">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse font-sans text-[13px]">
+          <table className="table-stack-lg w-full text-left border-collapse font-sans text-[13px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-[12px] font-sans font-semibold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-4 font-sans">Acta / Cód.</th>
-                <th className="py-3 px-4 font-sans">Trabajador Receptor</th>
-                <th className="py-3 px-4 font-sans">Peligro Asociado (GTC 45)</th>
-                <th className="py-3 px-4 font-sans">Equipos de Protección Entregados</th>
-                <th className="py-3 px-4 text-center font-sans">Estado</th>
-                <th className="py-3 px-4 text-right font-sans">Acciones</th>
+                <th className="py-3 px-3 font-sans w-[12%]">Acta / Cód.</th>
+                <th className="py-3 px-3 font-sans w-[18%]">Trabajador Receptor</th>
+                <th className="py-3 px-3 font-sans w-[18%]">Peligro Asociado (GTC 45)</th>
+                <th className="py-3 px-3 font-sans w-[24%]">Equipos de Protección Entregados</th>
+                <th className="py-3 px-3 text-center font-sans w-[12%]">Estado</th>
+                <th className="py-3 px-3 text-right font-sans w-[16%]">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-[13px] font-sans">
@@ -291,7 +291,7 @@ export function ActasEntregaView({
                 return (
                   <tr key={hazard.id} className="hover:bg-slate-50/70 transition-colors font-sans">
                     {/* Code and Date */}
-                    <td className="py-3.5 px-4 whitespace-nowrap font-sans">
+                    <td data-label="Acta / Cód." className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-semibold text-slate-900 text-[13px]">
                         ACT-EPP-2025-{String(index + 1).padStart(2, '0')}
                       </div>
@@ -301,7 +301,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Worker Info */}
-                    <td className="py-3.5 px-4 font-sans">
+                    <td data-label="Trabajador Receptor" className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-semibold text-slate-900 text-[13px]">
                         {worker.nombre}
                       </div>
@@ -311,8 +311,8 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Associated Hazard */}
-                    <td className="py-3.5 px-4 max-w-xs font-sans">
-                      <div className="font-sans font-medium text-slate-800 line-clamp-1 text-[13px]">
+                    <td data-label="Peligro Asociado (GTC 45)" className="py-3.5 px-3 font-sans">
+                      <div className="font-sans font-medium text-slate-800 text-[13px]">
                         {hazard.title}
                       </div>
                       <div className="text-[12px] text-slate-400 font-sans font-normal mt-0.5">
@@ -321,23 +321,23 @@ export function ActasEntregaView({
                     </td>
 
                     {/* EPP Items List */}
-                    <td className="py-3.5 px-4 max-w-md font-sans">
+                    <td data-label="Equipos de Protección Entregados" className="py-3.5 px-3 font-sans">
                       <div className="space-y-1 font-sans">
                         {hazard.planIntervencion.epp.items.map((item, i) => (
-                          <div key={i} className="flex items-center gap-1.5 text-slate-700 text-[12.5px] font-sans font-normal">
+                          <div key={i} className="flex items-start gap-1.5 text-slate-700 text-[12.5px] font-sans font-normal">
                             <CheckCircle2
-                              className={`w-3.5 h-3.5 shrink-0 ${
+                              className={`w-3.5 h-3.5 shrink-0 mt-px ${
                                 isFirmada ? 'text-emerald-600' : 'text-slate-300'
                               }`}
                             />
-                            <span className="truncate">{item.text}</span>
+                            <span>{item.text}</span>
                           </div>
                         ))}
                       </div>
                     </td>
 
                     {/* Status Badge */}
-                    <td className="py-3.5 px-4 text-center whitespace-nowrap font-sans">
+                    <td data-label="Estado" className="py-3.5 px-3 text-center font-sans">
                       {isFirmada ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-sans font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -352,8 +352,8 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Action buttons */}
-                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-sans">
-                      <div className="flex items-center justify-end gap-1.5 font-sans">
+                    <td data-label="Acciones" className="py-3.5 px-3 text-right font-sans">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5 font-sans">
                         {!isFirmada ? (
                           <button
                             type="button"
