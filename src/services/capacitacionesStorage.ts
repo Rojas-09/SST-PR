@@ -33,6 +33,47 @@ function getInitialSeededData() {
     const planId = `PLAN-${legacy.id}`;
     const sesionId = `SES-${legacy.id}`;
 
+    // Implementos específicos según la capacitación
+    let defaultImplementos: string[] = ['Gafas de seguridad panorámicas con filtro UV 400'];
+    if (legacy.codigo === 'CAP-2025-001') {
+      defaultImplementos = [
+        'Careta fotosensible electrónica regulable DIN 9-13',
+        'Guantes de vaqueta y carnaza para soldador MIG/TIG',
+        'Biombo ignífugo perimetral ámbar con absorción UV/IR',
+        'Gafas de seguridad panorámicas con filtro UV 400',
+      ];
+    } else if (legacy.codigo === 'CAP-2025-002') {
+      defaultImplementos = [
+        'Guantes dieléctricos Clase 0 (1.000V) con sobreguantes',
+        'Kit de Bloqueo y Etiquetado LOTO (5 candados, pinzas y tarjetas)',
+        'Pértiga dieléctrica de salvamento para rescate en tensión',
+        'Tapete aislante dieléctrico de piso (Capacidad 10.000V)',
+      ];
+    } else if (legacy.codigo === 'CAP-2025-003') {
+      defaultImplementos = [
+        'Cinturón biomecánico con tirantes para manipulación de cargas',
+        'Polipasto mecánico y tecle de cadena (Capacidad 1 Tonelada)',
+      ];
+    } else if (legacy.codigo === 'CAP-2025-004') {
+      defaultImplementos = [
+        'Guantes de nitrilo para manipulación química',
+        'Kit de control de derrames de hidrocarburos (20 Galones)',
+        'Conos reflectivos de 70 cm y cinta de demarcación "Peligro"',
+      ];
+    } else if (legacy.codigo === 'CAP-2025-005') {
+      defaultImplementos = [
+        'Guantes de poda y carnaza reforzada',
+        'Guantes anticorte nivel F con fibra de Kevlar/Acero',
+        'Careta facial de policarbonato alto impacto para desbaste',
+        'Protector auditivo tipo copa de alta atenuación (NRR 27 dB)',
+      ];
+    } else if (legacy.codigo === 'CAP-2025-006') {
+      defaultImplementos = [
+        'Fichas de Datos de Seguridad (FDS) del Sistema Globalmente Armonizado',
+        'Proyector audiovisual y presentaciones técnicas interactivas',
+      ];
+    }
+
     // 1. Plan entity
     const plan: PlanCapacitacion = {
       id: planId,
@@ -55,6 +96,8 @@ function getInitialSeededData() {
       requiereEvaluacionEficacia: legacy.requiereEvaluacionEficacia ?? true,
       criterioEficaciaMinima: 80,
       estado: legacy.estado as PlanCapacitacion['estado'],
+      implementosRequeridos: defaultImplementos,
+      empresa: 'Taller Los Andes S.A.S.',
       createdAt: legacy.fechaProgramada + 'T08:00:00.000Z',
       updatedAt: legacy.fechaProgramada + 'T08:00:00.000Z',
     };

@@ -62,6 +62,8 @@ export interface PlanCapacitacion {
   requiereEvaluacionEficacia: boolean;
   criterioEficaciaMinima: number; // Porcentaje mínimo para ser EFICAZ (por defecto 80%)
   estado: EstadoPlan;
+  implementosRequeridos?: string[]; // EPP, equipos y herramientas requeridos para la sesión
+  empresa?: string; // Amarrado a la empresa (Taller Los Andes S.A.S.)
   
   // Rescheduling tracking
   motivoReprogramacion?: string;

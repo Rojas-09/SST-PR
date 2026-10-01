@@ -241,29 +241,94 @@
 
 /* Custom print styles for SST official documents and matrices */
 @media print {
-  /* Hide all UI chrome, sidebars, headers, floating assistants, interactive buttons, modal overlays */
-  aside,
+  @page {
+    size: auto;
+    margin: 8mm;
+  }
+
+  @page landscape {
+    size: landscape;
+    margin: 8mm;
+  }
+
+  /* Hide navigation, headers, sidebars, floating widgets, and action buttons */
   header,
+  aside,
   nav,
   button,
   .no-print,
-  [role="dialog"] > div:first-child:not(#print-root-container) {
+  [data-no-print],
+  .print-modal-header,
+  .print-modal-footer,
+  #copilot-floating-button {
     display: none !important;
   }
 
-  /* Reset document flow and remove dark backdrops & shadows */
-  body,
+  /* Remove all fixed positioning, overflow clipping and background darkeners on print */
   html,
-  #root,
-  main {
-    background: #FFFFFF !important;
-    color: #000000 !important;
-    width: 100% !important;
+  body {
+    overflow: visible !important;
     height: auto !important;
     min-height: auto !important;
+    max-height: none !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  #root,
+  main,
+  div {
     overflow: visible !important;
+    box-shadow: none !important;
+  }
+
+  .print-modal-backdrop,
+  .fixed.inset-0 {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .print-modal-container {
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    background: #FFFFFF !important;
+  }
+
+  .print-sheet-wrapper {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-paper-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Ensure print document content takes natural flow and is fully visible */
+  .printable-content,
+  #print-root-container {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
     box-shadow: none !important;
   }
 
@@ -325,13 +390,5 @@
   .signature-block {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-  }
-
-  #print-root-container {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    background: #FFFFFF !important;
-    color: #000000 !important;
   }
 }

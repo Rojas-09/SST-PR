@@ -16,6 +16,12 @@ import {
   ShieldAlert,
   GraduationCap,
   Users,
+  Building2,
+  Lock,
+  Shield,
+  Wrench,
+  Check,
+  Tag,
 } from 'lucide-react';
 import {
   PlanCapacitacion,
@@ -27,6 +33,66 @@ import { HazardRecord, CompanyInfo } from '../../types';
 import { useAuthRole } from '../../context/AuthRoleContext';
 import { capacitacionesStorage } from '../../services/capacitacionesStorage';
 import { workshopEmployees } from '../../data/initialData';
+import { CATALOGO_IMPLEMENTOS, ImplementoCapacitacion } from '../../data/implementosCatalog';
+
+export const AVAILABLE_TRAINERS = [
+  {
+    id: 'cap-carlos-mendez',
+    nombre: 'Ing. Carlos Méndez',
+    entidad: 'Taller Los Andes S.A.S.',
+    cargo: 'Responsable SG-SST',
+    licencia: 'Lic. 18492-2018 (DDS)',
+    tipo: 'INTERNO' as const,
+  },
+  {
+    id: 'cap-claudia-vega',
+    nombre: 'Ft. Claudia Marcela Vega',
+    entidad: 'Positiva ARL • Fisioterapia & Ergonomía',
+    cargo: 'Especialista en Ergonomía Ocupacional',
+    licencia: 'Reg. Nacional Fisioterapia 39481',
+    tipo: 'EXTERNO' as const,
+  },
+  {
+    id: 'cap-mauricio-penaloza',
+    nombre: 'Ing. Mauricio Peñaloza',
+    entidad: 'Positiva ARL • Consultoría Técnica',
+    cargo: 'Especialista en Riesgo Eléctrico RETIE',
+    licencia: 'Mat. Profesional CN-84910',
+    tipo: 'EXTERNO' as const,
+  },
+  {
+    id: 'cap-norton',
+    nombre: 'Téc. Instructor Norton / Abrasivos de Colombia',
+    entidad: 'Abrasivos de Colombia S.A.S.',
+    cargo: 'Asesor Técnico Certificado de Fabricante',
+    licencia: 'Cert. TC-99214-COL',
+    tipo: 'EXTERNO' as const,
+  },
+  {
+    id: 'cap-sura-asesor',
+    nombre: 'Asesor Técnico Especializado ARL SURA',
+    entidad: 'Seguros SURA ARL',
+    cargo: 'Consultor de Riesgos Laborales Clase IV',
+    licencia: 'Lic. SURA-8841-BOG',
+    tipo: 'EXTERNO' as const,
+  },
+  {
+    id: 'cap-elena-santamaria',
+    nombre: 'Dra. Elena Santamaría',
+    entidad: 'Ministerio del Trabajo (Mintrabajo)',
+    cargo: 'Inspectora Laboral / Auditora SST',
+    licencia: 'Credencial MT-09412',
+    tipo: 'EXTERNO' as const,
+  },
+  {
+    id: 'cap-rodrigo-gomez',
+    nombre: 'Ing. Rodrigo Gómez V.',
+    entidad: 'Taller Los Andes S.A.S.',
+    cargo: 'Gerente General / Representante Legal',
+    licencia: 'Mat. Copnia 25202-0984',
+    tipo: 'INTERNO' as const,
+  },
+];
 
 interface CronogramaAnualMatrizProps {
   planes: PlanCapacitacion[];
@@ -90,12 +156,36 @@ export function CronogramaAnualMatriz({
   const [newModalidad, setNewModalidad] = useState<ModalidadCapacitacion>('PRESENCIAL_TEORICO_PRACTICO');
   const [newDuracionHoras, setNewDuracionHoras] = useState(2);
   const [newFecha, setNewFecha] = useState('2025-04-15');
-  const [newCapacitadorNombre, setNewCapacitadorNombre] = useState('Ing. Carlos Méndez');
-  const [newCapacitadorEntidad, setNewCapacitadorEntidad] = useState('Especialista SST • Taller Los Andes');
-  const [newCapacitadorLicencia, setNewCapacitadorLicencia] = useState('Lic. 18492-2018 (DDS)');
-  const [newCapacitadorId, setNewCapacitadorId] = useState('cap-carlos-mendez');
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string>('cap-carlos-mendez');
+
+  // Implementos selection state
+  const [selectedImplementos, setSelectedImplementos] = useState<string[]>([
+    'Gafas de seguridad panorámicas con filtro UV 400',
+  ]);
+  const [implementoFilterText, setImplementoFilterText] = useState('');
+  const [selectedImplementoCategory, setSelectedImplementoCategory] = useState<string>('TODOS');
+
   const [formError, setFormError] = useState('');
   const [formWarning, setFormWarning] = useState('');
+
+  // Filter implementos list based on search and category
+  const filteredImplementosList = useMemo(() => {
+    return CATALOGO_IMPLEMENTOS.filter((item) => {
+      const matchCat =
+        selectedImplementoCategory === 'TODOS' || item.categoria === selectedImplementoCategory;
+      const matchSearch =
+        !implementoFilterText.trim() ||
+        item.nombre.toLowerCase().includes(implementoFilterText.toLowerCase()) ||
+        item.descripcion.toLowerCase().includes(implementoFilterText.toLowerCase());
+      return matchCat && matchSearch;
+    });
+  }, [implementoFilterText, selectedImplementoCategory]);
+
+  const toggleImplemento = (nombre: string) => {
+    setSelectedImplementos((prev) =>
+      prev.includes(nombre) ? prev.filter((i) => i !== nombre) : [...prev, nombre]
+    );
+  };
 
   // Filter options
   const areasDisponibles = useMemo(() => {
@@ -145,8 +235,12 @@ export function CronogramaAnualMatriz({
       return;
     }
 
+    // Trainer lookup
+    const trainerObj =
+      AVAILABLE_TRAINERS.find((t) => t.id === selectedTrainerId) || AVAILABLE_TRAINERS[0];
+
     // Overlap validation
-    const overlapMsg = checkOverlap(newFecha, newCapacitadorId, newArea);
+    const overlapMsg = checkOverlap(newFecha, trainerObj.id, newArea);
     if (overlapMsg) {
       setFormWarning(overlapMsg);
     }
@@ -159,9 +253,6 @@ export function CronogramaAnualMatriz({
     if (associatedHazard) {
       codigoPeligro = associatedHazard.code;
       tipoPeligroGTC45 = `${associatedHazard.tipoPeligroGeneral} (${associatedHazard.factorEspecifico})`;
-      if (associatedHazard.evaluacion.level === 'NIVEL_I') {
-        // High priority warning
-      }
     }
 
     const nextNumber = planes.length + 1;
@@ -188,12 +279,14 @@ export function CronogramaAnualMatriz({
         requiereEvaluacionEficacia: true,
         criterioEficaciaMinima: 80,
         estado: 'PROGRAMADA',
+        implementosRequeridos: selectedImplementos,
+        empresa: company.name,
       },
       {
-        id: newCapacitadorId,
-        nombre: newCapacitadorNombre,
-        entidad: newCapacitadorEntidad,
-        licencia: newCapacitadorLicencia,
+        id: trainerObj.id,
+        nombre: trainerObj.nombre,
+        entidad: trainerObj.entidad,
+        licencia: trainerObj.licencia,
       },
       workshopEmployees.map((e) => e.id)
     );
@@ -401,7 +494,7 @@ export function CronogramaAnualMatriz({
               </div>
 
               {/* Month Cards */}
-              <div className="p-2.5 flex-1 space-y-2 overflow-y-auto max-h-[360px]">
+              <div className="p-2.5 flex-1 space-y-2">
                 {monthPlanes.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-slate-400 text-[11.5px] italic py-6">
                     Sin capacitaciones
@@ -690,8 +783,8 @@ export function CronogramaAnualMatriz({
 
       {/* Modal: Nueva Capacitación en el Plan */}
       {isNewPlanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh]">
             <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
                 <PlusCircle className="w-5 h-5 text-blue-400" />
@@ -700,13 +793,35 @@ export function CronogramaAnualMatriz({
               <button
                 type="button"
                 onClick={() => setIsNewPlanModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+                title="Cerrar modal"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleCreatePlanSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+              {/* Empresa Responsable Amarrada al SG-SST (No editable por el momento) */}
+              <div className="p-3.5 bg-slate-100/90 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                    <Building2 className="w-4.5 h-4.5" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block text-xs">
+                      Empresa Titular SG-SST: {company.name}
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-mono">
+                      NIT {company.nit} • Clase de Riesgo {company.claseRiesgo} • CIIU {company.ciiu}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[10.5px] font-bold px-2.5 py-1 rounded-md bg-slate-200/90 text-slate-800 flex items-center gap-1.5 shrink-0 border border-slate-300 shadow-2xs">
+                  <Lock className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Empresa Amarrada (No editable)</span>
+                </span>
+              </div>
+
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Tema de Capacitación *</label>
                 <input
@@ -804,26 +919,175 @@ export function CronogramaAnualMatriz({
                 </div>
               </div>
 
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
-                <span className="font-bold text-slate-800 block text-[11px] uppercase">
-                  Capacitador / Entidad Responsable
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={newCapacitadorNombre}
-                    onChange={(e) => setNewCapacitadorNombre(e.target.value)}
-                    placeholder="Nombre del instructor"
-                    className="p-1.5 border border-slate-300 rounded bg-white text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={newCapacitadorEntidad}
-                    onChange={(e) => setNewCapacitadorEntidad(e.target.value)}
-                    placeholder="Entidad (Ej: Positiva ARL / Taller Los Andes)"
-                    className="p-1.5 border border-slate-300 rounded bg-white text-xs"
-                  />
+              {/* Capacitador Asignado como SELECT */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Capacitador / Entidad Responsable (Seleccionar) *
+                </label>
+                <select
+                  value={selectedTrainerId}
+                  onChange={(e) => setSelectedTrainerId(e.target.value)}
+                  className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:border-blue-500 text-xs font-medium"
+                >
+                  {AVAILABLE_TRAINERS.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.nombre} — {t.entidad} ({t.cargo} • {t.licencia})
+                    </option>
+                  ))}
+                </select>
+                {(() => {
+                  const currentT =
+                    AVAILABLE_TRAINERS.find((t) => t.id === selectedTrainerId) || AVAILABLE_TRAINERS[0];
+                  return (
+                    <div className="mt-1 text-[11px] text-slate-500 flex items-center gap-2">
+                      <span className="font-semibold text-slate-700">{currentT.entidad}</span>
+                      <span>•</span>
+                      <span>{currentT.licencia}</span>
+                      <span>•</span>
+                      <span className="px-1.5 py-0.2 rounded bg-slate-100 font-mono text-[10px]">
+                        {currentT.tipo === 'INTERNO' ? 'Capacitador Interno' : 'Capacitador Externo / ARL'}
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Implementos, Equipos y EPP Requeridos con SELECT y Búsqueda con Filtro */}
+              <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50/70 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                    <Wrench className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Implementos, Equipos y EPP que se Ocuparán ({selectedImplementos.length})</span>
+                  </label>
+                  <span className="text-[10.5px] text-slate-500">
+                    Filtra y selecciona cada elemento específico
+                  </span>
                 </div>
+
+                {/* Search input with live filter */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={implementoFilterText}
+                    onChange={(e) => setImplementoFilterText(e.target.value)}
+                    placeholder="Filtrar implementos (ej: guantes de nitrilo, guantes de poda, careta, LOTO, extintor)..."
+                    className="w-full text-xs py-1.5 pl-8 pr-3 rounded-lg border border-slate-300 bg-white focus:border-blue-500 outline-none"
+                  />
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                </div>
+
+                {/* SELECT Dropdown for Implementos */}
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Seleccionar implemento del catálogo (desplegable) *:
+                  </label>
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        toggleImplemento(e.target.value);
+                      }
+                    }}
+                    className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white focus:border-blue-500 outline-none font-medium"
+                  >
+                    <option value="">-- Elige un implemento para agregar a la capacitación --</option>
+                    {filteredImplementosList.map((item) => (
+                      <option key={item.id} value={item.nombre}>
+                        {selectedImplementos.includes(item.nombre) ? '✓ ' : '+ '}
+                        {item.nombre} ({item.normaReferencia || item.categoria})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Category Pills */}
+                <div className="flex flex-wrap gap-1">
+                  {(
+                    [
+                      { id: 'TODOS', label: 'Todos' },
+                      { id: 'EPP_ESPECIFICO', label: 'EPP Específico' },
+                      { id: 'HERRAMIENTAS_SEGURIDAD', label: 'Herramientas de Seguridad' },
+                      { id: 'EMERGENCIAS_CONTROL', label: 'Control de Emergencias / Derrames' },
+                      { id: 'MATERIAL_DIDACTICO', label: 'Material Didáctico' },
+                    ] as const
+                  ).map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setSelectedImplementoCategory(cat.id)}
+                      className={`px-2 py-0.8 text-[10.5px] font-semibold rounded-md transition-colors cursor-pointer ${
+                        selectedImplementoCategory === cat.id
+                          ? 'bg-blue-600 text-white shadow-2xs'
+                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* List of distinct implementos with descriptions */}
+                <div className="max-h-44 overflow-y-auto border border-slate-200 rounded-lg bg-white divide-y divide-slate-100">
+                  {filteredImplementosList.length === 0 ? (
+                    <div className="p-3 text-center text-slate-400 text-xs italic">
+                      No se encontraron implementos con ese filtro.
+                    </div>
+                  ) : (
+                    filteredImplementosList.map((item) => {
+                      const isSelected = selectedImplementos.includes(item.nombre);
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => toggleImplemento(item.nombre)}
+                          className={`p-2 flex items-start gap-2.5 text-xs cursor-pointer transition-colors ${
+                            isSelected ? 'bg-blue-50/80 hover:bg-blue-50' : 'hover:bg-slate-50'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {}}
+                            className="mt-0.5 rounded text-blue-600 border-slate-300 cursor-pointer pointer-events-none"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-slate-900 flex items-center justify-between">
+                              <span className="truncate">{item.nombre}</span>
+                              {item.normaReferencia && (
+                                <span className="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 ml-2 shrink-0">
+                                  {item.normaReferencia}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-500 leading-snug">{item.descripcion}</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* Selected implementos badges */}
+                {selectedImplementos.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {selectedImplementos.map((nombre) => (
+                      <span
+                        key={nombre}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-900 border border-blue-200 rounded-md text-[11px] font-medium"
+                      >
+                        <Tag className="w-3 h-3 text-blue-600" />
+                        <span className="truncate max-w-[280px]">{nombre}</span>
+                        <button
+                          type="button"
+                          onClick={() => toggleImplemento(nombre)}
+                          className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold ml-1"
+                          title="Quitar implemento"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {formWarning && (

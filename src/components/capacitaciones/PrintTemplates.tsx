@@ -45,7 +45,7 @@ export function PrintTemplates({
       };
 
   return (
-    <div id="print-root-container" className="hidden print:block font-sans text-black bg-white p-4">
+    <div id="print-root-container" className="printable-content font-sans text-black bg-white p-2 sm:p-4">
       {/* TEMPLATE 1: ACTA OFICIAL DE CAPACITACIÓN */}
       {template === 'ACTA_OFICIAL' && plan && sesion && (
         <div className="space-y-4 text-xs">
@@ -92,6 +92,12 @@ export function PrintTemplates({
               <div className="col-span-6"><strong>Instructor:</strong> {sesion.capacitadorNombre} ({sesion.capacitadorEntidad})</div>
               <div className="col-span-6"><strong>Licencia / Id:</strong> {sesion.capacitadorLicencia}</div>
               <div className="col-span-12"><strong>Normativa Legal:</strong> {plan.normativaAplicable}</div>
+              {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
+                <div className="col-span-12 pt-1 border-t border-dotted border-black text-[10px]">
+                  <strong>Implementos, Equipos y EPP Utilizados:</strong>{' '}
+                  {plan.implementosRequeridos.join(' • ')}
+                </div>
+              )}
             </div>
           </div>
 
@@ -243,6 +249,12 @@ export function PrintTemplates({
               <div><strong>Modalidad:</strong> {plan.modalidad.replace(/_/g, ' ')}</div>
               <div><strong>Duración Estimada:</strong> {plan.duracionHoras} Horas</div>
             </div>
+            {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
+              <div className="pt-1 border-t border-dotted border-black text-[10px]">
+                <strong>Implementos, Equipos y EPP Obligatorios en Campo:</strong>{' '}
+                {plan.implementosRequeridos.join(' • ')}
+              </div>
+            )}
           </div>
 
           {/* Clean Physical Table WITHOUT grades column */}

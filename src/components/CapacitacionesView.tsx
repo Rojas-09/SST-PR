@@ -45,6 +45,7 @@ import { AuditoriaCalificacionesModal } from './capacitaciones/AuditoriaCalifica
 import { CargaEvidenciasModal } from './capacitaciones/CargaEvidenciasModal';
 import { ReaperturaActaModal } from './capacitaciones/ReaperturaActaModal';
 import { PrintTemplates } from './capacitaciones/PrintTemplates';
+import { DocumentoImpresionModal } from './capacitaciones/DocumentoImpresionModal';
 
 interface CapacitacionesViewProps {
   hazards: HazardRecord[];
@@ -77,6 +78,7 @@ export function CapacitacionesView({
   const [isAuditoriaOpen, setIsAuditoriaOpen] = useState(false);
   const [isEvidenciasOpen, setIsEvidenciasOpen] = useState(false);
   const [isReaperturaOpen, setIsReaperturaOpen] = useState(false);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [activePrintTemplate, setActivePrintTemplate] = useState<PrintTemplateType>('ACTA_OFICIAL');
 
   // Subscribe to persistent storage events
@@ -132,9 +134,7 @@ export function CapacitacionesView({
 
   const handlePrint = (type: PrintTemplateType) => {
     setActivePrintTemplate(type);
-    setTimeout(() => {
-      window.print();
-    }, 100);
+    setIsPrintModalOpen(true);
   };
 
   const handleExecuteSession = () => {
@@ -175,16 +175,18 @@ export function CapacitacionesView({
 
   return (
     <div className="space-y-5 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto font-sans text-slate-800 text-[13px]">
-      {/* Print Templates (Rendered Offscreen for Print Media) */}
-      <PrintTemplates
-        template={activePrintTemplate}
-        plan={activePlan}
-        sesion={activeSesion}
-        asistencias={activeAsistencias}
-        planes={planes}
-        company={company}
-        hazards={hazards}
-      />
+      {/* Print Templates (Rendered Offscreen strictly for Print Media fallback, taking 0px on display) */}
+      <div className="hidden print:block">
+        <PrintTemplates
+          template={activePrintTemplate}
+          plan={activePlan}
+          sesion={activeSesion}
+          asistencias={activeAsistencias}
+          planes={planes}
+          company={company}
+          hazards={hazards}
+        />
+      </div>
 
       {/* RBAC Top Bar: Role Simulation & Authentication State */}
       <CapacitacionesRBACBar />
@@ -618,6 +620,19 @@ export function CapacitacionesView({
           onReopened={refreshData}
         />
       )}
+
+      {/* 4. Modal Oficial de Vista Previa e Impresión SG-SST */}
+      <DocumentoImpresionModal
+        isOpen={isPrintModalOpen}
+        onClose={() => setIsPrintModalOpen(false)}
+        template={activePrintTemplate}
+        plan={activePlan}
+        sesion={activeSesion}
+        asistencias={activeAsistencias}
+        planes={planes}
+        company={company}
+        hazards={hazards}
+      />
     </div>
   );
 }
