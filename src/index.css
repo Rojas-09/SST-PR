@@ -239,14 +239,99 @@
   border-color: #CBD5E1;
 }
 
-/* Custom print styles for printing official matrix */
+/* Custom print styles for SST official documents and matrices */
 @media print {
-  aside, header, nav, button, .no-print {
+  /* Hide all UI chrome, sidebars, headers, floating assistants, interactive buttons, modal overlays */
+  aside,
+  header,
+  nav,
+  button,
+  .no-print,
+  [role="dialog"] > div:first-child:not(#print-root-container) {
     display: none !important;
   }
+
+  /* Reset document flow and remove dark backdrops & shadows */
+  body,
+  html,
+  #root,
   main {
+    background: #FFFFFF !important;
+    color: #000000 !important;
     width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* CRITICAL: Explicitly deactivate responsive stacking in print */
+  .table-stack,
+  .table-stack-lg,
+  .table-stack tbody,
+  .table-stack-lg tbody {
+    display: table !important;
+    width: 100% !important;
+  }
+
+  .table-stack thead,
+  .table-stack-lg thead {
+    display: table-header-group !important;
+  }
+
+  .table-stack tr,
+  .table-stack-lg tr {
+    display: table-row !important;
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .table-stack td,
+  .table-stack-lg td,
+  .table-stack th,
+  .table-stack-lg th {
+    display: table-cell !important;
+    border: 1px solid #000000 !important;
+    padding: 3px 5px !important;
+    text-align: left !important;
+    box-shadow: none !important;
+  }
+
+  .table-stack td::before,
+  .table-stack-lg td::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Repeated table header per page */
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  /* Avoid page breaks inside rows and signature blocks */
+  tr,
+  .print-avoid-break,
+  .signature-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  #print-root-container {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
   }
 }

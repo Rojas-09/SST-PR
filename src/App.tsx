@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { initialCompany, initialHazards, initialIncapacidades, initialCapacitaciones } from './data/initialData';
+import { useState, useEffect } from 'react';
+import { initialCompany, initialHazards, initialIncapacidades } from './data/initialData';
 import { HazardRecord, CompanyInfo, ActiveView, IncapacidadRecord, CapacitacionRecord } from './types';
+import { capacitacionesStorage } from './services/capacitacionesStorage';
+import { AuthRoleProvider } from './context/AuthRoleContext';
 import { Sidebar } from './components/Sidebar';
 import { ClayTopHeader } from './components/ClayTopHeader';
 import { ClayDashboardView } from './components/ClayDashboardView';
@@ -25,7 +27,17 @@ export default function App() {
   const [company, setCompany] = useState<CompanyInfo>(initialCompany);
   const [hazards, setHazards] = useState<HazardRecord[]>(initialHazards);
   const [incapacidades, setIncapacidades] = useState<IncapacidadRecord[]>(initialIncapacidades);
-  const [capacitaciones, setCapacitaciones] = useState<CapacitacionRecord[]>(initialCapacitaciones);
+  const [capacitaciones, setCapacitaciones] = useState<CapacitacionRecord[]>(() =>
+    capacitacionesStorage.getUnifiedCapacitacionRecords()
+  );
+
+  useEffect(() => {
+    const unsubscribe = capacitacionesStorage.subscribe(() => {
+      setCapacitaciones(capacitacionesStorage.getUnifiedCapacitacionRecords());
+    });
+    return () => unsubscribe();
+  }, []);
+
   const [activeView, setActiveView] = useState<ActiveView>('inicio');
   const [selectedHazard, setSelectedHazard] = useState<HazardRecord>(initialHazards[0]);
   const [isActaModalOpen, setIsActaModalOpen] = useState(false);
@@ -108,8 +120,9 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 text-[13px] relative">
-      {/* Desktop Sidebar */}
+    <AuthRoleProvider>
+      <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 text-[13px] relative">
+        {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-col shrink-0 h-screen z-10">
         <Sidebar
           activeView={activeView}
@@ -283,13 +296,10 @@ export default function App() {
             {/* Plan Anual de Capacitación y Entrenamiento en Peligros GTC 45 (Res. 0312 Est. 2.2.1) */}
             {activeView === 'capacitaciones' && (
               <CapacitacionesView
-                capacitaciones={capacitaciones}
                 hazards={hazards}
                 company={company}
                 onNavigate={setActiveView}
                 onSelectHazard={handleSelectHazard}
-                onAddCapacitacion={handleAddCapacitacion}
-                onUpdateCapacitacion={handleUpdateCapacitacion}
               />
             )}
 
@@ -355,5 +365,6 @@ export default function App() {
           onConfirmDelivery={handleConfirmDelivery}
         />
       </div>
-    );
+    </AuthRoleProvider>
+  );
   }
