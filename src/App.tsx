@@ -172,6 +172,7 @@ export default function App() {
                 setActiveView('registrar-nuevo');
                 setIsMobileSidebarOpen(false);
               }}
+              onClose={() => setIsMobileSidebarOpen(false)}
             />
           </div>
         </div>

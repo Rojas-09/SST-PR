@@ -44,7 +44,6 @@ import { EditableGradesGrid } from './capacitaciones/EditableGradesGrid';
 import { AuditoriaCalificacionesModal } from './capacitaciones/AuditoriaCalificacionesModal';
 import { CargaEvidenciasModal } from './capacitaciones/CargaEvidenciasModal';
 import { ReaperturaActaModal } from './capacitaciones/ReaperturaActaModal';
-import { PrintTemplates } from './capacitaciones/PrintTemplates';
 import { DocumentoImpresionModal } from './capacitaciones/DocumentoImpresionModal';
 
 interface CapacitacionesViewProps {
@@ -174,115 +173,102 @@ export function CapacitacionesView({
   };
 
   return (
-    <div className="space-y-5 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto font-sans text-slate-800 text-[13px]">
-      {/* Print Templates (Rendered Offscreen strictly for Print Media fallback, taking 0px on display) */}
-      <div className="hidden print:block">
-        <PrintTemplates
-          template={activePrintTemplate}
-          plan={activePlan}
-          sesion={activeSesion}
-          asistencias={activeAsistencias}
-          planes={planes}
-          company={company}
-          hazards={hazards}
-        />
-      </div>
-
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8 py-6 w-full max-w-7xl mx-auto font-sans text-slate-800 text-sm sm:text-base">
       {/* RBAC Top Bar: Role Simulation & Authentication State */}
       <CapacitacionesRBACBar />
 
       {/* Main Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0">
-              <GraduationCap className="w-5 h-5" />
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-xs space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+              <GraduationCap className="w-7 h-7" />
             </div>
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg font-bold text-slate-900 tracking-tight">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   Programa de Capacitación y Entrenamiento SST
                 </h1>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
+                <span className="text-xs sm:text-sm font-mono px-3 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-bold">
                   Res. 0312 / Est. 2.2.1 • Dec. 1072
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm sm:text-base text-slate-600 mt-1 leading-relaxed">
                 Plan anual, control de asistencias, calificación individual con auditoría y expedientes en{' '}
-                <strong>{company.name}</strong>.
+                <strong className="text-slate-900">{company.name}</strong>.
               </p>
             </div>
           </div>
 
           {/* Module Navigation Tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 sm:p-2 rounded-2xl border border-slate-200 overflow-x-auto max-w-full w-full sm:w-auto">
             <button
               type="button"
               onClick={() => setModuleTab('CRONOGRAMA')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 moduleTab === 'CRONOGRAMA'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Calendar className="w-3.5 h-3.5 text-blue-600" />
+              <Calendar className="w-4 h-4 text-blue-600" />
               <span>Cronograma 12 Meses</span>
             </button>
 
             <button
               type="button"
               onClick={() => setModuleTab('SESION')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 moduleTab === 'SESION'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <UserCheck className="w-3.5 h-3.5 text-blue-600" />
+              <UserCheck className="w-4 h-4 text-blue-600" />
               <span>Sesión y Calificaciones</span>
             </button>
 
             <button
               type="button"
               onClick={() => setModuleTab('IMPRESION')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
                 moduleTab === 'IMPRESION'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Printer className="w-3.5 h-3.5 text-blue-600" />
+              <Printer className="w-4 h-4 text-blue-600" />
               <span>Informes e Impresión</span>
             </button>
           </div>
         </div>
 
         {/* Global Summary Metric Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-100">
-          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase">Cumplimiento Legal</span>
-            <div className="text-xl font-black text-slate-900 font-mono mt-0.5">{pctCumplimiento}%</div>
-            <span className="text-[10.5px] text-slate-500">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-100">
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cumplimiento Legal</span>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono mt-1.5">{pctCumplimiento}%</div>
+            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">
               {ejecutadasCount} de {totalCount} ejecutadas
             </span>
           </div>
 
-          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase">Capacitaciones Pendientes</span>
-            <div className="text-xl font-black text-blue-600 font-mono mt-0.5">{programadasCount}</div>
-            <span className="text-[10.5px] text-slate-500">Con fecha programada activa</span>
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Capacitaciones Pendientes</span>
+            <div className="text-3xl sm:text-4xl font-black text-blue-600 font-mono mt-1.5">{programadasCount}</div>
+            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con fecha programada activa</span>
           </div>
 
-          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase">Reprogramadas</span>
-            <div className="text-xl font-black text-amber-600 font-mono mt-0.5">{reprogramadasCount}</div>
-            <span className="text-[10.5px] text-slate-500">Con justificación histórica</span>
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Reprogramadas</span>
+            <div className="text-3xl sm:text-4xl font-black text-amber-600 font-mono mt-1.5">{reprogramadasCount}</div>
+            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con justificación histórica</span>
           </div>
 
-          <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase">Cobertura Promedio</span>
-            <div className="text-xl font-black text-emerald-600 font-mono mt-0.5">98.5%</div>
-            <span className="text-[10.5px] text-slate-500">Meta Res. 0312: ≥ 85%</span>
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cobertura Promedio</span>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-600 font-mono mt-1.5">98.5%</div>
+            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Meta Res. 0312: ≥ 85%</span>
           </div>
         </div>
       </div>
@@ -300,57 +286,59 @@ export function CapacitacionesView({
 
       {/* VIEW TAB 2: Session Execution & Individual Grade Grid */}
       {moduleTab === 'SESION' && activePlan && activeSesion && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* Session Header Card */}
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs space-y-3">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
+              <div className="space-y-2.5 flex-1 min-w-0">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="font-mono text-sm sm:text-base font-black px-3.5 py-1.5 bg-blue-100 text-blue-900 rounded-lg">
                     {activePlan.codigo}
                   </span>
-                  <h2 className="text-base font-bold text-slate-900">{activePlan.tema}</h2>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    {activePlan.tema}
+                  </h2>
                   <span
-                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full ${
+                    className={`text-xs sm:text-sm font-bold px-3 py-1 rounded-full ${
                       activeSesion.estadoActa === 'FIRMADA' || activeSesion.estadoActa === 'CONVALIDADA'
-                        ? 'bg-emerald-100 text-emerald-800'
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                         : activeSesion.estadoActa === 'REABIERTA'
-                        ? 'bg-purple-100 text-purple-800'
-                        : 'bg-amber-100 text-amber-800'
+                        ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                        : 'bg-amber-100 text-amber-800 border border-amber-200'
                     }`}
                   >
                     Acta: {activeSesion.estadoActa}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">{activePlan.objetivo}</p>
-                <div className="flex items-center gap-4 text-xs text-slate-500 pt-1 flex-wrap">
+                <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-4xl">{activePlan.objetivo}</p>
+                <div className="flex items-center gap-x-5 gap-y-2 text-sm text-slate-600 pt-1 flex-wrap">
                   <span>
-                    <strong>Área:</strong> {activePlan.areaDirigida}
+                    <strong className="text-slate-900">Área:</strong> {activePlan.areaDirigida}
                   </span>
-                  <span>•</span>
+                  <span className="text-slate-300">•</span>
                   <span>
-                    <strong>Modalidad:</strong> {activePlan.modalidad.replace(/_/g, ' ')}
+                    <strong className="text-slate-900">Modalidad:</strong> {activePlan.modalidad.replace(/_/g, ' ')}
                   </span>
-                  <span>•</span>
+                  <span className="text-slate-300">•</span>
                   <span>
-                    <strong>Instructor:</strong> {activeSesion.capacitadorNombre} ({activeSesion.capacitadorEntidad})
+                    <strong className="text-slate-900">Instructor:</strong> {activeSesion.capacitadorNombre} ({activeSesion.capacitadorEntidad})
                   </span>
-                  <span>•</span>
+                  <span className="text-slate-300">•</span>
                   <span>
-                    <strong>Fecha:</strong> {activeSesion.fechaEjecucion || activePlan.fechaProgramada}
+                    <strong className="text-slate-900">Fecha:</strong> {activeSesion.fechaEjecucion || activePlan.fechaProgramada}
                   </span>
                 </div>
               </div>
 
-              {/* Action Toolbar */}
-              <div className="flex items-center gap-2 flex-wrap shrink-0">
+              {/* Action Toolbar with generous width and no clipping */}
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full lg:w-auto pt-2 lg:pt-0">
                 {/* Evidence Modal Button */}
                 <button
                   type="button"
                   onClick={() => setIsEvidenciasOpen(true)}
-                  className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors cursor-pointer shadow-2xs"
                 >
-                  <UploadCloud className="w-3.5 h-3.5 text-blue-600" />
+                  <UploadCloud className="w-4 h-4 text-blue-600" />
                   <span>Evidencias ({activeEvidencias.length})</span>
                 </button>
 
@@ -358,9 +346,9 @@ export function CapacitacionesView({
                 <button
                   type="button"
                   onClick={() => setIsAuditoriaOpen(true)}
-                  className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors cursor-pointer shadow-2xs"
                 >
-                  <History className="w-3.5 h-3.5 text-slate-600" />
+                  <History className="w-4 h-4 text-slate-600" />
                   <span>Auditoría</span>
                 </button>
 
@@ -368,9 +356,9 @@ export function CapacitacionesView({
                 <button
                   type="button"
                   onClick={() => handlePrint('ACTA_OFICIAL')}
-                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  className="px-3 sm:px-4.5 py-2 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors cursor-pointer shadow-xs"
                 >
-                  <Printer className="w-3.5 h-3.5" />
+                  <Printer className="w-4 h-4" />
                   <span>Imprimir Acta</span>
                 </button>
 
@@ -378,31 +366,31 @@ export function CapacitacionesView({
                 <button
                   type="button"
                   onClick={() => handlePrint('LISTA_ASISTENCIA')}
-                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  className="px-3 sm:px-4.5 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors cursor-pointer shadow-xs whitespace-nowrap"
                 >
-                  <FileText className="w-3.5 h-3.5" />
+                  <FileText className="w-4 h-4" />
                   <span>Planilla de Campo</span>
                 </button>
               </div>
             </div>
 
             {/* Execution / Signing Bar */}
-            <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 p-2.5 rounded-lg">
-              <div className="flex items-center gap-3 text-xs">
-                <span className="font-semibold text-slate-700">Estado de Ejecución:</span>
+            <div className="pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70 p-3 sm:p-3.5 rounded-xl">
+              <div className="flex items-center gap-3 text-xs sm:text-sm">
+                <span className="font-bold text-slate-700">Estado de Ejecución:</span>
                 {activePlan.estado === 'EJECUTADA' ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span className="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
+                    <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600" />
                     EJECUTADA Y EVALUADA
                   </span>
                 ) : (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <span className="text-amber-700 font-bold">EN PROCESO / PROGRAMADA</span>
                     {canExecuteSession(activeSesion).allowed && (
                       <button
                         type="button"
                         onClick={handleExecuteSession}
-                        className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-md shadow-2xs cursor-pointer"
+                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-2xs cursor-pointer"
                       >
                         Marcar como EJECUTADA
                       </button>
@@ -412,11 +400,11 @@ export function CapacitacionesView({
               </div>
 
               {/* Digital Signature Blocks */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 {/* Trainer Signature */}
                 {activeSesion.firmaCapacitador ? (
-                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                    <FileCheck className="w-3 h-3 text-emerald-600" />
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                    <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
                     <span>Firmada por Capacitador</span>
                   </span>
                 ) : (
@@ -424,9 +412,9 @@ export function CapacitacionesView({
                     <button
                       type="button"
                       onClick={handleSignCapacitador}
-                      className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-md shadow-2xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg shadow-2xs cursor-pointer flex items-center gap-1.5"
                     >
-                      <Award className="w-3 h-3" />
+                      <Award className="w-3.5 h-3.5" />
                       <span>Firmar como Capacitador</span>
                     </button>
                   )
@@ -434,8 +422,8 @@ export function CapacitacionesView({
 
                 {/* SST Manager Signature */}
                 {activeSesion.firmaResponsableSST ? (
-                  <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3 text-blue-600" />
+                  <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                     <span>Convalidada por Responsable SST</span>
                   </span>
                 ) : (
@@ -443,9 +431,9 @@ export function CapacitacionesView({
                     <button
                       type="button"
                       onClick={handleSignResponsable}
-                      className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold rounded-md shadow-2xs cursor-pointer flex items-center gap-1"
+                      className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg shadow-2xs cursor-pointer flex items-center gap-1.5"
                     >
-                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Convalidar Acta (SST)</span>
                     </button>
                   )
@@ -468,117 +456,116 @@ export function CapacitacionesView({
 
       {/* VIEW TAB 3: Reports and Print Hub */}
       {moduleTab === 'IMPRESION' && (
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-2xs space-y-6">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
           <div>
-            <h2 className="text-base font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
               Centro de Impresión y Generación de Informes Normativos
             </h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm text-slate-600 mt-1 max-w-4xl leading-relaxed">
               Las plantillas cumplen los requisitos de inspección del Ministerio del Trabajo, ARL SURA y
-              Decreto 1072/2015. Al imprimir, se desactivan automáticamente fondos oscuros, botones y apilados
-              responsivos.
+              Decreto 1072/2015. Al imprimir, se generan documentos aislados y limpios sin fondos oscuros ni botones.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Template 1: Acta Oficial */}
-            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+            <div className="p-5 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-all space-y-4 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black text-base shrink-0">
                   1
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-xs">Acta Oficial de Capacitación y Evaluación</h3>
-                  <span className="text-[11px] text-slate-500">Formato formal completo con notas y firmas</span>
+                  <h3 className="font-bold text-slate-900 text-base">Acta Oficial de Capacitación y Evaluación</h3>
+                  <span className="text-xs text-slate-500 font-medium">Formato formal completo con notas y firmas</span>
                 </div>
               </div>
-              <p className="text-[11.5px] text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Incluye encabezado institucional, matriz nominal de asistentes, calificaciones individuales,
                 cálculo de eficacia y firmas digitales con hash.
               </p>
               <button
                 type="button"
                 onClick={() => handlePrint('ACTA_OFICIAL')}
-                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-4 h-4" />
                 <span>Imprimir Acta Oficial ({activePlan?.codigo})</span>
               </button>
             </div>
 
             {/* Template 2: Lista de Asistencia sin notas */}
-            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <div className="p-5 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-all space-y-4 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-base shrink-0">
                   2
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-xs">Planilla de Asistencia Física (En Campo)</h3>
-                  <span className="text-[11px] text-slate-500 font-semibold text-emerald-700">
+                  <h3 className="font-bold text-slate-900 text-base">Planilla de Asistencia Física (En Campo)</h3>
+                  <span className="text-xs font-bold text-emerald-700">
                     Estrictamente sin columna de notas
                   </span>
                 </div>
               </div>
-              <p className="text-[11.5px] text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Diseñada para imprimir en tabla con renglones limpios y líneas de firma física para el registro
                 autógrafo de operarios en talleres o fosas.
               </p>
               <button
                 type="button"
                 onClick={() => handlePrint('LISTA_ASISTENCIA')}
-                className="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-4 h-4" />
                 <span>Imprimir Planilla de Asistencia (Sin Notas)</span>
               </button>
             </div>
 
             {/* Template 3: Cronograma Anual Horizontal */}
-            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            <div className="p-5 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-all space-y-4 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black text-base shrink-0">
                   3
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-xs">Cronograma Anual de Capacitación (Horizontal)</h3>
-                  <span className="text-[11px] text-slate-500">Matriz anual de 12 meses para auditoría</span>
+                  <h3 className="font-bold text-slate-900 text-base">Cronograma Anual de Capacitación (Horizontal)</h3>
+                  <span className="text-xs text-slate-500 font-medium">Matriz anual de 12 meses para auditoría</span>
                 </div>
               </div>
-              <p className="text-[11.5px] text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Formato apaisado (landscape) con el consolidado cronológico de actividades, peligros vinculados,
                 estados legales y firmas de aprobación de Gerencia.
               </p>
               <button
                 type="button"
                 onClick={() => handlePrint('CRONOGRAMA_ANUAL')}
-                className="w-full py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full py-2.5 bg-purple-700 hover:bg-purple-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-4 h-4" />
                 <span>Imprimir Cronograma Anual 2025</span>
               </button>
             </div>
 
             {/* Template 4: Reporte de Cobertura y Eficacia */}
-            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+            <div className="p-5 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-all space-y-4 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black text-base shrink-0">
                   4
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-xs">Informe Ejecutivo de Cobertura y Eficacia</h3>
-                  <span className="text-[11px] text-slate-500">Tablero de indicadores SG-SST</span>
+                  <h3 className="font-bold text-slate-900 text-base">Informe Ejecutivo de Cobertura y Eficacia</h3>
+                  <span className="text-xs text-slate-500 font-medium">Tablero de indicadores SG-SST</span>
                 </div>
               </div>
-              <p className="text-[11.5px] text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Consolidado estadístico con horas hombre de entrenamiento, porcentaje global de cobertura y estado
                 de cumplimiento de metas formativas.
               </p>
               <button
                 type="button"
                 onClick={() => handlePrint('REPORTE_COBERTURA')}
-                className="w-full py-2 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
               >
-                <Printer className="w-3.5 h-3.5" />
+                <Printer className="w-4 h-4" />
                 <span>Imprimir Informe de Indicadores</span>
               </button>
             </div>

@@ -480,12 +480,12 @@ export function CronogramaAnualMatriz({
               className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs flex flex-col min-h-[180px]"
             >
               {/* Month Header */}
-              <div className="px-3.5 py-2 bg-slate-100/80 border-b border-slate-200 flex items-center justify-between">
-                <span className="font-bold text-xs text-slate-800 uppercase tracking-wider">
+              <div className="px-3.5 py-2.5 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between">
+                <span className="font-black text-xs sm:text-sm text-slate-800 uppercase tracking-wider">
                   {monthName}
                 </span>
                 <span
-                  className={`text-[10.5px] font-bold px-1.5 py-0.2 rounded-full ${
+                  className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     monthPlanes.length > 0 ? 'bg-blue-100 text-blue-800' : 'text-slate-400'
                   }`}
                 >
@@ -496,7 +496,7 @@ export function CronogramaAnualMatriz({
               {/* Month Cards */}
               <div className="p-2.5 flex-1 space-y-2">
                 {monthPlanes.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-[11.5px] italic py-6">
+                  <div className="h-full flex items-center justify-center text-slate-400 text-xs sm:text-sm italic py-6">
                     Sin capacitaciones
                   </div>
                 ) : (
@@ -508,39 +508,39 @@ export function CronogramaAnualMatriz({
                     return (
                       <div
                         key={plan.id}
-                        className={`p-2.5 rounded-lg border transition-all text-xs space-y-1.5 ${
+                        className={`p-3 rounded-xl border transition-all text-xs sm:text-sm space-y-2 ${
                           isAnulada
                             ? 'bg-slate-50 border-slate-200 opacity-60'
                             : isEjecutada
-                            ? 'bg-emerald-50/40 border-emerald-200 hover:border-emerald-300'
+                            ? 'bg-emerald-50/50 border-emerald-200 hover:border-emerald-300'
                             : isReprogramada
-                            ? 'bg-amber-50/40 border-amber-200 hover:border-amber-300'
+                            ? 'bg-amber-50/50 border-amber-200 hover:border-amber-300'
                             : 'bg-white border-slate-200 hover:border-blue-400 shadow-2xs'
                         }`}
                       >
                         {/* Status badge and code */}
                         <div className="flex items-center justify-between gap-1 flex-wrap">
-                          <span className="font-mono font-bold text-[10.5px] text-blue-700">
+                          <span className="font-mono font-black text-xs text-blue-700">
                             {plan.codigo}
                           </span>
                           {isEjecutada ? (
-                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                               EJECUTADA
                             </span>
                           ) : isReprogramada ? (
-                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                              <RotateCcw className="w-3 h-3 text-amber-600" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                              <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
                               REPROGRAMADA
                             </span>
                           ) : isAnulada ? (
-                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">
-                              <Ban className="w-3 h-3 text-red-600" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800 border border-red-200">
+                              <Ban className="w-3.5 h-3.5 text-red-600" />
                               ANULADA
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                              <Clock className="w-3 h-3 text-blue-500" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                              <Clock className="w-3.5 h-3.5 text-blue-500" />
                               PROGRAMADA
                             </span>
                           )}
@@ -548,7 +548,7 @@ export function CronogramaAnualMatriz({
 
                         {/* Title */}
                         <h4
-                          className={`font-bold leading-snug line-clamp-2 ${
+                          className={`font-bold text-xs sm:text-sm leading-snug line-clamp-2 ${
                             isAnulada ? 'line-through text-slate-500' : 'text-slate-900'
                           }`}
                         >
@@ -556,29 +556,29 @@ export function CronogramaAnualMatriz({
                         </h4>
 
                         {/* Area & Hazard */}
-                        <div className="text-[11px] text-slate-500 line-clamp-1">
+                        <div className="text-xs text-slate-500 line-clamp-1 font-medium">
                           {plan.areaDirigida}
                         </div>
 
                         {/* Date info with original tracking */}
-                        <div className="text-[10.5px] font-mono flex items-center justify-between text-slate-600 pt-0.5 border-t border-slate-100">
+                        <div className="text-xs font-mono flex items-center justify-between text-slate-600 pt-1 border-t border-slate-100">
                           <span>{plan.fechaProgramada}</span>
                           {isReprogramada && plan.fechaProgramadaOriginal && (
-                            <span className="text-[9.5px] text-amber-700" title={`Fecha original: ${plan.fechaProgramadaOriginal}`}>
+                            <span className="text-xs text-amber-700 font-bold" title={`Fecha original: ${plan.fechaProgramadaOriginal}`}>
                               (Orig: {plan.fechaProgramadaOriginal})
                             </span>
                           )}
                         </div>
 
                         {/* Card Action Buttons */}
-                        <div className="flex items-center justify-end gap-1 pt-1 border-t border-slate-100">
+                        <div className="flex items-center justify-end gap-1.5 pt-1.5 border-t border-slate-100">
                           <button
                             type="button"
                             onClick={() => onSelectPlan(plan.id)}
-                            className="px-2 py-0.8 bg-slate-900 hover:bg-slate-800 text-white rounded text-[10.5px] font-semibold flex items-center gap-1 cursor-pointer"
+                            className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer"
                             title="Gestionar sesión, calificaciones y acta"
                           >
-                            <Eye className="w-3 h-3" />
+                            <Eye className="w-3.5 h-3.5" />
                             <span>Ver Sesión</span>
                           </button>
 
@@ -800,55 +800,55 @@ export function CronogramaAnualMatriz({
               </button>
             </div>
 
-            <form onSubmit={handleCreatePlanSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+            <form onSubmit={handleCreatePlanSubmit} className="p-6 sm:p-7 overflow-y-auto space-y-5 text-sm">
               {/* Empresa Responsable Amarrada al SG-SST (No editable por el momento) */}
-              <div className="p-3.5 bg-slate-100/90 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                    <Building2 className="w-4.5 h-4.5" />
+              <div className="p-3.5 sm:p-4 bg-slate-100 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                    <Building2 className="w-5 h-5" />
                   </div>
-                  <div>
-                    <span className="font-bold text-slate-900 block text-xs">
+                  <div className="min-w-0">
+                    <span className="font-black text-slate-900 block text-sm truncate">
                       Empresa Titular SG-SST: {company.name}
                     </span>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-xs text-slate-600 font-mono mt-0.5 block truncate">
                       NIT {company.nit} • Clase de Riesgo {company.claseRiesgo} • CIIU {company.ciiu}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10.5px] font-bold px-2.5 py-1 rounded-md bg-slate-200/90 text-slate-800 flex items-center gap-1.5 shrink-0 border border-slate-300 shadow-2xs">
-                  <Lock className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-200/90 text-slate-800 flex items-center gap-1.5 shrink-0 border border-slate-300 shadow-2xs w-fit">
+                  <Lock className="w-4 h-4 text-blue-600" />
                   <span>Empresa Amarrada (No editable)</span>
                 </span>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Tema de Capacitación *</label>
+                <label className="block font-bold text-slate-800 mb-1.5 text-sm">Tema de Capacitación *</label>
                 <input
                   type="text"
                   required
                   value={newTema}
                   onChange={(e) => setNewTema(e.target.value)}
                   placeholder="Ej: Prevención de Atrapamientos y Guardas de Protección en Tornos"
-                  className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-xs"
+                  className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Objetivo de la Formación *</label>
+                <label className="block font-bold text-slate-800 mb-1.5 text-sm">Objetivo de la Formación *</label>
                 <textarea
                   rows={2}
                   required
                   value={newObjetivo}
                   onChange={(e) => setNewObjetivo(e.target.value)}
                   placeholder="Defina el objetivo formativo medible..."
-                  className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-xs"
+                  className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Peligro Asociado (GTC 45)</label>
+                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Peligro Asociado (GTC 45)</label>
                   <select
                     value={newPeligroId}
                     onChange={(e) => {
@@ -856,7 +856,7 @@ export function CronogramaAnualMatriz({
                       const hz = hazards.find((h) => h.id === e.target.value);
                       if (hz) setNewArea(hz.zonaLugar);
                     }}
-                    className="w-full p-2 border border-slate-300 rounded-lg bg-white outline-none focus:border-blue-500 text-xs"
+                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm"
                   >
                     <option value="">Capacitación General del SG-SST</option>
                     {hazards.map((h) => (
@@ -868,25 +868,25 @@ export function CronogramaAnualMatriz({
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Área / Proceso Dirigido *</label>
+                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Área / Proceso Dirigido *</label>
                   <input
                     type="text"
                     required
                     value={newArea}
                     onChange={(e) => setNewArea(e.target.value)}
                     placeholder="Ej: Zona de Torno y Fresado"
-                    className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-xs"
+                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Modalidad</label>
+                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Modalidad</label>
                   <select
                     value={newModalidad}
                     onChange={(e) => setNewModalidad(e.target.value as ModalidadCapacitacion)}
-                    className="w-full p-2 border border-slate-300 rounded-lg bg-white outline-none focus:border-blue-500 text-xs"
+                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm"
                   >
                     <option value="PRESENCIAL_TEORICO_PRACTICO">Presencial Teórico-Práctico</option>
                     <option value="TALLER_PUESTO_TRABAJO">Taller en Puesto de Trabajo</option>
@@ -896,38 +896,38 @@ export function CronogramaAnualMatriz({
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Duración (Horas)</label>
+                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Duración (Horas)</label>
                   <input
                     type="number"
                     min={1}
                     max={12}
                     value={newDuracionHoras}
                     onChange={(e) => setNewDuracionHoras(Number(e.target.value))}
-                    className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-xs font-mono"
+                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Fecha Programada *</label>
+                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Fecha Programada *</label>
                   <input
                     type="date"
                     required
                     value={newFecha}
                     onChange={(e) => setNewFecha(e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:border-blue-500 text-xs font-mono"
+                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm font-mono"
                   />
                 </div>
               </div>
 
               {/* Capacitador Asignado como SELECT */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-800 mb-1.5 text-sm">
                   Capacitador / Entidad Responsable (Seleccionar) *
                 </label>
                 <select
                   value={selectedTrainerId}
                   onChange={(e) => setSelectedTrainerId(e.target.value)}
-                  className="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:border-blue-500 text-xs font-medium"
+                  className="w-full p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm font-semibold"
                 >
                   {AVAILABLE_TRAINERS.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -939,12 +939,12 @@ export function CronogramaAnualMatriz({
                   const currentT =
                     AVAILABLE_TRAINERS.find((t) => t.id === selectedTrainerId) || AVAILABLE_TRAINERS[0];
                   return (
-                    <div className="mt-1 text-[11px] text-slate-500 flex items-center gap-2">
-                      <span className="font-semibold text-slate-700">{currentT.entidad}</span>
+                    <div className="mt-1.5 text-xs text-slate-600 flex items-center gap-2">
+                      <span className="font-bold text-slate-800">{currentT.entidad}</span>
                       <span>•</span>
-                      <span>{currentT.licencia}</span>
+                      <span className="font-mono">{currentT.licencia}</span>
                       <span>•</span>
-                      <span className="px-1.5 py-0.2 rounded bg-slate-100 font-mono text-[10px]">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 font-mono text-xs font-bold text-slate-700">
                         {currentT.tipo === 'INTERNO' ? 'Capacitador Interno' : 'Capacitador Externo / ARL'}
                       </span>
                     </div>
@@ -953,13 +953,13 @@ export function CronogramaAnualMatriz({
               </div>
 
               {/* Implementos, Equipos y EPP Requeridos con SELECT y Búsqueda con Filtro */}
-              <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50/70 space-y-3">
+              <div className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-slate-50/70 space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <label className="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <Wrench className="w-3.5 h-3.5 text-blue-600" />
+                  <label className="block font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                    <Wrench className="w-4 h-4 text-blue-600" />
                     <span>Implementos, Equipos y EPP que se Ocuparán ({selectedImplementos.length})</span>
                   </label>
-                  <span className="text-[10.5px] text-slate-500">
+                  <span className="text-xs text-slate-500 font-medium">
                     Filtra y selecciona cada elemento específico
                   </span>
                 </div>
@@ -971,14 +971,14 @@ export function CronogramaAnualMatriz({
                     value={implementoFilterText}
                     onChange={(e) => setImplementoFilterText(e.target.value)}
                     placeholder="Filtrar implementos (ej: guantes de nitrilo, guantes de poda, careta, LOTO, extintor)..."
-                    className="w-full text-xs py-1.5 pl-8 pr-3 rounded-lg border border-slate-300 bg-white focus:border-blue-500 outline-none"
+                    className="w-full text-sm py-2.5 pl-9 pr-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none"
                   />
-                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                 </div>
 
                 {/* SELECT Dropdown for Implementos */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                     Seleccionar implemento del catálogo (desplegable) *:
                   </label>
                   <select
@@ -988,7 +988,7 @@ export function CronogramaAnualMatriz({
                         toggleImplemento(e.target.value);
                       }
                     }}
-                    className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white focus:border-blue-500 outline-none font-medium"
+                    className="w-full text-sm p-2.5 sm:p-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none font-semibold text-slate-800"
                   >
                     <option value="">-- Elige un implemento para agregar a la capacitación --</option>
                     {filteredImplementosList.map((item) => (
@@ -1001,7 +1001,7 @@ export function CronogramaAnualMatriz({
                 </div>
 
                 {/* Category Pills */}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {(
                     [
                       { id: 'TODOS', label: 'Todos' },
@@ -1015,10 +1015,10 @@ export function CronogramaAnualMatriz({
                       key={cat.id}
                       type="button"
                       onClick={() => setSelectedImplementoCategory(cat.id)}
-                      className={`px-2 py-0.8 text-[10.5px] font-semibold rounded-md transition-colors cursor-pointer ${
+                      className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
                         selectedImplementoCategory === cat.id
                           ? 'bg-blue-600 text-white shadow-2xs'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
                       }`}
                     >
                       {cat.label}
@@ -1027,7 +1027,7 @@ export function CronogramaAnualMatriz({
                 </div>
 
                 {/* List of distinct implementos with descriptions */}
-                <div className="max-h-44 overflow-y-auto border border-slate-200 rounded-lg bg-white divide-y divide-slate-100">
+                <div className="max-h-48 overflow-y-auto border border-slate-200 rounded-xl bg-white divide-y divide-slate-100">
                   {filteredImplementosList.length === 0 ? (
                     <div className="p-3 text-center text-slate-400 text-xs italic">
                       No se encontraron implementos con ese filtro.
@@ -1039,26 +1039,26 @@ export function CronogramaAnualMatriz({
                         <div
                           key={item.id}
                           onClick={() => toggleImplemento(item.nombre)}
-                          className={`p-2 flex items-start gap-2.5 text-xs cursor-pointer transition-colors ${
-                            isSelected ? 'bg-blue-50/80 hover:bg-blue-50' : 'hover:bg-slate-50'
+                          className={`p-2.5 sm:p-3 flex items-start gap-3 text-xs sm:text-sm cursor-pointer transition-colors ${
+                            isSelected ? 'bg-blue-50/90 hover:bg-blue-50' : 'hover:bg-slate-50'
                           }`}
                         >
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => {}}
-                            className="mt-0.5 rounded text-blue-600 border-slate-300 cursor-pointer pointer-events-none"
+                            className="mt-0.5 w-4 h-4 rounded text-blue-600 border-slate-300 cursor-pointer pointer-events-none"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-slate-900 flex items-center justify-between">
+                            <div className="font-bold text-slate-900 flex items-center justify-between text-xs sm:text-sm">
                               <span className="truncate">{item.nombre}</span>
                               {item.normaReferencia && (
-                                <span className="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 ml-2 shrink-0">
+                                <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 ml-2 shrink-0 font-semibold">
                                   {item.normaReferencia}
                                 </span>
                               )}
                             </div>
-                            <p className="text-[11px] text-slate-500 leading-snug">{item.descripcion}</p>
+                            <p className="text-xs text-slate-600 leading-relaxed mt-0.5">{item.descripcion}</p>
                           </div>
                         </div>
                       );
@@ -1068,18 +1068,18 @@ export function CronogramaAnualMatriz({
 
                 {/* Selected implementos badges */}
                 {selectedImplementos.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-2 pt-1.5">
                     {selectedImplementos.map((nombre) => (
                       <span
                         key={nombre}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-900 border border-blue-200 rounded-md text-[11px] font-medium"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-900 border border-blue-200 rounded-lg text-xs sm:text-sm font-semibold"
                       >
-                        <Tag className="w-3 h-3 text-blue-600" />
-                        <span className="truncate max-w-[280px]">{nombre}</span>
+                        <Tag className="w-3.5 h-3.5 text-blue-600" />
+                        <span className="truncate max-w-[320px]">{nombre}</span>
                         <button
                           type="button"
                           onClick={() => toggleImplemento(nombre)}
-                          className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold ml-1"
+                          className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold ml-1 text-sm"
                           title="Quitar implemento"
                         >
                           ✕
@@ -1091,25 +1091,25 @@ export function CronogramaAnualMatriz({
               </div>
 
               {formWarning && (
-                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs sm:text-sm flex items-center gap-2.5">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
                   <span>{formWarning}</span>
                 </div>
               )}
 
-              {formError && <p className="text-red-600 font-semibold text-xs">{formError}</p>}
+              {formError && <p className="text-red-600 font-bold text-xs sm:text-sm">{formError}</p>}
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setIsNewPlanModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold"
+                  className="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-sm cursor-pointer text-center"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold shadow-xs"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm shadow-md cursor-pointer text-center"
                 >
                   Registrar en Cronograma
                 </button>

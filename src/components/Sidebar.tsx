@@ -17,6 +17,7 @@ import {
   Clock,
   GraduationCap,
   CalendarDays,
+  X,
 } from 'lucide-react';
 import { ActiveView, CompanyInfo } from '../types';
 
@@ -31,6 +32,7 @@ interface SidebarProps {
   onToggleChat?: () => void;
   onOpenSettings?: () => void;
   onOpenNewHazard?: () => void;
+  onClose?: () => void;
 }
 
 export function Sidebar({
@@ -44,6 +46,7 @@ export function Sidebar({
   onToggleChat,
   onOpenSettings,
   onOpenNewHazard,
+  onClose,
 }: SidebarProps) {
   // Cálculo dinámico de estándares aplicables según régimen Res. 0312
   const riskNum = company.claseRiesgo?.includes('V') && !company.claseRiesgo?.includes('IV') ? 5 :
@@ -72,6 +75,17 @@ export function Sidebar({
               <span className="font-bold text-[17px] text-blue-600 tracking-tight">Fácil</span>
             </div>
           </button>
+
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              title="Cerrar menú"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Primary Navigation in Spanish with Key SG-SST Names */}
