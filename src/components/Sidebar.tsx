@@ -18,8 +18,11 @@ import {
   GraduationCap,
   CalendarDays,
   X,
+  Lock,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { ActiveView, CompanyInfo } from '../types';
+import { useAuthRole } from '../context/AuthRoleContext';
 
 interface SidebarProps {
   activeView: ActiveView;
@@ -33,6 +36,7 @@ interface SidebarProps {
   onOpenSettings?: () => void;
   onOpenNewHazard?: () => void;
   onClose?: () => void;
+  onOpenCompanySwitcher?: () => void;
 }
 
 export function Sidebar({
@@ -47,7 +51,10 @@ export function Sidebar({
   onOpenSettings,
   onOpenNewHazard,
   onClose,
+  onOpenCompanySwitcher,
 }: SidebarProps) {
+  const { currentUser } = useAuthRole();
+  const isSSTLeader = currentUser.rol === 'RESPONSABLE_SST';
   // Cálculo dinámico de estándares aplicables según régimen Res. 0312
   const riskNum = company.claseRiesgo?.includes('V') && !company.claseRiesgo?.includes('IV') ? 5 :
                   company.claseRiesgo?.includes('IV') ? 4 :
@@ -84,6 +91,40 @@ export function Sidebar({
               title="Cerrar menú"
             >
               <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Company Badge & Multi-Company Switcher Card */}
+        <div className="mx-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs space-y-1.5">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+            <span className="flex items-center gap-1 text-slate-600">
+              <Building2 className="w-3.5 h-3.5 text-blue-600" />
+              <span>Empresa Activa</span>
+            </span>
+            <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-1.5 py-0.2 rounded">
+              {company.claseRiesgo?.includes('IV') ? 'Riesgo IV' : 'Riesgo III'}
+            </span>
+          </div>
+          <div className="font-bold text-slate-900 text-[12.5px] truncate leading-tight" title={company.name}>
+            {company.name}
+          </div>
+          <div className="text-[11px] font-mono text-slate-400 truncate">
+            NIT {company.nit}
+          </div>
+          {onOpenCompanySwitcher && (
+            <button
+              type="button"
+              onClick={onOpenCompanySwitcher}
+              className={`w-full mt-1.5 py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                isSSTLeader
+                  ? 'bg-white hover:bg-blue-50 text-blue-700 border-blue-200 shadow-2xs'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
+              }`}
+            >
+              <ArrowLeftRight className="w-3 h-3 text-blue-600" />
+              <span>{isSSTLeader ? 'Cambiar Empresa' : 'Cambiar (Líder SG-SST)'}</span>
+              {!isSSTLeader && <Lock className="w-2.5 h-2.5 text-slate-400" />}
             </button>
           )}
         </div>
@@ -272,7 +313,9 @@ export function Sidebar({
             className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[12.5px] text-slate-800 hover:bg-red-50/60 hover:text-red-800 transition-colors cursor-pointer text-left truncate"
           >
             <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0" />
-            <span className="truncate">Soldadura Bahía 4 (Nivel I)</span>
+            <span className="truncate">
+              {company.id === 'servic-crear' ? 'Tanques Agua Potable (Nivel I)' : 'Soldadura Bahía 4 (Nivel I)'}
+            </span>
           </button>
           <button
             type="button"
@@ -280,7 +323,9 @@ export function Sidebar({
             className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[12.5px] text-slate-800 hover:bg-red-50/60 hover:text-red-800 transition-colors cursor-pointer text-left truncate"
           >
             <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0" />
-            <span className="truncate">Red Eléctrica 220V (Nivel I)</span>
+            <span className="truncate">
+              {company.id === 'servic-crear' ? 'Poda STIHL Zonas Verdes (Nivel II)' : 'Red Eléctrica 220V (Nivel I)'}
+            </span>
           </button>
         </div>
       </div>

@@ -20,7 +20,7 @@ export function SignatureRodrigoGomez({ className = "w-48 h-14" }: { className?:
   );
 }
 
-export function QrAuditStamp({ code = "MINTRAD-2025-V02-BOG" }: { code?: string }) {
+export function QrAuditStamp({ code = "MINTRAD-2026-V02-BOG" }: { code?: string }) {
   return (
     <div className="flex flex-col items-center justify-center p-3 bg-blue-50/60 border border-blue-200/80 rounded">
       <div className="w-16 h-16 bg-white border border-slate-300 p-1 flex items-center justify-center shadow-xs">

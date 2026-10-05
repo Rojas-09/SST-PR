@@ -111,8 +111,8 @@ export function ProximosVencimientosSection({
         subtitulo: `Valoración de aptitud ocupacional tras ${inc.diasIncapacidad} días de incapacidad (${inc.diagnostico})`,
         categoria: 'INCAPACIDAD',
         fechaLimite: inc.fechaFin,
-        diasRestantes: inc.id === 'INC-2025-003' ? 5 : -4, // INC-3 es reciente, otras vencidas para acción
-        urgencia: inc.id === 'INC-2025-003' ? 'URGENTE' : 'VENCIDO',
+        diasRestantes: inc.codigo.includes('003') ? 5 : -4, // INC-3 es reciente, otras vencidas para acción
+        urgencia: inc.codigo.includes('003') ? 'URGENTE' : 'VENCIDO',
         normativa: 'Res. 2346 de 2007 Art. 6 / Dec. 1072',
         responsable: `${company.responsableSST.nombre} / Médico Laboral`,
         areaAfectada: `${inc.cargo} • Taller`,

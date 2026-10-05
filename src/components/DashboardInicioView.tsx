@@ -60,10 +60,10 @@ export function DashboardInicioView({
 }: DashboardInicioViewProps) {
   const [vistaAgenda, setVistaAgenda] = useState<'CALENDARIO' | 'LISTA'>('CALENDARIO');
   const [copilotInput, setCopilotInput] = useState('');
-  const [copilotHistory, setCopilotHistory] = useState<Array<{ role: 'user' | 'assistant'; text: string; time: string }>>([
+  const [copilotHistory, setCopilotHistory] = useState<Array<{ role: 'user' | 'assistant'; text: string; time: string }>>(() => [
     {
       role: 'assistant',
-      text: `Hola, soy tu Asistente Copilot SST. He analizado la planta de **${company.name}** (Riesgo IV). Tienes **2 peligros en Nivel I Crítico** (Soldadura Bahía 4 y Tablero 220V) que requieren intervención de ingeniería inmediata según GTC 45 y Art. 2.2.4.6.24 de Dec. 1072. ¿Deseas generar el plan de contingencia o auditar las actas de EPP?`,
+      text: `Hola, soy tu Asistente Copilot SST. He analizado la empresa **${company.name}** (${company.claseRiesgo}). Hay **${hazards.filter((h) => h.evaluacion.level === 'NIVEL_I').length} peligros en Nivel I Crítico** que requieren intervención de ingeniería inmediata según GTC 45 y Art. 2.2.4.6.24 de Dec. 1072. ¿Deseas generar el plan de contingencia o auditar las actas de EPP?`,
       time: 'Hace un momento',
     },
   ]);

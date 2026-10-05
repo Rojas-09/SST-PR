@@ -45,6 +45,22 @@ export const AVAILABLE_TRAINERS = [
     tipo: 'INTERNO' as const,
   },
   {
+    id: 'cap-andrea-morales',
+    nombre: 'Ing. Andrea Morales Peña',
+    entidad: 'SERVIC CREAR S.A.S.',
+    cargo: 'Líder SG-SST',
+    licencia: 'Lic. 24890-SST Tolima',
+    tipo: 'INTERNO' as const,
+  },
+  {
+    id: 'cap-stihl-colombia',
+    nombre: 'Instructor Técnico STIHL Colombia',
+    entidad: 'STIHL Colombia • Soporte Técnico Especializado',
+    cargo: 'Especialista en Maquinaria a Batería y Poda',
+    licencia: 'Cert. STIHL-COL-4412',
+    tipo: 'EXTERNO' as const,
+  },
+  {
     id: 'cap-claudia-vega',
     nombre: 'Ft. Claudia Marcela Vega',
     entidad: 'Positiva ARL • Fisioterapia & Ergonomía',
@@ -128,7 +144,7 @@ export function CronogramaAnualMatriz({
     useAuthRole();
 
   // Filters
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedArea, setSelectedArea] = useState<string>('ALL');
   const [selectedEstado, setSelectedEstado] = useState<string>('ALL');
   const [selectedPeligro, setSelectedPeligro] = useState<string>('ALL');
@@ -155,7 +171,7 @@ export function CronogramaAnualMatriz({
   const [newArea, setNewArea] = useState('');
   const [newModalidad, setNewModalidad] = useState<ModalidadCapacitacion>('PRESENCIAL_TEORICO_PRACTICO');
   const [newDuracionHoras, setNewDuracionHoras] = useState(2);
-  const [newFecha, setNewFecha] = useState('2025-04-15');
+  const [newFecha, setNewFecha] = useState('2026-04-15');
   const [selectedTrainerId, setSelectedTrainerId] = useState<string>('cap-carlos-mendez');
 
   // Implementos selection state
@@ -396,8 +412,9 @@ export function CronogramaAnualMatriz({
               onChange={(e) => setSelectedYear(Number(e.target.value))}
               className="w-full text-xs p-1.5 rounded-lg border border-slate-200 bg-slate-50 font-semibold text-slate-800 focus:bg-white focus:border-blue-500 outline-none"
             >
-              <option value={2025}>2025 (Vigencia Actual)</option>
-              <option value={2026}>2026 (Proyección)</option>
+              <option value={2026}>2026 (Vigencia Actual)</option>
+              <option value={2027}>2027 (Proyecciones Lejanas)</option>
+              <option value={2025}>2025 (Histórico)</option>
             </select>
           </div>
 

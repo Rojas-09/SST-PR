@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { initialCompany, initialHazards, initialIncapacidades } from './data/initialData';
 import { HazardRecord, CompanyInfo, ActiveView, IncapacidadRecord, CapacitacionRecord } from './types';
 import { capacitacionesStorage } from './services/capacitacionesStorage';
+import { getCompanyDataset } from './data/companiesData';
 import { AuthRoleProvider } from './context/AuthRoleContext';
 import { Sidebar } from './components/Sidebar';
 import { ClayTopHeader } from './components/ClayTopHeader';
@@ -13,6 +14,7 @@ import { CalendarioVencimientos } from './components/CalendarioVencimientos';
 import { FloatingAssistant } from './components/FloatingAssistant';
 import { ContactsModal } from './components/ContactsModal';
 import { SettingsModal } from './components/SettingsModal';
+import { CompanySwitcherModal } from './components/CompanySwitcherModal';
 import { HazardDetail } from './components/HazardDetail';
 import { MatrixView } from './components/MatrixView';
 import { NewHazardForm } from './components/NewHazardForm';
@@ -42,6 +44,7 @@ export default function App() {
   const [selectedHazard, setSelectedHazard] = useState<HazardRecord>(initialHazards[0]);
   const [isActaModalOpen, setIsActaModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isCompanySwitcherOpen, setIsCompanySwitcherOpen] = useState(false);
   
   // Floating Assistant state
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -50,6 +53,18 @@ export default function App() {
 
   // Critical hazards count
   const criticalCount = hazards.filter((h) => h.evaluacion.level === 'NIVEL_I').length;
+
+  const handleSwitchCompany = (companyId: string) => {
+    const dataset = getCompanyDataset(companyId);
+    setCompany(dataset.company);
+    setHazards(dataset.hazards);
+    setIncapacidades(dataset.incapacidades);
+    capacitacionesStorage.setCompany(companyId);
+    setCapacitaciones(capacitacionesStorage.getUnifiedCapacitacionRecords());
+    if (dataset.hazards.length > 0) {
+      setSelectedHazard(dataset.hazards[0]);
+    }
+  };
 
   const handleSelectHazard = (hazard: HazardRecord) => {
     setSelectedHazard(hazard);
@@ -138,6 +153,7 @@ export default function App() {
           onToggleChat={() => setIsChatOpen((prev) => !prev)}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenNewHazard={() => setActiveView('registrar-nuevo')}
+          onOpenCompanySwitcher={() => setIsCompanySwitcherOpen(true)}
         />
       </div>
 
@@ -173,6 +189,10 @@ export default function App() {
                 setIsMobileSidebarOpen(false);
               }}
               onClose={() => setIsMobileSidebarOpen(false)}
+              onOpenCompanySwitcher={() => {
+                setIsCompanySwitcherOpen(true);
+                setIsMobileSidebarOpen(false);
+              }}
             />
           </div>
         </div>
@@ -188,6 +208,7 @@ export default function App() {
           onOpenNewHazard={() => setActiveView('registrar-nuevo')}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+          onOpenCompanySwitcher={() => setIsCompanySwitcherOpen(true)}
         />
 
         {/* Dynamic Views with single scroll container */}
@@ -355,6 +376,14 @@ export default function App() {
           onClose={() => setIsSettingsOpen(false)}
           company={company}
           onUpdateCompany={setCompany}
+        />
+
+        {/* Multi-Company Switcher Modal (Líder SG-SST) */}
+        <CompanySwitcherModal
+          currentCompany={company}
+          isOpen={isCompanySwitcherOpen}
+          onClose={() => setIsCompanySwitcherOpen(false)}
+          onSwitchCompany={handleSwitchCompany}
         />
 
         {/* EPP Official Delivery Modal */}

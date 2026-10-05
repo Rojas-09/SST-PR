@@ -340,7 +340,7 @@ export function PrintTemplates({
               </p>
             </div>
             <div className="text-right font-mono text-xs">
-              <div><strong>Vigencia:</strong> 2025</div>
+              <div><strong>Vigencia:</strong> 2026 - 2027</div>
               <div><strong>Riesgo:</strong> {company.claseRiesgo}</div>
             </div>
           </div>
@@ -411,7 +411,7 @@ export function PrintTemplates({
             </div>
             <div className="text-right font-mono text-xs">
               <div><strong>Fecha de Emisión:</strong> {new Date().toLocaleDateString('es-CO')}</div>
-              <div><strong>Vigencia:</strong> 2025</div>
+              <div><strong>Vigencia:</strong> 2026 - 2027</div>
             </div>
           </div>
 

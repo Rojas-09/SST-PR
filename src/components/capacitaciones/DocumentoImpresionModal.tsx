@@ -44,7 +44,7 @@ export function DocumentoImpresionModal({
       subtitle: 'Formato físico para registro autógrafo de operarios en talleres y fosas de mantenimiento',
     },
     CRONOGRAMA_ANUAL: {
-      title: `Cronograma Anual de Capacitación 2025 • ${company.name}`,
+      title: `Cronograma Anual de Capacitación (2026 - 2027) • ${company.name}`,
       subtitle: 'Matriz anual de 12 meses para auditoría de ARL y Ministerio del Trabajo',
       landscape: true,
     },
@@ -245,37 +245,37 @@ export function DocumentoImpresionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-sm print-modal-backdrop">
-      <div className="bg-slate-100 rounded-2xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden flex flex-col h-[94vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-sm print-modal-backdrop">
+      <div className="bg-slate-100 rounded-2xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden flex flex-col h-[96vh] sm:h-[94vh]">
         {/* Header Bar con EXACTAMENTE DOS BOTONES DE ACCIÓN: "Ventana Limpia" e "Imprimir" */}
-        <div className="px-5 sm:px-7 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3.5 min-w-0 pr-3">
-            <div className="w-11 h-11 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-300 shrink-0">
-              <Printer className="w-5 h-5" />
+        <div className="px-3.5 sm:px-7 py-3 sm:py-4 bg-slate-900 text-white flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 pr-1">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-300 shrink-0">
+              <Printer className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2 truncate">
+              <h2 className="text-sm sm:text-lg font-black text-white flex items-center gap-1.5 sm:gap-2 truncate">
                 <span className="truncate">{currentInfo.title}</span>
                 {currentInfo.landscape && (
-                  <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-purple-500/30 text-purple-200 border border-purple-400/30 shrink-0 font-bold">
+                  <span className="text-[10px] sm:text-xs font-mono px-2 py-0.5 rounded bg-purple-500/30 text-purple-200 border border-purple-400/30 shrink-0 font-bold">
                     Horizontal
                   </span>
                 )}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-400 truncate mt-0.5">{currentInfo.subtitle}</p>
+              <p className="text-[11px] sm:text-sm text-slate-400 truncate mt-0.5">{currentInfo.subtitle}</p>
             </div>
           </div>
 
           {/* EXACTLY TWO BUTTONS as requested: "Ventana Limpia" y "Imprimir" */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
             {/* Botón 1: Ventana Limpia */}
             <button
               type="button"
               onClick={handleOpenCleanWindow}
-              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-100 hover:text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors cursor-pointer border border-slate-700 shadow-xs"
+              className="px-2.5 sm:px-4 py-2 sm:py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-100 hover:text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 transition-colors cursor-pointer border border-slate-700 shadow-xs"
               title="Abrir el documento aislado en una ventana o pestaña limpia"
             >
-              <ExternalLink className="w-4 h-4 text-blue-400" />
+              <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400 shrink-0" />
               <span>Ventana Limpia</span>
             </button>
 
@@ -283,10 +283,10 @@ export function DocumentoImpresionModal({
             <button
               type="button"
               onClick={handleExecutePrint}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer shadow-md hover:shadow-blue-500/25"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 transition-all cursor-pointer shadow-md hover:shadow-blue-500/25"
               title="Imprimir únicamente la hoja del documento oficial (1 hoja)"
             >
-              <Printer className="w-4.5 h-4.5" />
+              <Printer className="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" />
               <span>Imprimir</span>
             </button>
 
@@ -294,19 +294,19 @@ export function DocumentoImpresionModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer ml-1"
+              className="p-1.5 sm:p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer ml-0.5"
               title="Cerrar vista previa"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
         {/* Paper Sheet Preview Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center bg-slate-200/80">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-8 flex justify-center bg-slate-200/80">
           <div
             id="printable-sheet-target"
-            className={`bg-white shadow-xl border border-slate-300 rounded-sm p-6 sm:p-10 w-full text-black transition-all ${
+            className={`bg-white shadow-xl border border-slate-300 rounded-sm p-4 sm:p-10 w-full text-black transition-all overflow-x-auto ${
               currentInfo.landscape ? 'max-w-[1100px]' : 'max-w-[850px]'
             }`}
           >

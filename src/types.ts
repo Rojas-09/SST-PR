@@ -84,13 +84,32 @@ export interface HazardRecord {
   fechaInspeccion: string;
 }
 
+export interface ServicioEmpresa {
+  id: string; // e.g. "SER-001"
+  nombre: string;
+  descripcion: string;
+  frecuenciaSugerida: string;
+  normativaAsociada?: string;
+}
+
 export interface CompanyInfo {
+  id?: string; // e.g. 'taller-los-andes' | 'servic-crear'
   name: string;
   nit: string;
   claseRiesgo: string;
   ciiu: string;
   sede: string;
   trabajadores?: number;
+  direccion1?: string;
+  direccion2?: string;
+  telefonoFijo?: string;
+  celularContacto?: string;
+  correoContacto?: string;
+  coberturaPrincipal?: string;
+  proyeccionExpansion?: string;
+  canalDigital1?: string;
+  aliadoTecnologico?: string;
+  servicios?: ServicioEmpresa[];
   responsableSST: {
     nombre: string;
     cargo: string;
@@ -226,5 +245,6 @@ export interface CapacitacionRecord {
   observaciones?: string;
   requiereEvaluacionEficacia: boolean;
   eficaciaEvaluada: boolean;
+  calificacionPromedioEficacia?: number;
   resultadoEficacia?: 'EFICAZ' | 'REQUIERE_REFUERZO';
 }

@@ -33,8 +33,8 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
   const [tipo, setTipo] = useState<'ACCIDENTE_TRABAJO' | 'ENFERMEDAD_GENERAL' | 'ENFERMEDAD_LABORAL'>('ACCIDENTE_TRABAJO');
   const [codigoCIE10, setCodigoCIE10] = useState<string>('M54.5');
   const [diagnostico, setDiagnostico] = useState<string>('Lumbago no especificado por sobreesfuerzo en foso mecánico');
-  const [fechaInicio, setFechaInicio] = useState<string>('2025-02-15');
-  const [fechaFin, setFechaFin] = useState<string>('2025-02-18');
+  const [fechaInicio, setFechaInicio] = useState<string>('2026-02-15');
+  const [fechaFin, setFechaFin] = useState<string>('2026-02-18');
   const [soporteFile, setSoporteFile] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [filterTipo, setFilterTipo] = useState<string>('TODOS');
@@ -64,7 +64,8 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const emp = workshopEmployees.find((e) => e.id === selectedEmpId) || workshopEmployees[0];
-    const newId = `INC-2025-00${incapacidades.length + 1}`;
+    const prefix = company.id === 'servic-crear' ? 'INC-SC-2026' : 'INC-2026';
+    const newId = `${prefix}-00${incapacidades.length + 1}`;
     
     const nuevaIncapacidad: IncapacidadRecord = {
       id: newId,

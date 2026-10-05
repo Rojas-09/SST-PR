@@ -10,6 +10,7 @@ import {
   Menu,
   ShieldCheck,
   KeyRound,
+  Lock,
 } from 'lucide-react';
 import { CompanyInfo, ActiveView } from '../types';
 import { useAuthRole } from '../context/AuthRoleContext';
@@ -22,6 +23,7 @@ interface ClayTopHeaderProps {
   onOpenNewHazard: () => void;
   onOpenSettings: () => void;
   onOpenMobileMenu?: () => void;
+  onOpenCompanySwitcher?: () => void;
 }
 
 export function ClayTopHeader({
@@ -31,9 +33,11 @@ export function ClayTopHeader({
   onOpenNewHazard,
   onOpenSettings,
   onOpenMobileMenu,
+  onOpenCompanySwitcher,
 }: ClayTopHeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { currentUser, switchRole, availableUsers } = useAuthRole();
+  const isSSTLeader = currentUser.rol === 'RESPONSABLE_SST';
 
   const initials = currentUser.nombre
     .replace(/^(Ing\.|Ft\.|Dr\.|Dra\.|Téc\.)\s*/i, '')
@@ -53,7 +57,7 @@ export function ClayTopHeader({
 
   return (
     <header className="h-14 bg-white border-b border-slate-200 px-3 sm:px-5 flex items-center justify-between font-sans text-[13px] sticky top-0 z-20">
-      {/* Left indicator with Mobile Hamburger button */}
+      {/* Left indicator with Mobile Hamburger button and Company Switcher */}
       <div className="flex items-center gap-2 min-w-0">
         {onOpenMobileMenu && (
           <button
@@ -67,13 +71,39 @@ export function ClayTopHeader({
           </button>
         )}
 
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="font-semibold text-slate-900 text-[13.5px] sm:text-[14px] truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+          <span className="font-semibold text-slate-900 text-[13.5px] sm:text-[14px] truncate max-w-[120px] xs:max-w-[170px] sm:max-w-none">
             {company.name}
           </span>
-          <span className="hidden sm:inline text-[11px] font-mono-data text-slate-400 shrink-0">
+          <span className="hidden lg:inline text-[11px] font-mono-data text-slate-400 shrink-0">
             NIT {company.nit}
           </span>
+
+          {/* Company Switcher Pill - Exclusively functional for Líder SG-SST */}
+          {onOpenCompanySwitcher && (
+            <button
+              type="button"
+              onClick={onOpenCompanySwitcher}
+              className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer shrink-0 ${
+                isSSTLeader
+                  ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 shadow-2xs'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
+              }`}
+              title={
+                isSSTLeader
+                  ? 'Cambiar Empresa (Habilitado para Líder SG-SST)'
+                  : 'Solo el Líder de SG-SST puede cambiar entre empresas'
+              }
+            >
+              <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span className="hidden sm:inline">Cambiar Empresa</span>
+              {isSSTLeader ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+              ) : (
+                <Lock className="w-3 h-3 text-slate-400 shrink-0" />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -178,8 +208,21 @@ export function ClayTopHeader({
                 )}
                 <div className="flex justify-between items-center gap-2">
                   <span className="text-slate-500 shrink-0 font-medium">Empresa SG-SST:</span>
-                  <span className="text-slate-900 font-bold truncate">Taller Los Andes S.A.S.</span>
+                  <span className="text-slate-900 font-bold truncate">{company.name}</span>
                 </div>
+                {onOpenCompanySwitcher && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      onOpenCompanySwitcher();
+                    }}
+                    className="w-full mt-1.5 py-1.5 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200 transition-colors cursor-pointer"
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>{isSSTLeader ? 'Alternar Empresa (Líder SG-SST)' : 'Ver Selector de Empresas'}</span>
+                  </button>
+                )}
               </div>
 
               {/* Quick Role Switcher in Header Dropdown */}

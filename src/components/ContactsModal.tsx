@@ -76,7 +76,7 @@ export function ContactsModal({ isOpen, onClose, company }: ContactsModalProps) 
             <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
               <span className="text-slate-400 block text-[10px]">COPASST / Veeduría:</span>
               <strong className="text-slate-800">Comité Paritario</strong>
-              <span className="text-slate-500 block text-[10px] mt-0.5">Acta No. 04-2025</span>
+              <span className="text-slate-500 block text-[10px] mt-0.5">Acta No. 04-2026</span>
             </div>
           </div>
         </div>

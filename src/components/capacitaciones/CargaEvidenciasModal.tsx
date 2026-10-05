@@ -142,22 +142,22 @@ export function CargaEvidenciasModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-[13px]">
-      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-[13px]">
+      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-300">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-300 shrink-0">
               <UploadCloud className="w-4 h-4" />
             </div>
-            <div>
-              <h2 className="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                Expediente y Evidencias de Capacitación
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
+            <div className="min-w-0">
+              <h2 className="text-xs sm:text-sm font-bold tracking-tight text-white flex items-center gap-2 truncate">
+                <span className="truncate">Expediente y Evidencias</span>
+                <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30 shrink-0">
                   {plan.codigo}
                 </span>
               </h2>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[10.5px] sm:text-[11px] text-slate-400 truncate">
                 Soporte probatorio para el Estándar 2.2.1 de la Resolución 0312 de 2019
               </p>
             </div>
@@ -165,24 +165,24 @@ export function CargaEvidenciasModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5">
           {/* Requirement Banner for Puesto de Trabajo or Virtual */}
           {requiresPhoto && (
             <div
-              className={`p-3 rounded-lg border flex items-center justify-between gap-3 ${
+              className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
                 hasPhoto
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                   : 'bg-amber-50 border-amber-300 text-amber-900'
               }`}
             >
-              <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-xs min-w-0">
                 {hasPhoto ? (
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : (
@@ -196,7 +196,7 @@ export function CargaEvidenciasModal({
                 </span>
               </div>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                className={`text-[10px] font-bold px-2 py-0.5 rounded w-fit shrink-0 ${
                   hasPhoto ? 'bg-emerald-200 text-emerald-800' : 'bg-amber-200 text-amber-800'
                 }`}
               >
@@ -261,7 +261,7 @@ export function CargaEvidenciasModal({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -272,14 +272,14 @@ export function CargaEvidenciasModal({
                 />
                 <label
                   htmlFor="evidence-file-input"
-                  className={`px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors shadow-xs ${
+                  className={`px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs w-full sm:w-auto ${
                     isProcessing ? 'opacity-50 pointer-events-none' : ''
                   }`}
                 >
                   <UploadCloud className="w-4 h-4" />
                   <span>{isProcessing ? 'Validando binarios...' : 'Seleccionar Archivo (PDF, JPG, PNG)'}</span>
                 </label>
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[10.5px] sm:text-[11px] text-slate-400">
                   Validación instantánea por firmas binarias (Anti-malware / No HEIC)
                 </span>
               </div>

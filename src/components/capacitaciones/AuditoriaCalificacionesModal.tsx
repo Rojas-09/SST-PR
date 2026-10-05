@@ -18,22 +18,22 @@ export function AuditoriaCalificacionesModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-[13px]">
-      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150 font-sans text-[13px]">
+      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[88vh]">
         {/* Header */}
-        <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-300">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-300 shrink-0">
               <History className="w-4 h-4" />
             </div>
-            <div>
-              <h2 className="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                Pista de Auditoría Append-Only de Calificaciones
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
+            <div className="min-w-0">
+              <h2 className="text-xs sm:text-sm font-bold tracking-tight text-white flex items-center gap-2 truncate">
+                <span className="truncate">Pista de Auditoría Append-Only</span>
+                <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30 shrink-0">
                   {codigoSesion}
                 </span>
               </h2>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[10.5px] sm:text-[11px] text-slate-400 truncate">
                 Registro inmutable de modificaciones normativas según Decreto 1072/2015
               </p>
             </div>
@@ -41,14 +41,14 @@ export function AuditoriaCalificacionesModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-5 overflow-y-auto space-y-4">
+        <div className="p-3.5 sm:p-5 overflow-y-auto space-y-4">
           {auditorias.length === 0 ? (
             <div className="p-8 text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-500">
               <ShieldCheck className="w-8 h-8 text-slate-400 mx-auto mb-2" />
@@ -58,8 +58,8 @@ export function AuditoriaCalificacionesModal({
               </p>
             </div>
           ) : (
-            <div className="border border-slate-200 rounded-lg overflow-hidden shadow-2xs">
-              <table className="w-full text-left border-collapse table-stack">
+            <div className="border border-slate-200 rounded-lg overflow-x-auto shadow-2xs">
+              <table className="w-full min-w-[550px] text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-[11px] font-bold text-slate-600 uppercase border-b border-slate-200">
                     <th className="py-2.5 px-3">Fecha y Hora</th>

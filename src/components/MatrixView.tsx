@@ -84,15 +84,15 @@ export function MatrixView({
     ];
 
     const rows = filteredHazards.map((h) => [
-      `"${h.proceso === 'Operativo' ? 'Mantenimiento' : h.proceso === 'Bienestar / Servicios' ? 'Producción' : h.proceso}"`,
+      `"${h.proceso}"`,
       `"${h.zonaLugar.split('•')[0].trim()}"`,
-      `"${h.id === 'PEL-2024-001' ? 'Falta de EPP en zona de soldadura' : h.id === 'PEL-2024-003' ? 'Piso resbaloso por grasas' : h.factorEspecifico || h.title}"`,
-      `"${h.id === 'PEL-2024-001' ? 'Quemaduras, lesiones oculares, intoxicación.' : h.id === 'PEL-2024-003' ? 'Caídas al mismo nivel, contusiones.' : h.efectosSalud}"`,
+      `"${h.factorEspecifico || h.title}"`,
+      `"${h.efectosSalud}"`,
       h.evaluacion.np,
       h.evaluacion.nc,
       h.evaluacion.nr,
       `"${h.evaluacion.level === 'NIVEL_I' || h.evaluacion.nr >= 15 ? 'CRÍTICO' : h.evaluacion.level === 'NIVEL_II' ? 'ALTO' : h.evaluacion.level === 'NIVEL_III' ? 'MEJORABLE' : 'ACEPTABLE'}"`,
-      `"${h.id === 'PEL-2024-001' ? 'Entregar EPP individual certificado e instalar extracción localizada.' : h.id === 'PEL-2024-003' ? 'Instalar cinta antideslizante y definir protocolo de limpieza por turno.' : h.planIntervencion.epp.titulo}"`,
+      `"${h.planIntervencion.epp.titulo || ''}. ${h.planIntervencion.ingenieria.descripcion || ''}"`,
     ]);
 
     const csvContent = [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
@@ -100,7 +100,8 @@ export function MatrixView({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `Matriz_GTC45_TallerLosAndes_${new Date().toISOString().slice(0, 10)}.csv`);
+    const cleanCompanyName = company.name.replace(/[^a-zA-Z0-9]/g, '_');
+    link.setAttribute('download', `Matriz_GTC45_${cleanCompanyName}_2026.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -237,48 +238,11 @@ export function MatrixView({
                 const isAlto = hazard.evaluacion.level === 'NIVEL_II' && pxs < 15;
                 const isMejorable = hazard.evaluacion.level === 'NIVEL_III';
 
-                const procesoLabel =
-                  hazard.proceso === 'Operativo'
-                    ? 'Mantenimiento'
-                    : hazard.proceso === 'Bienestar / Servicios'
-                    ? 'Producción'
-                    : hazard.proceso;
-
-                const actividadLabel =
-                  hazard.id === 'PEL-2024-001'
-                    ? 'Zona de soldadura'
-                    : hazard.id === 'PEL-2024-002'
-                    ? 'Bodega 220V'
-                    : hazard.id === 'PEL-2024-003'
-                    ? 'Cocina'
-                    : hazard.zonaLugar.split('•')[0].trim();
-
-                const peligroLabel =
-                  hazard.id === 'PEL-2024-001'
-                    ? 'Falta de EPP en zona de soldadura'
-                    : hazard.id === 'PEL-2024-002'
-                    ? 'Red eléctrica 220V expuesta a humedad'
-                    : hazard.id === 'PEL-2024-003'
-                    ? 'Piso resbaloso por grasas'
-                    : hazard.factorEspecifico || hazard.title;
-
-                const efectosLabel =
-                  hazard.id === 'PEL-2024-001'
-                    ? 'Quemaduras, lesiones oculares, intoxicación.'
-                    : hazard.id === 'PEL-2024-002'
-                    ? 'Electrocución, choque eléctrico, fibrilación.'
-                    : hazard.id === 'PEL-2024-003'
-                    ? 'Caídas al mismo nivel, contusiones.'
-                    : hazard.efectosSalud;
-
-                const planLabel =
-                  hazard.id === 'PEL-2024-001'
-                    ? 'Entregar EPP individual certificado e instalar extracción localizada.'
-                    : hazard.id === 'PEL-2024-002'
-                    ? 'Inspección RETIE, sustitución de cableado e instalación de diferencial.'
-                    : hazard.id === 'PEL-2024-003'
-                    ? 'Instalar cinta antideslizante y definir protocolo de limpieza por turno.'
-                    : `${hazard.planIntervencion.epp.titulo}. ${hazard.planIntervencion.ingenieria.descripcion}`;
+                const procesoLabel = hazard.proceso;
+                const actividadLabel = hazard.zonaLugar.split('•')[0].trim();
+                const peligroLabel = hazard.factorEspecifico || hazard.title;
+                const efectosLabel = hazard.efectosSalud;
+                const planLabel = `${hazard.planIntervencion.epp.titulo}. ${hazard.planIntervencion.ingenieria.descripcion}`;
 
                 return (
                   <tr
@@ -514,7 +478,7 @@ export function MatrixView({
 
           {/* Auditor QR Stamp */}
           <div className="md:col-span-3">
-            <QrAuditStamp code="MINTRAD-2025-V02-BOG" />
+            <QrAuditStamp code={`MINTRAD-2026-V02-${company.id === 'servic-crear' ? 'TOL' : 'BOG'}`} />
           </div>
         </div>
 

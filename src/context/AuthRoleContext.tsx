@@ -21,6 +21,16 @@ export const PRESET_USERS: UserProfile[] = [
     capacitadorId: 'cap-carlos-mendez',
   },
   {
+    id: 'usr-sst-sc',
+    nombre: 'Ing. Andrea Morales Peña',
+    email: 'talentohumanoserviccrear@gmail.com',
+    rol: 'RESPONSABLE_SST',
+    cargo: 'Especialista y Responsable del SG-SST',
+    entidad: 'SERVIC CREAR S.A.S.',
+    licenciaOId: 'Lic. 24890-SST Tolima',
+    capacitadorId: 'cap-andrea-morales',
+  },
+  {
     id: 'usr-ext-1',
     nombre: 'Ft. Claudia Marcela Vega',
     email: 'cvega.ergonomia@positiva.gov.co',
@@ -69,6 +79,7 @@ interface AuthRoleContextType {
   canSignActa: (sesion: SesionEjecutada, role: 'CAPACITADOR' | 'RESPONSABLE') => { allowed: boolean; reason?: string };
   canUploadEvidence: (sesion: SesionEjecutada) => { allowed: boolean; reason?: string };
   canExecuteSession: (sesion: SesionEjecutada) => { allowed: boolean; reason?: string };
+  canSwitchCompany: () => boolean;
 }
 
 const AuthRoleContext = createContext<AuthRoleContextType | undefined>(undefined);
@@ -257,6 +268,7 @@ export const AuthRoleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         canSignActa,
         canUploadEvidence,
         canExecuteSession,
+        canSwitchCompany: () => currentUser.rol === 'RESPONSABLE_SST',
       }}
     >
       {children}

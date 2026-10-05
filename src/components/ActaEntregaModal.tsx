@@ -48,7 +48,7 @@ export function ActaEntregaModal({
                 Acta Oficial de Dotación y Entrega de EPP
               </h3>
               <p className="text-[12px] font-sans text-slate-500 font-normal mt-0.5">
-                Cumplimiento Art. 2.2.4.6.24 Dec. 1072 / Res. 0312 • Código: ACT-EPP-2025-04
+                Cumplimiento Art. 2.2.4.6.24 Dec. 1072 / Res. 0312 • Código: ACT-EPP-2026-04
               </p>
             </div>
           </div>
@@ -185,18 +185,18 @@ export function ActaEntregaModal({
             </span>
           </label>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 font-sans">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-3 border-t border-slate-200 font-sans">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-sans font-medium rounded-lg text-[13px] cursor-pointer transition-colors"
+              className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-sans font-medium rounded-lg text-[13px] cursor-pointer transition-colors text-center"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={!acknowledged}
-              className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-sans font-medium rounded-lg text-[13px] flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+              className="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-sans font-medium rounded-lg text-[13px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
             >
               <CheckSquare className="w-4 h-4 text-white" />
               <span>Convalidar y Foliar Entrega EPP</span>

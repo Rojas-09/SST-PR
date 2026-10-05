@@ -134,6 +134,7 @@ export interface AsistenciaCalificacion {
   calificacion: number | null; // 0 a 100, ONLY populated/editable if asistio === true
   calificacionPrevia?: number | null;
   firmaRegistrada: boolean;
+  hashFirma?: string;
   observaciones?: string;
   updatedAt?: string;
 }

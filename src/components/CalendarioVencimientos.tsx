@@ -66,10 +66,10 @@ export function CalendarioVencimientos({
   onSelectHazard,
   compact = false,
 }: CalendarioVencimientosProps) {
-  // Default to March 2025 where rich real-world operational activities are scheduled
-  const [currentYear, setCurrentYear] = useState<number>(2025);
+  // Default to March 2026 where rich operational activities are scheduled
+  const [currentYear, setCurrentYear] = useState<number>(2026);
   const [currentMonth, setCurrentMonth] = useState<number>(2); // 0-indexed: 2 = March
-  const [selectedDate, setSelectedDate] = useState<string>('2025-03-05'); // YYYY-MM-DD
+  const [selectedDate, setSelectedDate] = useState<string>('2026-03-05'); // YYYY-MM-DD
   const [filtroCategoria, setFiltroCategoria] = useState<CalendarEventCategory | 'TODOS'>('TODOS');
   const [busqueda, setBusqueda] = useState<string>('');
 
@@ -79,7 +79,7 @@ export function CalendarioVencimientos({
 
     // A. Capacitaciones SST
     capacitaciones.forEach((cap) => {
-      const fecha = cap.fechaProgramada || cap.fechaEjecucion || '2025-03-18';
+      const fecha = cap.fechaProgramada || cap.fechaEjecucion || '2026-03-18';
       events.push({
         id: `event-cap-${cap.id}`,
         fecha: fecha,
@@ -96,74 +96,175 @@ export function CalendarioVencimientos({
       });
     });
 
-    // B. Inspecciones de Peligros y Seguridad Industrial GTC 45
-    events.push(
-      {
-        id: 'event-insp-extintores',
-        fecha: '2025-03-12',
-        hora: '08:00 AM',
-        titulo: 'Inspección y Prueba de Extintores de Planta (10 Unidades)',
-        subtitulo: 'Verificación de manómetros, precintos y prueba hidrostática (6 PQS 20lbs + 4 Solkaflam)',
-        categoria: 'INSPECCION',
-        estado: 'URGENTE',
-        responsable: company.responsableSST.nombre,
-        lugar: 'Patios 1 y 2, Bahía 4 y Bodega',
-        normativa: 'NFPA 10 / Res. 2400 de 1979 Art. 220',
-        tipoAccion: 'IR_PELIGRO',
-      },
-      {
-        id: 'event-insp-amoladoras',
-        fecha: '2025-03-15',
-        hora: '10:30 AM',
-        titulo: 'Inspección Preoperacional de Amoladoras y Discos Abrasivos',
-        subtitulo: 'Revisión técnica de guardas de 180°, RPM y prueba de sonido en bahía de desbaste',
-        categoria: 'INSPECCION',
-        estado: 'PROXIMO',
-        responsable: 'Líder de Mantenimiento & Ing. Carlos Méndez',
-        lugar: 'Bahía 3 • Área de Latonería',
-        normativa: 'GTC 45 / OSHA 1910.215 / Res. 2400',
-        tipoAccion: 'IR_PELIGRO',
-      },
-      {
-        id: 'event-insp-tablero220',
-        fecha: '2025-03-22',
-        hora: '02:00 PM',
-        titulo: 'Termografía e Inspección Tablero Eléctrico Principal 220V',
-        subtitulo: 'Medición de puntos calientes, torque de bornes y verificación de enclavamiento LOTO',
-        categoria: 'INSPECCION',
-        estado: 'PROGRAMADA',
-        responsable: 'Téc. Electricista Javier Ortiz',
-        lugar: 'Tablero Principal • Bahía 2',
-        normativa: 'RETIE Art. 18 / GTC 45 Riesgo Eléctrico',
-        tipoAccion: 'IR_PELIGRO',
-      },
-      {
-        id: 'event-insp-botiquin',
-        fecha: '2025-03-10',
-        hora: '09:00 AM',
-        titulo: 'Inspección de Dotación de Botiquines y Camilla Rígida',
-        subtitulo: 'Control de fechas de vencimiento de antisépticos, gasas estériles e inmovilizadores cervicales',
-        categoria: 'INSPECCION',
-        estado: 'PROGRAMADA',
-        responsable: 'Brigada de Primeros Auxilios',
-        lugar: 'Sede Operativa Principal',
-        normativa: 'Res. 0705 de 2007 MinSalud',
-        tipoAccion: 'ACCION_INTERNA',
-      },
-      {
-        id: 'event-insp-soldadura',
-        fecha: '2025-03-28',
-        hora: '11:00 AM',
-        titulo: 'Auditoría a Mamparas de Soldadura y Filtros de Extracción',
-        subtitulo: 'Monitoreo de opacidad de cortinas vinílicas ámbar UV y renovación de filtros de aspiración',
-        categoria: 'INSPECCION',
-        estado: 'PROGRAMADA',
-        responsable: company.responsableSST.nombre,
-        lugar: 'Bahía 4 • Soldadura Estructural',
-        normativa: 'GTC 45 / Dec. 1072 Art. 2.2.4.6.24',
-        tipoAccion: 'IR_PELIGRO',
-      }
-    );
+    const isServicCrear = company.id === 'servic-crear';
+
+    // B. Inspecciones de Peligros y Seguridad Industrial GTC 45 (2026 y 2027)
+    if (isServicCrear) {
+      events.push(
+        {
+          id: 'event-insp-tanques-multigas',
+          fecha: '2026-03-12',
+          hora: '08:00 AM',
+          titulo: 'Inspección de Trípode de Rescate y Calibración Detector Multigás 4 Gases',
+          subtitulo: 'Verificación de sensor de O2, LEL, CO y H2S para lavado técnico de tanques según Decreto 1575 / Res. 0491',
+          categoria: 'INSPECCION',
+          estado: 'URGENTE',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Sede Ibagué • Base Operativa SER-001',
+          normativa: 'Res. 0491 de 2020 / Dec. 1575 de 2007',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-stihl-bateria',
+          fecha: '2026-03-15',
+          hora: '10:30 AM',
+          titulo: 'Mantenimiento Preventivo y Afilado de Maquinaria STIHL a Batería',
+          subtitulo: 'Inspección de guadañadoras FSA 135, cortasetos HLA 86 y podadoras telescópicas con soporte oficial STIHL',
+          categoria: 'INSPECCION',
+          estado: 'PROXIMO',
+          responsable: 'Instructor Técnico STIHL & Ing. Andrea Morales',
+          lugar: 'Taller de Equipos • Condominios Melgar y Girardot',
+          normativa: 'Aliado STIHL Colombia / Res. 2400',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-piscinas-quimicos',
+          fecha: '2026-03-22',
+          hora: '02:00 PM',
+          titulo: 'Monitoreo de Calidad de Agua en Piscinas y Kit DPD Cloro / pH',
+          subtitulo: 'Control de parámetros de seguridad acuática y dosificación segura de reactivos en Alto Magdalena',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: 'Operario de Piscinas y Tanques',
+          lugar: 'Cuartos de Bombas • Condominios Recreacionales',
+          normativa: 'Ley 554 de 2015 / Res. 1618 de 2012',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-botiquin-sc',
+          fecha: '2026-03-10',
+          hora: '09:00 AM',
+          titulo: 'Inspección de Dotación de Botiquines y Kit de Antídotos / Lavaojos',
+          subtitulo: 'Revisión de fechas de vencimiento de soluciones neutralizantes y lavaojos portátil para cloro',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: 'Brigada de Primeros Auxilios SERVIC CREAR',
+          lugar: 'Sede Principal Ibagué (Villa Marlen)',
+          normativa: 'Res. 0705 de 2007 MinSalud',
+          tipoAccion: 'ACCION_INTERNA',
+        },
+        {
+          id: 'event-insp-sanidad-plagas',
+          fecha: '2026-03-28',
+          hora: '11:00 AM',
+          titulo: 'Auditoría Fitosanitaria y Rotación de Plaguicidas (Sanidad Ambiental)',
+          subtitulo: 'Control de hojas de datos de seguridad FDS, certificados de fumigación y bodegaje de químicos',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Bodega de Químicos • Ibagué',
+          normativa: 'Decreto 1843 de 1991 / Res. 2115',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        // Evento lejano 2027
+        {
+          id: 'event-exp-pereira-2027',
+          fecha: '2027-03-15',
+          hora: '09:00 AM',
+          titulo: 'Auditoría de Apertura SG-SST • Expansión Pereira, Risaralda (2027)',
+          subtitulo: 'Evaluación de estándares mínimos Res. 0312 y cobertura ARL para el nuevo frente de trabajo en el Eje Cafetero',
+          categoria: 'AUDITORIA',
+          estado: 'PROGRAMADA',
+          responsable: `${company.representanteLegal.nombre} y Líder SG-SST`,
+          lugar: 'Nueva Sede Proyectada • Pereira, Risaralda',
+          normativa: 'Res. 0312 de 2019 / Dec. 1072',
+          tipoAccion: 'IR_0312',
+        }
+      );
+    } else {
+      // Taller Los Andes (2026 y proyecciones 2027)
+      events.push(
+        {
+          id: 'event-insp-extintores',
+          fecha: '2026-03-12',
+          hora: '08:00 AM',
+          titulo: 'Inspección y Prueba de Extintores de Planta (10 Unidades)',
+          subtitulo: 'Verificación de manómetros, precintos y prueba hidrostática (6 PQS 20lbs + 4 Solkaflam)',
+          categoria: 'INSPECCION',
+          estado: 'URGENTE',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Patios 1 y 2, Bahía 4 y Bodega',
+          normativa: 'NFPA 10 / Res. 2400 de 1979 Art. 220',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-amoladoras',
+          fecha: '2026-03-15',
+          hora: '10:30 AM',
+          titulo: 'Inspección Preoperacional de Amoladoras y Discos Abrasivos',
+          subtitulo: 'Revisión técnica de guardas de 180°, RPM y prueba de sonido en bahía de desbaste',
+          categoria: 'INSPECCION',
+          estado: 'PROXIMO',
+          responsable: 'Líder de Mantenimiento & Ing. Carlos Méndez',
+          lugar: 'Bahía 3 • Área de Latonería',
+          normativa: 'GTC 45 / OSHA 1910.215 / Res. 2400',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-tablero220',
+          fecha: '2026-03-22',
+          hora: '02:00 PM',
+          titulo: 'Termografía e Inspección Tablero Eléctrico Principal 220V',
+          subtitulo: 'Medición de puntos calientes, torque de bornes y verificación de enclavamiento LOTO',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: 'Téc. Electricista Javier Ortiz',
+          lugar: 'Tablero Principal • Bahía 2',
+          normativa: 'RETIE Art. 18 / GTC 45 Riesgo Eléctrico',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        {
+          id: 'event-insp-botiquin',
+          fecha: '2026-03-10',
+          hora: '09:00 AM',
+          titulo: 'Inspección de Dotación de Botiquines y Camilla Rígida',
+          subtitulo: 'Control de fechas de vencimiento de antisépticos, gasas estériles e inmovilizadores cervicales',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: 'Brigada de Primeros Auxilios',
+          lugar: 'Sede Operativa Principal',
+          normativa: 'Res. 0705 de 2007 MinSalud',
+          tipoAccion: 'ACCION_INTERNA',
+        },
+        {
+          id: 'event-insp-soldadura',
+          fecha: '2026-03-28',
+          hora: '11:00 AM',
+          titulo: 'Auditoría a Mamparas de Soldadura y Filtros de Extracción',
+          subtitulo: 'Monitoreo de opacidad de cortinas vinílicas ámbar UV y renovación de filtros de aspiración',
+          categoria: 'INSPECCION',
+          estado: 'PROGRAMADA',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Bahía 4 • Soldadura Estructural',
+          normativa: 'GTC 45 / Dec. 1072 Art. 2.2.4.6.24',
+          tipoAccion: 'IR_PELIGRO',
+        },
+        // Evento lejano 2027
+        {
+          id: 'event-recert-alturas-2027',
+          fecha: '2027-02-15',
+          hora: '08:00 AM',
+          titulo: 'Recertificación Anual de Trabajo Seguro en Alturas en Fosa (2027)',
+          subtitulo: 'Renovación obligatoria de competencias operativas para mecánicos y soldadores según Res. 4272/2021',
+          categoria: 'CAPACITACION',
+          estado: 'PROGRAMADA',
+          responsable: 'Ing. Carlos Méndez',
+          lugar: 'Centro de Entrenamiento Acreditado',
+          normativa: 'Resolución 4272 de 2021',
+          tipoAccion: 'IR_CAPACITACIONES',
+        }
+      );
+    }
 
     // C. Incapacidades y Reintegros Médicos
     incapacidades.forEach((inc) => {
@@ -175,9 +276,9 @@ export function CalendarioVencimientos({
         titulo: `Examen de Reintegro Ocupacional: ${inc.empleado}`,
         subtitulo: `Valoración de aptitud post-incapacidad (${inc.diagnostico}) tras ${inc.diasIncapacidad} días`,
         categoria: 'INCAPACIDAD',
-        estado: inc.id === 'INC-2025-003' ? 'URGENTE' : 'PROGRAMADA',
-        responsable: 'Médico Ocupacional / Ing. Carlos Méndez',
-        lugar: 'Consultorio IPS Ocupacional / Taller',
+        estado: inc.codigo.includes('003') ? 'URGENTE' : 'PROGRAMADA',
+        responsable: 'Médico Ocupacional / Líder SG-SST',
+        lugar: 'Consultorio IPS Ocupacional',
         normativa: 'Res. 2346 de 2007 Art. 6',
         relacionadoId: inc.id,
         tipoAccion: 'IR_AUSENTISMO',
@@ -187,7 +288,7 @@ export function CalendarioVencimientos({
       if (inc.estado === 'EN_COBRO_ARL_EPS') {
         events.push({
           id: `event-inc-cobro-${inc.id}`,
-          fecha: '2025-03-20',
+          fecha: '2026-03-20',
           hora: '03:00 PM',
           titulo: `Radicación Cobro Subsidio ARL: ${inc.codigo}`,
           subtitulo: `Cobro de incapacidad de ${inc.empleado} ante ${inc.entidadExpide} ($${inc.costoAsumido.toLocaleString('es-CO')})`,
@@ -202,61 +303,118 @@ export function CalendarioVencimientos({
       }
     });
 
-    // D. Actas EPP y Compromisos Legales SST
-    events.push(
-      {
-        id: 'event-epp-soldadura',
-        fecha: '2025-03-06',
-        hora: '08:30 AM',
-        titulo: 'Convalidación y Firma de Acta EPP: Soldador Bahía 4',
-        subtitulo: 'Entrega certificada de caretas fotosensibles DIN 9-13 y guantes de carnaza 16"',
-        categoria: 'EPP',
-        estado: 'URGENTE',
-        responsable: company.responsableSST.nombre,
-        lugar: 'Bahía 4 • Taller Principal',
-        normativa: 'Art. 2.2.4.6.24 Dec. 1072 / Res. 0312',
-        tipoAccion: 'IR_ACTAS',
-      },
-      {
-        id: 'event-copasst-mensual',
-        fecha: '2025-03-28',
-        hora: '04:00 PM',
-        titulo: 'Reunión Ordinaria Mensual COPASST (Acta Marzo)',
-        subtitulo: 'Informe de accidentalidad del mes, seguimiento a amoladora y verificación de mamparas',
-        categoria: 'LEGAL',
-        estado: 'PROGRAMADA',
-        responsable: 'Presidente y Secretario COPASST',
-        lugar: 'Sala de Capacitaciones',
-        normativa: 'Res. 2013 de 1986 / Dec. 1072 Art. 2.2.4.6.11',
-        tipoAccion: 'ACCION_INTERNA',
-      },
-      {
-        id: 'event-cierre-phva',
-        fecha: '2025-03-31',
-        hora: '05:00 PM',
-        titulo: 'Cierre Trimestral y Seguimiento PHVA Res. 0312',
-        subtitulo: 'Consolidación de indicadores de frecuencia, severidad y avance del plan de trabajo anual',
-        categoria: 'AUDITORIA',
-        estado: 'PROGRAMADA',
-        responsable: `${company.representanteLegal.nombre} y Responsable SST`,
-        lugar: 'Dirección General',
-        normativa: 'Res. 0312 de 2019 Est. 6.1.1',
-        tipoAccion: 'IR_0312',
-      },
-      {
-        id: 'event-epp-cuatrimestral',
-        fecha: '2025-04-15',
-        hora: '08:00 AM',
-        titulo: 'Entrega Cuatrimestral de Dotación y Calzado de Seguridad',
-        subtitulo: 'Suministro legal de overoles y botas dieléctricas con puntera para los 8 operarios de taller',
-        categoria: 'EPP',
-        estado: 'PROGRAMADA',
-        responsable: 'Gerencia General & Talento Humano',
-        lugar: 'Almacén de Planta',
-        normativa: 'Código Sustantivo del Trabajo Arts. 230 y 232',
-        tipoAccion: 'IR_ACTAS',
-      }
-    );
+    // D. Actas EPP y Compromisos Legales SST (2026 y 2027)
+    if (isServicCrear) {
+      events.push(
+        {
+          id: 'event-epp-stihl-poda',
+          fecha: '2026-03-06',
+          hora: '08:30 AM',
+          titulo: 'Convalidación y Firma de Acta EPP: Kit Forestal STIHL Zonas Verdes',
+          subtitulo: 'Entrega certificada de perneras anticorte Clase 1, careta de malla y guantes antivibración',
+          categoria: 'EPP',
+          estado: 'URGENTE',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Sede Ibagué • Cuadrilla STIHL',
+          normativa: 'Art. 2.2.4.6.24 Dec. 1072 / Res. 0312',
+          tipoAccion: 'IR_ACTAS',
+        },
+        {
+          id: 'event-copasst-mensual-sc',
+          fecha: '2026-03-28',
+          hora: '04:00 PM',
+          titulo: 'Reunión Ordinaria Mensual COPASST SERVIC CREAR (Acta Marzo 2026)',
+          subtitulo: 'Seguimiento a prevención de golpes de calor en Girardot/Flandes y protocolos de tanques',
+          categoria: 'LEGAL',
+          estado: 'PROGRAMADA',
+          responsable: 'Presidente y Secretario COPASST',
+          lugar: 'Sede Principal Ibagué / Virtual',
+          normativa: 'Res. 2013 de 1986 / Dec. 1072 Art. 2.2.4.6.11',
+          tipoAccion: 'ACCION_INTERNA',
+        },
+        {
+          id: 'event-cierre-phva-sc',
+          fecha: '2026-03-31',
+          hora: '05:00 PM',
+          titulo: 'Cierre Trimestral y Seguimiento PHVA Res. 0312 (Vigencia 2026)',
+          subtitulo: 'Consolidación de indicadores de frecuencia, severidad y avance del catálogo de servicios',
+          categoria: 'AUDITORIA',
+          estado: 'PROGRAMADA',
+          responsable: `${company.representanteLegal.nombre} y Responsable SST`,
+          lugar: 'Gerencia General SERVIC CREAR',
+          normativa: 'Res. 0312 de 2019 Est. 6.1.1',
+          tipoAccion: 'IR_0312',
+        },
+        {
+          id: 'event-epp-cuatrimestral-sc',
+          fecha: '2026-04-15',
+          hora: '08:00 AM',
+          titulo: 'Entrega Cuatrimestral de Dotación y Calzado Antideslizante SRC',
+          subtitulo: 'Suministro legal de uniformes de alta visibilidad y calzado impermeable para 26 operarios',
+          categoria: 'EPP',
+          estado: 'PROGRAMADA',
+          responsable: 'Talento Humano SERVIC CREAR',
+          lugar: 'Almacén Central Ibagué',
+          normativa: 'Código Sustantivo del Trabajo Arts. 230 y 232',
+          tipoAccion: 'IR_ACTAS',
+        }
+      );
+    } else {
+      events.push(
+        {
+          id: 'event-epp-soldadura',
+          fecha: '2026-03-06',
+          hora: '08:30 AM',
+          titulo: 'Convalidación y Firma de Acta EPP: Soldador Bahía 4',
+          subtitulo: 'Entrega certificada de caretas fotosensibles DIN 9-13 y guantes de carnaza 16"',
+          categoria: 'EPP',
+          estado: 'URGENTE',
+          responsable: company.responsableSST.nombre,
+          lugar: 'Bahía 4 • Taller Principal',
+          normativa: 'Art. 2.2.4.6.24 Dec. 1072 / Res. 0312',
+          tipoAccion: 'IR_ACTAS',
+        },
+        {
+          id: 'event-copasst-mensual',
+          fecha: '2026-03-28',
+          hora: '04:00 PM',
+          titulo: 'Reunión Ordinaria Mensual COPASST (Acta Marzo 2026)',
+          subtitulo: 'Informe de accidentalidad del mes, seguimiento a amoladora y verificación de mamparas',
+          categoria: 'LEGAL',
+          estado: 'PROGRAMADA',
+          responsable: 'Presidente y Secretario COPASST',
+          lugar: 'Sala de Capacitaciones',
+          normativa: 'Res. 2013 de 1986 / Dec. 1072 Art. 2.2.4.6.11',
+          tipoAccion: 'ACCION_INTERNA',
+        },
+        {
+          id: 'event-cierre-phva',
+          fecha: '2026-03-31',
+          hora: '05:00 PM',
+          titulo: 'Cierre Trimestral y Seguimiento PHVA Res. 0312 (Vigencia 2026)',
+          subtitulo: 'Consolidación de indicadores de frecuencia, severidad y avance del plan de trabajo anual',
+          categoria: 'AUDITORIA',
+          estado: 'PROGRAMADA',
+          responsable: `${company.representanteLegal.nombre} y Responsable SST`,
+          lugar: 'Dirección General',
+          normativa: 'Res. 0312 de 2019 Est. 6.1.1',
+          tipoAccion: 'IR_0312',
+        },
+        {
+          id: 'event-epp-cuatrimestral',
+          fecha: '2026-04-15',
+          hora: '08:00 AM',
+          titulo: 'Entrega Cuatrimestral de Dotación y Calzado de Seguridad',
+          subtitulo: 'Suministro legal de overoles y botas dieléctricas con puntera para los 8 operarios de taller',
+          categoria: 'EPP',
+          estado: 'PROGRAMADA',
+          responsable: 'Gerencia General & Talento Humano',
+          lugar: 'Almacén de Planta',
+          normativa: 'Código Sustantivo del Trabajo Arts. 230 y 232',
+          tipoAccion: 'IR_ACTAS',
+        }
+      );
+    }
 
     return events;
   }, [capacitaciones, hazards, incapacidades, company]);
@@ -373,9 +531,9 @@ export function CalendarioVencimientos({
   };
 
   const handleGoToDefault = () => {
-    setCurrentYear(2025);
-    setCurrentMonth(2); // Marzo 2025
-    setSelectedDate('2025-03-05');
+    setCurrentYear(2026);
+    setCurrentMonth(2); // Marzo 2026
+    setSelectedDate('2026-03-05');
   };
 
   // Helper for category badge styling
@@ -477,7 +635,7 @@ export function CalendarioVencimientos({
               type="button"
               onClick={handleGoToDefault}
               className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium cursor-pointer transition-colors"
-              title="Volver al mes operativo actual (Marzo 2025)"
+              title="Volver al mes operativo actual (Marzo 2026)"
             >
               Mes Operativo
             </button>
@@ -858,7 +1016,7 @@ export function CalendarioVencimientos({
                 <div className="pt-2">
                   <button
                     type="button"
-                    onClick={() => setSelectedDate('2025-03-05')}
+                    onClick={() => setSelectedDate('2026-03-05')}
                     className="text-xs text-blue-600 font-semibold hover:underline cursor-pointer"
                   >
                     Ver fecha con eventos (05 de Marzo)
@@ -875,12 +1033,12 @@ export function CalendarioVencimientos({
               <span>Próximo Hito Crítico en Calendario:</span>
             </div>
             <p className="text-[12px] text-amber-800 leading-snug">
-              <strong>05 de Marzo 2025:</strong> Charla 5S, Manejo de Derrames y Prevención de Caídas (Peligro Locativo).
+              <strong>05 de Marzo 2026:</strong> Charla 5S, Manejo de Derrames y Prevención de Caídas.
             </p>
             <div className="pt-1 flex items-center justify-between text-[11.5px]">
               <button
                 type="button"
-                onClick={() => setSelectedDate('2025-03-05')}
+                onClick={() => setSelectedDate('2026-03-05')}
                 className="text-amber-900 font-semibold hover:underline cursor-pointer"
               >
                 Seleccionar en Calendario

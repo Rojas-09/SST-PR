@@ -7,27 +7,28 @@ import {
   MetricasSesion,
   ResultadoEficacia,
 } from '../types/capacitaciones';
-import { initialCapacitaciones, workshopEmployees } from '../data/initialData';
+import { getCompanyDataset } from '../data/companiesData';
 import { CapacitacionRecord } from '../types';
 
-const STORAGE_KEYS = {
-  PLANES: 'sst_planes_capacitacion_v2',
-  SESIONES: 'sst_sesiones_ejecutadas_v2',
-  ASISTENCIAS: 'sst_asistencias_calificaciones_v2',
-  EVIDENCIAS: 'sst_evidencias_expediente_v2',
-  AUDITORIAS: 'sst_auditorias_calificaciones_v2',
-};
+const getStorageKeys = (companyId: string) => ({
+  PLANES: `sst_planes_capacitacion_${companyId}_v5`,
+  SESIONES: `sst_sesiones_ejecutadas_${companyId}_v5`,
+  ASISTENCIAS: `sst_asistencias_calificaciones_${companyId}_v5`,
+  EVIDENCIAS: `sst_evidencias_expediente_${companyId}_v5`,
+  AUDITORIAS: `sst_auditorias_calificaciones_${companyId}_v5`,
+});
 
 // Seed initial data separating the unified initialCapacitaciones into normalized independent schemas
-function getInitialSeededData() {
+function getInitialSeededData(companyId: string = 'taller-los-andes') {
+  const companyData = getCompanyDataset(companyId);
   const planes: PlanCapacitacion[] = [];
   const sesiones: SesionEjecutada[] = [];
   const asistencias: AsistenciaCalificacion[] = [];
   const evidencias: EvidenciaExpediente[] = [];
   const auditorias: AuditoriaCalificacion[] = [];
 
-  initialCapacitaciones.forEach((legacy) => {
-    const ano = parseInt(legacy.fechaProgramada.split('-')[0] || '2025', 10);
+  companyData.capacitaciones.forEach((legacy) => {
+    const ano = parseInt(legacy.fechaProgramada.split('-')[0] || '2026', 10);
     const mes = parseInt(legacy.fechaProgramada.split('-')[1] || '1', 10);
 
     const planId = `PLAN-${legacy.id}`;
@@ -35,43 +36,78 @@ function getInitialSeededData() {
 
     // Implementos específicos según la capacitación
     let defaultImplementos: string[] = ['Gafas de seguridad panorámicas con filtro UV 400'];
-    if (legacy.codigo === 'CAP-2025-001') {
+    if (legacy.codigo.includes('001') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Careta fotosensible electrónica regulable DIN 9-13',
         'Guantes de vaqueta y carnaza para soldador MIG/TIG',
         'Biombo ignífugo perimetral ámbar con absorción UV/IR',
         'Gafas de seguridad panorámicas con filtro UV 400',
       ];
-    } else if (legacy.codigo === 'CAP-2025-002') {
+    } else if (legacy.codigo.includes('002') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Guantes dieléctricos Clase 0 (1.000V) con sobreguantes',
         'Kit de Bloqueo y Etiquetado LOTO (5 candados, pinzas y tarjetas)',
         'Pértiga dieléctrica de salvamento para rescate en tensión',
         'Tapete aislante dieléctrico de piso (Capacidad 10.000V)',
       ];
-    } else if (legacy.codigo === 'CAP-2025-003') {
+    } else if (legacy.codigo.includes('003') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Cinturón biomecánico con tirantes para manipulación de cargas',
         'Polipasto mecánico y tecle de cadena (Capacidad 1 Tonelada)',
       ];
-    } else if (legacy.codigo === 'CAP-2025-004') {
+    } else if (legacy.codigo.includes('004') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Guantes de nitrilo para manipulación química',
         'Kit de control de derrames de hidrocarburos (20 Galones)',
         'Conos reflectivos de 70 cm y cinta de demarcación "Peligro"',
       ];
-    } else if (legacy.codigo === 'CAP-2025-005') {
+    } else if (legacy.codigo.includes('005') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Guantes de poda y carnaza reforzada',
         'Guantes anticorte nivel F con fibra de Kevlar/Acero',
         'Careta facial de policarbonato alto impacto para desbaste',
         'Protector auditivo tipo copa de alta atenuación (NRR 27 dB)',
       ];
-    } else if (legacy.codigo === 'CAP-2025-006') {
+    } else if (legacy.codigo.includes('006') && companyId === 'taller-los-andes') {
       defaultImplementos = [
         'Fichas de Datos de Seguridad (FDS) del Sistema Globalmente Armonizado',
         'Proyector audiovisual y presentaciones técnicas interactivas',
       ];
+    } else if (companyId === 'servic-crear') {
+      if (legacy.codigo.includes('001')) {
+        defaultImplementos = [
+          'Arnés de 4 argollas para rescate en espacios confinados ANSI Z359.11',
+          'Detector portátil multigás 4 gases con bomba de muestreo continuo',
+          'Trípode de aluminio certificado de 2.4 m con malacate retráctil',
+          'Respirador 3M silicona con cartuchos combinados para vapores de cloro',
+        ];
+      } else if (legacy.codigo.includes('002')) {
+        defaultImplementos = [
+          'Careta con pantalla de malla forestal y protector auditivo SNR 28 dB',
+          'Perneras de protección anticorte Clase 1 STIHL (20 m/s)',
+          'Guantes de descarne antivibración para maquinaria a batería',
+          'Polainas rígidas protectoras de canilla contra impacto de piedras',
+        ];
+      } else if (legacy.codigo.includes('003')) {
+        defaultImplementos = [
+          'Monogafas químicas herméticas con ventilación indirecta ANSI Z87.1',
+          'Guantes de nitrilo verde pesado de 13 pulgadas resistentes a cloro',
+          'Pechera de PVC impermeable para manipulación de químicos de piscina',
+          'Kit colorimétrico digital DPD para cloro residual y pH',
+        ];
+      } else if (legacy.codigo.includes('004')) {
+        defaultImplementos = [
+          'Máscara Full Face 3M Serie 6800 para plaguicidas y desinfección',
+          'Traje de protección química microporoso Tipo 4/5/6 con capucha',
+          'Estaciones de monitoreo y cebado de roedores con llave de seguridad',
+        ];
+      } else {
+        defaultImplementos = [
+          'Zapatos ergonómicos impermeables con suela antideslizante SRC',
+          'Mopas de microfibra ultralivianas y carro escurridor ergonómico',
+          'Avisos plegables "Piso Húmedo" color amarillo reflectivo',
+        ];
+      }
     }
 
     // 1. Plan entity
@@ -97,7 +133,7 @@ function getInitialSeededData() {
       criterioEficaciaMinima: 80,
       estado: legacy.estado as PlanCapacitacion['estado'],
       implementosRequeridos: defaultImplementos,
-      empresa: 'Taller Los Andes S.A.S.',
+      empresa: companyData.company.name,
       createdAt: legacy.fechaProgramada + 'T08:00:00.000Z',
       updatedAt: legacy.fechaProgramada + 'T08:00:00.000Z',
     };
@@ -108,8 +144,10 @@ function getInitialSeededData() {
       ? 'cap-claudia-vega'
       : legacy.capacitador.nombre.includes('Peñaloza')
       ? 'cap-mauricio-penaloza'
-      : legacy.capacitador.nombre.includes('Norton')
-      ? 'cap-norton'
+      : legacy.capacitador.nombre.includes('Andrea')
+      ? 'cap-andrea-morales'
+      : legacy.capacitador.nombre.includes('STIHL')
+      ? 'cap-stihl-colombia'
       : 'cap-carlos-mendez';
 
     const sesion: SesionEjecutada = {
@@ -122,7 +160,7 @@ function getInitialSeededData() {
       capacitadorNombre: legacy.capacitador.nombre,
       capacitadorEntidad: legacy.capacitador.entidad,
       capacitadorLicencia: legacy.capacitador.licenciaOId,
-      capacitadorTipo: legacy.capacitador.entidad.includes('Taller Los Andes') ? 'INTERNO' : 'EXTERNO',
+      capacitadorTipo: legacy.capacitador.entidad.includes(companyData.company.name) ? 'INTERNO' : 'EXTERNO',
       estadoActa: legacy.estado === 'EJECUTADA' ? 'FIRMADA' : 'PENDIENTE',
       firmaCapacitador:
         legacy.estado === 'EJECUTADA'
@@ -136,8 +174,8 @@ function getInitialSeededData() {
       firmaResponsableSST:
         legacy.estado === 'EJECUTADA'
           ? {
-              firmante: 'Ing. Carlos Méndez',
-              cargo: 'Especialista SST • Lic. 18492-2018',
+              firmante: companyData.company.responsableSST.nombre,
+              cargo: companyData.company.responsableSST.cargo,
               fecha: legacy.fechaEjecucion || legacy.fechaProgramada,
               hash: `SHA-SST-${legacy.id.substring(4)}`,
             }
@@ -162,8 +200,9 @@ function getInitialSeededData() {
           cargo: asist.cargo,
           area: legacy.areaAfectada,
           asistio: asist.asistio,
-          calificacion: asist.asistio && asist.calificacion !== undefined ? asist.calificacion : null,
+          calificacion: asist.calificacion ?? null,
           firmaRegistrada: asist.firmaRegistrada,
+          hashFirma: asist.firmaRegistrada ? `BIO-${asist.cedula.replace(/\D/g, '')}` : undefined,
           updatedAt: (legacy.fechaEjecucion || legacy.fechaProgramada) + 'T10:00:00.000Z',
         });
       });
@@ -195,7 +234,7 @@ function getInitialSeededData() {
         tamanoBytes: 940000, // ~940 KB
         url: '#documento-firmado-pdf',
         tipoEvidencia: 'LISTA_ASISTENCIA_FISICA',
-        subidoPor: 'Ing. Carlos Méndez',
+        subidoPor: companyData.company.responsableSST.nombre,
         subidoRol: 'RESPONSABLE_SST',
         subidoFecha: (legacy.fechaEjecucion || legacy.fechaProgramada) + 'T11:45:00.000Z',
         validaMagicBytes: true,
@@ -209,6 +248,7 @@ function getInitialSeededData() {
 
 // Memory cache + LocalStorage synchronization
 class CapacitacionesStorageService {
+  private activeCompanyId: string = 'taller-los-andes';
   private planes: PlanCapacitacion[] = [];
   private sesiones: SesionEjecutada[] = [];
   private asistencias: AsistenciaCalificacion[] = [];
@@ -220,13 +260,25 @@ class CapacitacionesStorageService {
     this.init();
   }
 
+  public setCompany(companyId: string) {
+    if (this.activeCompanyId === companyId) return;
+    this.activeCompanyId = companyId;
+    this.init();
+    this.notify();
+  }
+
+  public getCompanyId(): string {
+    return this.activeCompanyId;
+  }
+
   private init() {
     try {
-      const storedPlanes = localStorage.getItem(STORAGE_KEYS.PLANES);
-      const storedSesiones = localStorage.getItem(STORAGE_KEYS.SESIONES);
-      const storedAsistencias = localStorage.getItem(STORAGE_KEYS.ASISTENCIAS);
-      const storedEvidencias = localStorage.getItem(STORAGE_KEYS.EVIDENCIAS);
-      const storedAuditorias = localStorage.getItem(STORAGE_KEYS.AUDITORIAS);
+      const keys = getStorageKeys(this.activeCompanyId);
+      const storedPlanes = localStorage.getItem(keys.PLANES);
+      const storedSesiones = localStorage.getItem(keys.SESIONES);
+      const storedAsistencias = localStorage.getItem(keys.ASISTENCIAS);
+      const storedEvidencias = localStorage.getItem(keys.EVIDENCIAS);
+      const storedAuditorias = localStorage.getItem(keys.AUDITORIAS);
 
       if (storedPlanes && storedSesiones && storedAsistencias) {
         this.planes = JSON.parse(storedPlanes);
@@ -235,7 +287,7 @@ class CapacitacionesStorageService {
         this.evidencias = storedEvidencias ? JSON.parse(storedEvidencias) : [];
         this.auditorias = storedAuditorias ? JSON.parse(storedAuditorias) : [];
       } else {
-        const seeded = getInitialSeededData();
+        const seeded = getInitialSeededData(this.activeCompanyId);
         this.planes = seeded.planes;
         this.sesiones = seeded.sesiones;
         this.asistencias = seeded.asistencias;
@@ -245,7 +297,7 @@ class CapacitacionesStorageService {
       }
     } catch (e) {
       console.error('Error initializing capacitaciones storage, fallback to seed', e);
-      const seeded = getInitialSeededData();
+      const seeded = getInitialSeededData(this.activeCompanyId);
       this.planes = seeded.planes;
       this.sesiones = seeded.sesiones;
       this.asistencias = seeded.asistencias;
@@ -256,11 +308,12 @@ class CapacitacionesStorageService {
 
   private persistAll() {
     try {
-      localStorage.setItem(STORAGE_KEYS.PLANES, JSON.stringify(this.planes));
-      localStorage.setItem(STORAGE_KEYS.SESIONES, JSON.stringify(this.sesiones));
-      localStorage.setItem(STORAGE_KEYS.ASISTENCIAS, JSON.stringify(this.asistencias));
-      localStorage.setItem(STORAGE_KEYS.EVIDENCIAS, JSON.stringify(this.evidencias));
-      localStorage.setItem(STORAGE_KEYS.AUDITORIAS, JSON.stringify(this.auditorias));
+      const keys = getStorageKeys(this.activeCompanyId);
+      localStorage.setItem(keys.PLANES, JSON.stringify(this.planes));
+      localStorage.setItem(keys.SESIONES, JSON.stringify(this.sesiones));
+      localStorage.setItem(keys.ASISTENCIAS, JSON.stringify(this.asistencias));
+      localStorage.setItem(keys.EVIDENCIAS, JSON.stringify(this.evidencias));
+      localStorage.setItem(keys.AUDITORIAS, JSON.stringify(this.auditorias));
     } catch (err) {
       console.warn('LocalStorage save quota or access error:', err);
     }
@@ -327,8 +380,9 @@ class CapacitacionesStorageService {
     };
 
     // Create attendee entries
+    const companyData = getCompanyDataset(this.activeCompanyId);
     const attendeeRecords: AsistenciaCalificacion[] = convocadosIds.map((empId) => {
-      const emp = workshopEmployees.find((e) => e.id === empId);
+      const emp = companyData.employees.find((e) => e.id === empId);
       return {
         id: `ASIS-${sesionId}-${empId}`,
         sesionId,
@@ -836,11 +890,12 @@ class CapacitacionesStorageService {
   }
 
   public resetToSeed() {
-    localStorage.removeItem(STORAGE_KEYS.PLANES);
-    localStorage.removeItem(STORAGE_KEYS.SESIONES);
-    localStorage.removeItem(STORAGE_KEYS.ASISTENCIAS);
-    localStorage.removeItem(STORAGE_KEYS.EVIDENCIAS);
-    localStorage.removeItem(STORAGE_KEYS.AUDITORIAS);
+    const keys = getStorageKeys(this.activeCompanyId);
+    localStorage.removeItem(keys.PLANES);
+    localStorage.removeItem(keys.SESIONES);
+    localStorage.removeItem(keys.ASISTENCIAS);
+    localStorage.removeItem(keys.EVIDENCIAS);
+    localStorage.removeItem(keys.AUDITORIAS);
     this.init();
     this.notify();
   }

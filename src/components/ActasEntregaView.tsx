@@ -40,49 +40,75 @@ export function ActasEntregaView({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedActaForPrint, setSelectedActaForPrint] = useState<HazardRecord | null>(null);
 
-  // Workers assigned per hazard for demo delivery realism
+  // Workers assigned per hazard for demo delivery realism (2026)
   const workersDirectory: Record<string, { nombre: string; cedula: string; cargo: string; fecha: string }> = {
+    // Taller Los Andes
+    'PEL-2026-001': {
+      nombre: 'Javier Morales',
+      cedula: '80.123.456',
+      cargo: 'Soldador MIG/MAG Especialista',
+      fecha: '18 Enero 2026',
+    },
+    'PEL-2026-002': {
+      nombre: 'Wilmer Antonio Parra',
+      cedula: '1.022.345.678',
+      cargo: 'Electricista Automotriz Matriculado',
+      fecha: '22 Enero 2026',
+    },
+    'PEL-2026-003': {
+      nombre: 'Nelson Martínez',
+      cedula: '80.987.654',
+      cargo: 'Auxiliar de Mantenimiento y Servicios',
+      fecha: '05 Febrero 2026',
+    },
     'PEL-2024-001': {
-      nombre: 'Pedro Morales Arango',
-      cedula: '1.020.458.912',
-      cargo: 'Operario Soldador Especialista',
-      fecha: '18 Enero 2025',
+      nombre: 'Javier Morales',
+      cedula: '80.123.456',
+      cargo: 'Soldador MIG/MAG',
+      fecha: '18 Enero 2026',
     },
     'PEL-2024-002': {
-      nombre: 'Javier Ortiz Castillo',
-      cedula: '80.194.223',
-      cargo: 'Técnico Electricista y Mantenimiento',
-      fecha: '22 Enero 2025',
+      nombre: 'Wilmer Antonio Parra',
+      cedula: '1.022.345.678',
+      cargo: 'Electricista Automotriz',
+      fecha: '22 Enero 2026',
     },
     'PEL-2024-003': {
-      nombre: 'Hernando Vargas Morales',
-      cedula: '79.821.430',
-      cargo: 'Mecánico de Patio y Ajuste',
-      fecha: '05 Febrero 2025',
+      nombre: 'Nelson Martínez',
+      cedula: '80.987.654',
+      cargo: 'Auxiliar de Mantenimiento',
+      fecha: '05 Febrero 2026',
     },
-    'PEL-2024-004': {
-      nombre: 'Wilson Cárdenas Reyes',
-      cedula: '1.014.229.801',
-      cargo: 'Pintor Automotriz y Carrocería',
-      fecha: '10 Febrero 2025',
+    // SERVIC CREAR S.A.S.
+    'PEL-SC-2026-001': {
+      nombre: 'Carlos Eduardo Téllez',
+      cedula: '93.412.556',
+      cargo: 'Operario Especialista en Tanques de Agua Potable',
+      fecha: '18 Marzo 2026',
     },
-    'PEL-2024-005': {
-      nombre: 'Raúl Suárez Peña',
-      cedula: '1.032.405.118',
-      cargo: 'Operario de Lavado y Desengrase',
-      fecha: '15 Febrero 2025',
+    'PEL-SC-2026-002': {
+      nombre: 'Diego Armando Méndez',
+      cedula: '93.390.112',
+      cargo: 'Operario de Poda y Zonas Verdes STIHL',
+      fecha: '10 Abril 2026',
     },
-    'PEL-2024-006': {
-      nombre: 'Camilo Andrés Duque',
-      cedula: '80.765.432',
-      cargo: 'Mecánico de Suspensión y Frenos',
-      fecha: '20 Febrero 2025',
+    'PEL-SC-2026-003': {
+      nombre: 'Álvaro Hernán Devia',
+      cedula: '93.284.102',
+      cargo: 'Operario Técnico de Piscinas',
+      fecha: '05 Mayo 2026',
     },
-    'PEL-2024-007': {
-      nombre: 'Mauricio Rincón Duarte',
-      cedula: '79.912.334',
-      cargo: 'Jefe de Taller / Vigía SST',
-      fecha: '25 Febrero 2025',
+    'PEL-SC-2026-004': {
+      nombre: 'Fabián Andrés Guzmán',
+      cedula: '1.110.489.123',
+      cargo: 'Técnico en Mantenimiento Locativo',
+      fecha: '15 Junio 2026',
+    },
+    'PEL-SC-2026-005': {
+      nombre: 'Gloria Esperanza Prada',
+      cedula: '38.256.789',
+      cargo: 'Supervisora de Sanidad Ambiental',
+      fecha: '20 Agosto 2026',
     },
   };
 
@@ -284,7 +310,7 @@ export function ActasEntregaView({
                   nombre: 'Trabajador Operativo',
                   cedula: 'N/A',
                   cargo: hazard.zonaLugar.split('•')[0].trim(),
-                  fecha: '2025',
+                  fecha: '2026',
                 };
                 const isFirmada = hazard.estadoEntregaEPP === 'FIRMADA';
 
@@ -293,7 +319,7 @@ export function ActasEntregaView({
                     {/* Code and Date */}
                     <td data-label="Acta / Cód." className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-semibold text-slate-900 text-[13px]">
-                        ACT-EPP-2025-{String(index + 1).padStart(2, '0')}
+                        ACT-EPP-2026-{String(index + 1).padStart(2, '0')}
                       </div>
                       <div className="text-[12px] text-slate-400 font-sans font-normal mt-0.5">
                         {worker.fecha}

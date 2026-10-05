@@ -60,8 +60,8 @@ export function NewHazardForm({
     e.preventDefault();
 
     const newRecord: HazardRecord = {
-      id: `PEL-${Date.now().toString().slice(-4)}`,
-      code: `GTC45-TLA-2025-${Math.floor(Math.random() * 90 + 10)}`,
+      id: `PEL-${company.id === 'servic-crear' ? 'SC-' : ''}2026-${Date.now().toString().slice(-4)}`,
+      code: `GTC45-${company.id === 'servic-crear' ? 'SC' : 'TLA'}-2026-${Math.floor(Math.random() * 90 + 10)}`,
       title: descripcionPeligro.slice(0, 70) || 'Nuevo Peligro Registrado',
       subtitle: efectosSalud.slice(0, 110) || 'Riesgo evaluado según GTC 45.',
       macroproceso: areaProceso.includes('Cocina') ? 'BIENESTAR / SERVICIOS • SEDE OPERATIVA' : 'OPERATIVO / PRODUCCIÓN TÉCNICA AUTOMOTRIZ',
