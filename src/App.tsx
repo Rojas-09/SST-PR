@@ -11,6 +11,7 @@ import { DashboardInicioView } from './components/DashboardInicioView';
 import { ActasEntregaView } from './components/ActasEntregaView';
 import { CapacitacionesView } from './components/CapacitacionesView';
 import { CalendarioVencimientos } from './components/CalendarioVencimientos';
+import { VencimientosView } from './components/VencimientosView';
 import { FloatingAssistant } from './components/FloatingAssistant';
 import { ContactsModal } from './components/ContactsModal';
 import { SettingsModal } from './components/SettingsModal';
@@ -135,7 +136,7 @@ export default function App() {
   };
 
   return (
-    <AuthRoleProvider>
+    <AuthRoleProvider activeCompanyId={company.id}>
       <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 text-[13px] relative">
         {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-col shrink-0 h-screen z-10">
@@ -154,6 +155,7 @@ export default function App() {
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenNewHazard={() => setActiveView('registrar-nuevo')}
           onOpenCompanySwitcher={() => setIsCompanySwitcherOpen(true)}
+          onSwitchCompany={handleSwitchCompany}
         />
       </div>
 
@@ -164,7 +166,7 @@ export default function App() {
             onClick={() => setIsMobileSidebarOpen(false)}
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
           />
-          <div className="relative w-64 bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
             <Sidebar
               activeView={activeView}
               onNavigate={(view) => {
@@ -193,6 +195,7 @@ export default function App() {
                 setIsCompanySwitcherOpen(true);
                 setIsMobileSidebarOpen(false);
               }}
+              onSwitchCompany={handleSwitchCompany}
             />
           </div>
         </div>
@@ -209,10 +212,12 @@ export default function App() {
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
           onOpenCompanySwitcher={() => setIsCompanySwitcherOpen(true)}
+          onSwitchCompany={handleSwitchCompany}
         />
 
         {/* Dynamic Views with single scroll container */}
         <main className="flex-1 overflow-y-auto bg-slate-50/50 pb-16">
+          <div key={activeView} className="anim-page-view">
             {/* Executive Dashboard with Recharts and Integrated AI Copilot */}
             {activeView === 'inicio' && (
               <DashboardInicioView
@@ -327,7 +332,7 @@ export default function App() {
 
             {/* Vista Completa de Calendario y Fechas Clave SG-SST */}
             {activeView === 'calendario' && (
-              <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+              <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6">
                 <CalendarioVencimientos
                   hazards={hazards}
                   incapacidades={incapacidades}
@@ -338,7 +343,20 @@ export default function App() {
                 />
               </div>
             )}
-          </main>
+
+            {/* Centro de Control de Vencimientos y Compromisos Legales SG-SST */}
+            {activeView === 'vencimientos' && (
+              <VencimientosView
+                hazards={hazards}
+                incapacidades={incapacidades}
+                company={company}
+                capacitaciones={capacitaciones}
+                onNavigate={setActiveView}
+                onSelectHazard={handleSelectHazard}
+              />
+            )}
+          </div>
+        </main>
         </div>
 
         {/* Floating AI Assistant Widget */}

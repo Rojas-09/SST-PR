@@ -1,17 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, UserRole, SesionEjecutada } from '../types/capacitaciones';
 
-export const PRESET_USERS: UserProfile[] = [
+// 1. Usuarios Oficiales de TALLER LOS ANDES S.A.S. (Bogotá D.C. • Metalmecánica • Positiva ARL)
+export const TALLER_LOS_ANDES_USERS: UserProfile[] = [
   {
-    id: 'usr-admin-1',
-    nombre: 'Rodrigo Gómez V.',
-    email: 'gerencia@tallerlosandes.com.co',
-    rol: 'ADMINISTRADOR',
-    cargo: 'Representante Legal / Gerente General',
-    entidad: 'Taller Los Andes S.A.S.',
-  },
-  {
-    id: 'usr-sst-1',
+    id: 'usr-tla-sst',
     nombre: 'Ing. Carlos Méndez',
     email: 'sst@tallerlosandes.com.co',
     rol: 'RESPONSABLE_SST',
@@ -21,17 +14,15 @@ export const PRESET_USERS: UserProfile[] = [
     capacitadorId: 'cap-carlos-mendez',
   },
   {
-    id: 'usr-sst-sc',
-    nombre: 'Ing. Andrea Morales Peña',
-    email: 'talentohumanoserviccrear@gmail.com',
-    rol: 'RESPONSABLE_SST',
-    cargo: 'Especialista y Responsable del SG-SST',
-    entidad: 'SERVIC CREAR S.A.S.',
-    licenciaOId: 'Lic. 24890-SST Tolima',
-    capacitadorId: 'cap-andrea-morales',
+    id: 'usr-tla-admin',
+    nombre: 'Rodrigo Gómez V.',
+    email: 'gerencia@tallerlosandes.com.co',
+    rol: 'ADMINISTRADOR',
+    cargo: 'Representante Legal / Gerente General',
+    entidad: 'Taller Los Andes S.A.S.',
   },
   {
-    id: 'usr-ext-1',
+    id: 'usr-tla-ext-1',
     nombre: 'Ft. Claudia Marcela Vega',
     email: 'cvega.ergonomia@positiva.gov.co',
     rol: 'INSTRUCTOR_EXTERNO',
@@ -41,7 +32,7 @@ export const PRESET_USERS: UserProfile[] = [
     capacitadorId: 'cap-claudia-vega',
   },
   {
-    id: 'usr-ext-2',
+    id: 'usr-tla-ext-2',
     nombre: 'Ing. Mauricio Peñaloza',
     email: 'mpenaloza@positiva.gov.co',
     rol: 'INSTRUCTOR_EXTERNO',
@@ -51,7 +42,7 @@ export const PRESET_USERS: UserProfile[] = [
     capacitadorId: 'cap-mauricio-penaloza',
   },
   {
-    id: 'usr-lectura-1',
+    id: 'usr-tla-lectura',
     nombre: 'Dra. Elena Santamaría',
     email: 'inspeccion.sst@mintrabajo.gov.co',
     rol: 'LECTURA',
@@ -59,6 +50,59 @@ export const PRESET_USERS: UserProfile[] = [
     entidad: 'Ministerio del Trabajo (Mintrabajo)',
   },
 ];
+
+// 2. Usuarios Oficiales de SERVIC CREAR S.A.S. (Ibagué, Tolima • Servicios Generales • Seguros SURA / STIHL)
+export const SERVIC_CREAR_USERS: UserProfile[] = [
+  {
+    id: 'usr-sc-sst',
+    nombre: 'Ing. Andrea Morales Peña',
+    email: 'talentohumanoserviccrear@gmail.com',
+    rol: 'RESPONSABLE_SST',
+    cargo: 'Líder SG-SST / Especialista SST',
+    entidad: 'SERVIC CREAR S.A.S.',
+    licenciaOId: 'Lic. 24890-SST Tolima',
+    capacitadorId: 'cap-andrea-morales',
+  },
+  {
+    id: 'usr-sc-admin',
+    nombre: 'Dra. Claudia Patricia Varón',
+    email: 'gerencia@serviccrear.com.co',
+    rol: 'ADMINISTRADOR',
+    cargo: 'Representante Legal / Gerente General',
+    entidad: 'SERVIC CREAR S.A.S.',
+  },
+  {
+    id: 'usr-sc-ext-1',
+    nombre: 'Ing. Marcos Beltrán',
+    email: 'capacitacion@stihl.com.co',
+    rol: 'INSTRUCTOR_EXTERNO',
+    cargo: 'Asesor Técnico en Maquinaria a Batería y Poda',
+    entidad: 'STIHL Colombia • Soporte Especializado',
+    licenciaOId: 'Cert. Máster STIHL N° 2026-CO-841',
+    capacitadorId: 'cap-stihl-colombia',
+  },
+  {
+    id: 'usr-sc-ext-2',
+    nombre: 'Dra. Pilar Gómez Cárdenas',
+    email: 'prevencion@sura.com.co',
+    rol: 'INSTRUCTOR_EXTERNO',
+    cargo: 'Consultora de Prevención y Riesgos Laborales',
+    entidad: 'Seguros SURA ARL',
+    licenciaOId: 'Lic. SURA-8841-BOG',
+    capacitadorId: 'cap-sura-asesor',
+  },
+  {
+    id: 'usr-sc-lectura',
+    nombre: 'Dr. Hernando Prieto Mendoza',
+    email: 'inspeccion.tolima@mintrabajo.gov.co',
+    rol: 'LECTURA',
+    cargo: 'Auditor SST / Inspector Territorial Tolima',
+    entidad: 'Ministerio del Trabajo - D.T. Tolima',
+  },
+];
+
+// Fallback compatible list
+export const PRESET_USERS: UserProfile[] = [...TALLER_LOS_ANDES_USERS, ...SERVIC_CREAR_USERS];
 
 interface AuthRoleContextType {
   currentUser: UserProfile;
@@ -84,36 +128,48 @@ interface AuthRoleContextType {
 
 const AuthRoleContext = createContext<AuthRoleContextType | undefined>(undefined);
 
-const AUTH_USER_STORAGE_KEY = 'sst_active_user_v1';
+export interface AuthRoleProviderProps {
+  children: React.ReactNode;
+  activeCompanyId?: string;
+}
 
-export const AuthRoleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthRoleProvider: React.FC<AuthRoleProviderProps> = ({ children, activeCompanyId = 'servic-crear' }) => {
+  // Determine isolated user roster based on activeCompanyId
+  const getCompanyUsers = (compId: string): UserProfile[] => {
+    return compId === 'servic-crear' ? SERVIC_CREAR_USERS : TALLER_LOS_ANDES_USERS;
+  };
+
+  const [activeUsers, setActiveUsers] = useState<UserProfile[]>(() => getCompanyUsers(activeCompanyId));
+
   const [currentUser, setCurrentUserState] = useState<UserProfile>(() => {
-    try {
-      const saved = localStorage.getItem(AUTH_USER_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const match = PRESET_USERS.find((u) => u.id === parsed.id);
-        if (match) return match;
-      }
-    } catch {
-      // fallback
-    }
-    return PRESET_USERS[1]; // Default to Responsable SST
+    const users = getCompanyUsers(activeCompanyId);
+    return users.find((u) => u.rol === 'RESPONSABLE_SST') || users[0];
   });
 
+  // Whenever activeCompanyId changes, immediately enforce strict isolation:
+  useEffect(() => {
+    const companyUsers = getCompanyUsers(activeCompanyId);
+    setActiveUsers(companyUsers);
+
+    // Keep the current role if possible, else default to RESPONSABLE_SST in the new company
+    setCurrentUserState((prev) => {
+      const matchInNewCompany = companyUsers.find((u) => u.rol === prev.rol);
+      return matchInNewCompany || companyUsers.find((u) => u.rol === 'RESPONSABLE_SST') || companyUsers[0];
+    });
+  }, [activeCompanyId]);
+
   const setCurrentUser = (user: UserProfile) => {
-    setCurrentUserState(user);
-    try {
-      localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(user));
-    } catch {
-      // ignore
+    // Only accept user if it belongs to the current company
+    const belongs = activeUsers.some((u) => u.id === user.id);
+    if (belongs) {
+      setCurrentUserState(user);
     }
   };
 
   const switchRole = (role: UserRole) => {
-    const user = PRESET_USERS.find((u) => u.rol === role);
-    if (user) {
-      setCurrentUser(user);
+    const targetUser = activeUsers.find((u) => u.rol === role);
+    if (targetUser) {
+      setCurrentUserState(targetUser);
     }
   };
 
@@ -144,7 +200,6 @@ export const AuthRoleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return { allowed: false, reason: 'El rol de LECTURA solo tiene permisos de consulta.' };
     }
 
-    // Check lock state: if acta is FIRMADA or CONVALIDADA, editing is strictly blocked
     if (sesion.estadoActa === 'FIRMADA' || sesion.estadoActa === 'CONVALIDADA') {
       return {
         allowed: false,
@@ -254,7 +309,7 @@ export const AuthRoleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <AuthRoleContext.Provider
       value={{
         currentUser,
-        availableUsers: PRESET_USERS,
+        availableUsers: activeUsers,
         setCurrentUser,
         switchRole,
         canManagePlan,

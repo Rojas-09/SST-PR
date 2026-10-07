@@ -143,29 +143,29 @@ export function ActasEntregaView({
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto font-sans text-[13px] text-slate-800">
+    <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 space-y-6 font-sans text-sm sm:text-base text-slate-800">
       {/* Header Banner */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans">
         <div>
-          <div className="flex flex-wrap items-center gap-2 mb-1.5">
-            <span className="text-[11.5px] font-sans font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="text-xs font-sans font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
               DECRETO 1072/2015 ART. 2.2.4.6.24 • RESOLUCIÓN 0312 ÍTEM 4.2.6
             </span>
-            <span className="text-[12px] text-slate-500 font-sans font-normal">• Custodia Legal 20 Años</span>
+            <span className="text-xs text-slate-500 font-sans font-medium">• Custodia Legal 20 Años</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight font-sans">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight font-sans">
             Actas Oficiales de Dotación y Entrega de EPP
           </h1>
-          <p className="text-[13px] font-normal text-slate-600 mt-1 max-w-3xl leading-relaxed font-sans">
+          <p className="text-sm sm:text-base font-normal text-slate-600 mt-1.5 max-w-4xl leading-relaxed font-sans">
             Gestión y archivo digital de entrega de Elementos de Protección Personal certificados con firma del operario receptor y del Responsable SST, garantizando trazabilidad para auditorías del Ministerio del Trabajo y ARL.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
             type="button"
             onClick={() => window.print()}
-            className="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-[13px] font-sans font-medium flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors"
+            className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs sm:text-sm font-sans font-semibold flex items-center gap-2 cursor-pointer shadow-2xs transition-colors"
           >
             <Printer className="w-4 h-4 text-slate-500" />
             <span>Imprimir Listado</span>
@@ -173,7 +173,7 @@ export function ActasEntregaView({
           <button
             type="button"
             onClick={() => onNavigate('gestion-peligros')}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[13px] font-sans font-medium flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-sans font-bold flex items-center gap-2 cursor-pointer shadow-xs transition-colors"
           >
             <ShieldCheck className="w-4 h-4" />
             <span>Matriz de Controles</span>

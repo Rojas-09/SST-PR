@@ -18,6 +18,8 @@ interface PrintTemplatesProps {
   planes?: PlanCapacitacion[];
   company: CompanyInfo;
   hazards?: HazardRecord[];
+  includeSystemWorkers?: boolean;
+  blankRowsCount?: number;
 }
 
 export function PrintTemplates({
@@ -28,6 +30,8 @@ export function PrintTemplates({
   planes = [],
   company,
   hazards = [],
+  includeSystemWorkers = true,
+  blankRowsCount = 3,
 }: PrintTemplatesProps) {
   const metricas: MetricasSesion = sesion && plan
     ? capacitacionesStorage.calcularMetricas(sesion.id, plan.criterioEficaciaMinima)
@@ -93,9 +97,9 @@ export function PrintTemplates({
               <div className="col-span-6"><strong>Licencia / Id:</strong> {sesion.capacitadorLicencia}</div>
               <div className="col-span-12"><strong>Normativa Legal:</strong> {plan.normativaAplicable}</div>
               {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
-                <div className="col-span-12 pt-1.5 border-t border-dotted border-black text-xs">
+                <div className="col-span-12 pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
                   <strong>Implementos, Equipos y EPP Utilizados:</strong>{' '}
-                  {plan.implementosRequeridos.join(' • ')}
+                  <span className="break-words">{plan.implementosRequeridos.join(' • ')}</span>
                 </div>
               )}
             </div>
@@ -120,31 +124,61 @@ export function PrintTemplates({
                 </tr>
               </thead>
               <tbody>
-                {asistencias.map((asist, idx) => {
-                  const isApproved = (asist.calificacion ?? 0) >= 70;
+                {includeSystemWorkers &&
+                  asistencias.map((asist, idx) => {
+                    const isApproved = (asist.calificacion ?? 0) >= 70;
+                    return (
+                      <tr key={asist.id} className="border-b border-black">
+                        <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
+                        <td className="p-2 border border-black font-bold">{asist.nombre}</td>
+                        <td className="p-2 border border-black font-mono">{asist.cedula}</td>
+                        <td className="p-2 border border-black">{asist.cargo}</td>
+                        <td className="p-2 border border-black text-center font-bold">
+                          {asist.asistio ? 'SÍ' : 'NO'}
+                        </td>
+                        <td className="p-2 border border-black text-center font-mono font-bold">
+                          {asist.calificacion !== null ? `${asist.calificacion} pts` : '—'}
+                        </td>
+                        <td className="p-2 border border-black text-center font-bold">
+                          {!asist.asistio
+                            ? 'AUSENTE'
+                            : asist.calificacion === null
+                            ? 'PENDIENTE'
+                            : isApproved
+                            ? 'APROBADO'
+                            : 'REPROBADO'}
+                        </td>
+                        <td className="p-2 border border-black text-center text-xs font-mono">
+                          {asist.firmaRegistrada ? 'CERTIFICADA' : 'SIN FIRMA'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+
+                {/* Renglones en blanco adicionales o exclusivos */}
+                {Array.from({ length: blankRowsCount }, (_, i) => i + 1).map((n) => {
+                  const baseCount = includeSystemWorkers ? asistencias.length : 0;
                   return (
-                    <tr key={asist.id} className="border-b border-black">
-                      <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
-                      <td className="p-2 border border-black font-bold">{asist.nombre}</td>
-                      <td className="p-2 border border-black font-mono">{asist.cedula}</td>
-                      <td className="p-2 border border-black">{asist.cargo}</td>
-                      <td className="p-2 border border-black text-center font-bold">
-                        {asist.asistio ? 'SÍ' : 'NO'}
+                    <tr key={`blank-acta-${n}`} className="border-b border-black h-9">
+                      <td className="p-2 border border-black text-center font-mono text-slate-500">
+                        {baseCount + n}
                       </td>
-                      <td className="p-2 border border-black text-center font-mono font-bold">
-                        {asist.calificacion !== null ? `${asist.calificacion} pts` : '—'}
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '___________________________'}
                       </td>
-                      <td className="p-2 border border-black text-center font-bold">
-                        {!asist.asistio
-                          ? 'AUSENTE'
-                          : asist.calificacion === null
-                          ? 'PENDIENTE'
-                          : isApproved
-                          ? 'APROBADO'
-                          : 'REPROBADO'}
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '_____________'}
                       </td>
-                      <td className="p-2 border border-black text-center text-xs font-mono">
-                        {asist.firmaRegistrada ? 'CERTIFICADA' : 'SIN FIRMA'}
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '_________________'}
+                      </td>
+                      <td className="p-2 border border-black text-center">
+                        <div className="w-4 h-4 border border-black mx-auto" />
+                      </td>
+                      <td className="p-2 border border-black text-center text-slate-400 font-mono">___</td>
+                      <td className="p-2 border border-black text-center text-slate-400 font-mono">___</td>
+                      <td className="p-2 border border-black text-center align-bottom pb-1">
+                        <div className="w-full border-b border-dotted border-slate-500" />
                       </td>
                     </tr>
                   );
@@ -250,9 +284,9 @@ export function PrintTemplates({
               <div><strong>Duración Estimada:</strong> {plan.duracionHoras} Horas</div>
             </div>
             {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
-              <div className="pt-1.5 border-t border-dotted border-black text-xs">
+              <div className="pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
                 <strong>Implementos, Equipos y EPP Obligatorios en Campo:</strong>{' '}
-                {plan.implementosRequeridos.join(' • ')}
+                <span className="break-words">{plan.implementosRequeridos.join(' • ')}</span>
               </div>
             )}
           </div>
@@ -277,37 +311,49 @@ export function PrintTemplates({
                 </tr>
               </thead>
               <tbody>
-                {asistencias.map((asist, idx) => (
-                  <tr key={asist.id} className="border-b border-black h-11">
-                    <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
-                    <td className="p-2 border border-black font-bold">{asist.nombre}</td>
-                    <td className="p-2 border border-black font-mono">{asist.cedula}</td>
-                    <td className="p-2 border border-black">{asist.cargo}</td>
-                    <td className="p-2 border border-black text-center">
-                      <div className="w-5 h-5 border border-black mx-auto" />
-                    </td>
-                    <td className="p-2 border border-black text-center align-bottom pb-1.5">
-                      <div className="w-full border-b border-dotted border-slate-500" />
-                    </td>
-                  </tr>
-                ))}
-                {/* 3 additional blank lines for guest/extra attendees */}
-                {[1, 2, 3].map((n) => (
-                  <tr key={`blank-${n}`} className="border-b border-black h-11">
-                    <td className="p-2 border border-black text-center font-mono text-slate-400">
-                      {asistencias.length + n}
-                    </td>
-                    <td className="p-2 border border-black"></td>
-                    <td className="p-2 border border-black"></td>
-                    <td className="p-2 border border-black"></td>
-                    <td className="p-2 border border-black text-center">
-                      <div className="w-5 h-5 border border-black mx-auto" />
-                    </td>
-                    <td className="p-2 border border-black text-center align-bottom pb-1.5">
-                      <div className="w-full border-b border-dotted border-slate-500" />
-                    </td>
-                  </tr>
-                ))}
+                {/* 1. Trabajadores registrados del sistema (si fueron incluidos) */}
+                {includeSystemWorkers &&
+                  asistencias.map((asist, idx) => (
+                    <tr key={asist.id} className="border-b border-black h-11">
+                      <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
+                      <td className="p-2 border border-black font-bold">{asist.nombre}</td>
+                      <td className="p-2 border border-black font-mono">{asist.cedula}</td>
+                      <td className="p-2 border border-black">{asist.cargo}</td>
+                      <td className="p-2 border border-black text-center">
+                        <div className="w-5 h-5 border border-black mx-auto" />
+                      </td>
+                      <td className="p-2 border border-black text-center align-bottom pb-1.5">
+                        <div className="w-full border-b border-dotted border-slate-500" />
+                      </td>
+                    </tr>
+                  ))}
+
+                {/* 2. Renglones en blanco para diligenciamiento manual a mano */}
+                {Array.from({ length: blankRowsCount }, (_, i) => i + 1).map((n) => {
+                  const baseCount = includeSystemWorkers ? asistencias.length : 0;
+                  return (
+                    <tr key={`blank-${n}`} className="border-b border-black h-11">
+                      <td className="p-2 border border-black text-center font-mono text-slate-500">
+                        {baseCount + n}
+                      </td>
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '___________________________'}
+                      </td>
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '_____________'}
+                      </td>
+                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
+                        {includeSystemWorkers ? '' : '_________________'}
+                      </td>
+                      <td className="p-2 border border-black text-center">
+                        <div className="w-5 h-5 border border-black mx-auto" />
+                      </td>
+                      <td className="p-2 border border-black text-center align-bottom pb-1.5">
+                        <div className="w-full border-b border-dotted border-slate-500" />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -45,6 +45,7 @@ import { AuditoriaCalificacionesModal } from './capacitaciones/AuditoriaCalifica
 import { CargaEvidenciasModal } from './capacitaciones/CargaEvidenciasModal';
 import { ReaperturaActaModal } from './capacitaciones/ReaperturaActaModal';
 import { DocumentoImpresionModal } from './capacitaciones/DocumentoImpresionModal';
+import { GestionTrabajadoresModal } from './capacitaciones/GestionTrabajadoresModal';
 
 interface CapacitacionesViewProps {
   hazards: HazardRecord[];
@@ -79,6 +80,7 @@ export function CapacitacionesView({
   const [isReaperturaOpen, setIsReaperturaOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [activePrintTemplate, setActivePrintTemplate] = useState<PrintTemplateType>('ACTA_OFICIAL');
+  const [isWorkersCrudOpen, setIsWorkersCrudOpen] = useState(false);
 
   // Subscribe to persistent storage events
   useEffect(() => {
@@ -173,7 +175,7 @@ export function CapacitacionesView({
   };
 
   return (
-    <div className="space-y-6 px-4 sm:px-6 lg:px-8 py-6 w-full max-w-7xl mx-auto font-sans text-slate-800 text-sm sm:text-base">
+    <div className="space-y-6 px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 w-full max-w-[1780px] mx-auto font-sans text-slate-800 text-sm sm:text-base">
       {/* RBAC Top Bar: Role Simulation & Authentication State */}
       <CapacitacionesRBACBar />
 
@@ -370,6 +372,17 @@ export function CapacitacionesView({
                 >
                   <FileText className="w-4 h-4" />
                   <span>Planilla de Campo</span>
+                </button>
+
+                {/* Gestionar Nómina de Trabajadores (CRUD) */}
+                <button
+                  type="button"
+                  onClick={() => setIsWorkersCrudOpen(true)}
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-colors cursor-pointer shadow-2xs whitespace-nowrap"
+                  title="Gestionar trabajadores en el sistema (CRUD)"
+                >
+                  <Users className="w-4 h-4 text-emerald-600" />
+                  <span>Nómina Trabajadores</span>
                 </button>
               </div>
             </div>
@@ -619,7 +632,22 @@ export function CapacitacionesView({
         planes={planes}
         company={company}
         hazards={hazards}
+        onWorkersUpdated={refreshData}
       />
+
+      {/* 5. Modal de Gestión de Trabajadores y Nómina SG-SST (CRUD) */}
+      {isWorkersCrudOpen && (
+        <GestionTrabajadoresModal
+          isOpen={isWorkersCrudOpen}
+          onClose={() => setIsWorkersCrudOpen(false)}
+          company={company}
+          onWorkersChanged={refreshData}
+          onOpenBlankSheet={() => {
+            setActivePrintTemplate('LISTA_ASISTENCIA');
+            setIsPrintModalOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -15,23 +15,47 @@ export function NewHazardForm({
   onSaveHazard,
   onNavigate,
 }: NewHazardFormProps) {
-  // Form state pre-populated with realistic workshop inspection data matching Screenshot 2
-  const [areaProceso, setAreaProceso] = useState('Zona de Soldadura y Corte — Soldadura de estructuras y chasis');
+  const isServicCrear = company.id === 'servic-crear';
+
+  const defaultArea = isServicCrear
+    ? 'SER-001 Limpieza y Desinfección — Lavado técnico de tanques de agua potable e interiores'
+    : 'Zona de Soldadura y Corte — Soldadura de estructuras y chasis';
+
+  const defaultDesc = isServicCrear
+    ? 'Ingreso y permanencia en espacio confinado para lavado y desinfección de tanques de agua potable con atmósfera confinada y uso de hipoclorito.'
+    : 'Generación continua de humos metálicos y chispas durante el ensamble y soldadura de chasises pesados sin extractor focalizado.';
+
+  const defaultEfectos = isServicCrear
+    ? 'Asfixia por deficiencia de oxígeno, intoxicación por vapores clorados, traumatismos por caída en altura al interior del tanque.'
+    : 'Quemaduras de segundo grado en extremidades superiores, conjuntivitis actínica ("ojo de soldador") e intoxicación por vapores de zinc.';
+
+  const defaultFuente = isServicCrear
+    ? 'Mantenimiento preventivo a equipos de bombeo y motobombas'
+    : 'Ajuste preventivo en bornes de soldadora eléctrica';
+
+  const defaultMedio = isServicCrear
+    ? 'Extractor de aire portátil y trípode de anclaje certificado'
+    : 'Biombo de lona ignífuga estándar móvil en patio';
+
+  const defaultTrabajador = isServicCrear
+    ? 'Arnés de cuerpo entero, línea de vida y máscara con filtro para gases ácidos'
+    : 'Careta fotosensible básica, guantes carnaza desgastados';
+
+  const defaultMedidas = isServicCrear
+    ? 'Monitoreo de atmósfera previa con multidetector de 4 gases certificado y protocolo estricto de permiso de trabajo en espacio confinado.'
+    : 'Instalar campana de extracción localizada en el banco de soldadura e implementar protocolo estricto de EPP certificado.';
+
+  // Form state
+  const [areaProceso, setAreaProceso] = useState(defaultArea);
   const [esRutinaria, setEsRutinaria] = useState(true);
-  const [tipoPeligro, setTipoPeligro] = useState('Condiciones de Seguridad');
-  const [factorEspecifico, setFactorEspecifico] = useState('Mecánico (Proyección de partículas)');
-  const [descripcionPeligro, setDescripcionPeligro] = useState(
-    'Generación continua de humos metálicos y chispas durante el ensamble y soldadura de chasises pesados sin extractor focalizado.'
-  );
-  const [efectosSalud, setEfectosSalud] = useState(
-    'Quemaduras de segundo grado en extremidades superiores, conjuntivitis actínica ("ojo de soldador") e intoxicación por vapores de zinc.'
-  );
-  const [controlFuente, setControlFuente] = useState('Ajuste preventivo en bornes de soldadora eléctrica');
-  const [controlMedio, setControlMedio] = useState('Biombo de lona ignífuga estándar móvil en patio');
-  const [controlTrabajador, setControlTrabajador] = useState('Careta fotosensible básica, guantes carnaza desgastados');
-  const [medidasRecomendadas, setMedidasRecomendadas] = useState(
-    'Instalar campana de extracción localizada en el banco de soldadura e implementar protocolo estricto de EPP certificado.'
-  );
+  const [tipoPeligro, setTipoPeligro] = useState(isServicCrear ? 'Peligro Químico y Espacio Confinado' : 'Condiciones de Seguridad');
+  const [factorEspecifico, setFactorEspecifico] = useState(isServicCrear ? 'Químico (Gases y Vapores / Confinado)' : 'Mecánico (Proyección de partículas)');
+  const [descripcionPeligro, setDescripcionPeligro] = useState(defaultDesc);
+  const [efectosSalud, setEfectosSalud] = useState(defaultEfectos);
+  const [controlFuente, setControlFuente] = useState(defaultFuente);
+  const [controlMedio, setControlMedio] = useState(defaultMedio);
+  const [controlTrabajador, setControlTrabajador] = useState(defaultTrabajador);
+  const [medidasRecomendadas, setMedidasRecomendadas] = useState(defaultMedidas);
 
   // GTC 45 interactive numbers matching Screenshot 2 (NP 4, NC 4 -> NR 16 Nivel I)
   const [np, setNp] = useState(4);
@@ -42,18 +66,18 @@ export function NewHazardForm({
   const evaluacion = useMemo(() => calculateGTC45(np, nc), [np, nc]);
 
   const handleReset = () => {
-    setAreaProceso('Zona de Soldadura y Corte — Soldadura de estructuras y chasis');
+    setAreaProceso(defaultArea);
+    setDescripcionPeligro(defaultDesc);
+    setEfectosSalud(defaultEfectos);
+    setControlFuente(defaultFuente);
+    setControlMedio(defaultMedio);
+    setControlTrabajador(defaultTrabajador);
+    setMedidasRecomendadas(defaultMedidas);
     setEsRutinaria(true);
-    setTipoPeligro('Condiciones de Seguridad');
-    setFactorEspecifico('Mecánico (Proyección de partículas)');
-    setDescripcionPeligro('');
-    setEfectosSalud('');
-    setControlFuente('');
-    setControlMedio('');
-    setControlTrabajador('');
-    setMedidasRecomendadas('');
-    setNp(3);
-    setNc(3);
+    setTipoPeligro(isServicCrear ? 'Peligro Químico y Espacio Confinado' : 'Condiciones de Seguridad');
+    setFactorEspecifico(isServicCrear ? 'Químico (Gases y Vapores / Confinado)' : 'Mecánico (Proyección de partículas)');
+    setNp(4);
+    setNc(4);
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -135,17 +159,17 @@ export function NewHazardForm({
   };
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+    <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 space-y-6 text-sm sm:text-base">
       {/* Top Header Section matching Screenshot 2 */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block font-semibold">
             MATRIZ GTC 45 • DECRETO 1072 • Inspección Operativa
           </span>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-0.5">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
             Registrar Nuevo Peligro
           </h1>
-          <p className="text-xs text-slate-600 mt-1">
+          <p className="text-sm sm:text-base text-slate-600 mt-1">
             Estandarización de valoración de riesgos para <strong className="text-slate-800">{company.name}</strong>.
           </p>
         </div>
@@ -218,24 +242,49 @@ export function NewHazardForm({
                 onChange={(e) => setAreaProceso(e.target.value)}
                 className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] font-sans"
               >
-                <option value="Zona de Soldadura y Corte — Soldadura de estructuras y chasis">
-                  Zona de Soldadura y Corte — Soldadura de estructuras y chasis
-                </option>
-                <option value="Bodega de Insumos — Almacenamiento y logística interna">
-                  Bodega de Insumos — Almacenamiento y logística interna
-                </option>
-                <option value="Mecánica Rápida — Mantenimiento preventivo">
-                  Mecánica Rápida — Mantenimiento preventivo
-                </option>
-                <option value="Pintura y Cabina — Aplicación electrostática">
-                  Pintura y Cabina — Aplicación electrostática
-                </option>
-                <option value="Cocina y Comedor — Servicios generales">
-                  Cocina y Comedor — Servicios generales
-                </option>
+                {isServicCrear ? (
+                  <>
+                    <option value="SER-001 Limpieza y Desinfección — Lavado técnico de tanques de agua potable e interiores">
+                      SER-001 Limpieza y Desinfección — Lavado técnico de tanques de agua potable e interiores
+                    </option>
+                    <option value="SER-002 Zonas Verdes y Paisajismo — Sostenimiento de jardines y poda con equipos STIHL">
+                      SER-002 Zonas Verdes y Paisajismo — Sostenimiento de jardines y poda con equipos STIHL
+                    </option>
+                    <option value="SER-003 Mantenimiento de Piscinas — Tratamiento químico, cloración y recirculación">
+                      SER-003 Mantenimiento de Piscinas — Tratamiento químico, cloración y recirculación
+                    </option>
+                    <option value="SER-004 Mantenimiento Locativo — Obras civiles menores, plomería y redes hidráulicas">
+                      SER-004 Mantenimiento Locativo — Obras civiles menores, plomería y redes hidráulicas
+                    </option>
+                    <option value="SER-005 Sanidad Ambiental — Fumigación integral, desinsectación y control de plagas">
+                      SER-005 Sanidad Ambiental — Fumigación integral, desinsectación y control de plagas
+                    </option>
+                    <option value="Bodega de Químicos y Equipos — Custodia de cloro, plaguicidas y maquinaria STIHL">
+                      Bodega de Químicos y Equipos — Custodia de cloro, plaguicidas y maquinaria STIHL
+                    </option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Zona de Soldadura y Corte — Soldadura de estructuras y chasis">
+                      Zona de Soldadura y Corte — Soldadura de estructuras y chasis
+                    </option>
+                    <option value="Bodega de Insumos — Almacenamiento y logística interna">
+                      Bodega de Insumos — Almacenamiento y logística interna
+                    </option>
+                    <option value="Mecánica Rápida — Mantenimiento preventivo">
+                      Mecánica Rápida — Mantenimiento preventivo
+                    </option>
+                    <option value="Pintura y Cabina — Aplicación electrostática">
+                      Pintura y Cabina — Aplicación electrostática
+                    </option>
+                    <option value="Cocina y Comedor — Servicios generales">
+                      Cocina y Comedor — Servicios generales
+                    </option>
+                  </>
+                )}
               </select>
               <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-                <span className="font-mono">ⓘ</span> Catálogo oficial de Taller Los Andes. Evita duplicados para no fragmentar el histórico de inspecciones.
+                <span className="font-mono">ⓘ</span> Catálogo oficial de {company.name}. Evita duplicados para no fragmentar el histórico de inspecciones.
               </p>
             </div>
 

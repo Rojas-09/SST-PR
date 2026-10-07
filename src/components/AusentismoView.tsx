@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useMemo } from 'react';
 import {
   Calendar,
   FileText,
@@ -19,7 +19,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { CompanyInfo, IncapacidadRecord } from '../types';
-import { workshopEmployees, commonCIE10Codes } from '../data/initialData';
+import { commonCIE10Codes } from '../data/initialData';
+import { getCompanyDataset } from '../data/companiesData';
 
 interface AusentismoViewProps {
   company: CompanyInfo;
@@ -28,11 +29,19 @@ interface AusentismoViewProps {
 }
 
 export function AusentismoView({ company, incapacidades, onAddIncapacidad }: AusentismoViewProps) {
+  const currentEmployees = useMemo(() => {
+    return getCompanyDataset(company.id).employees;
+  }, [company.id]);
+
   // Form State
-  const [selectedEmpId, setSelectedEmpId] = useState<string>(workshopEmployees[0].id);
+  const [selectedEmpId, setSelectedEmpId] = useState<string>(() => currentEmployees[0]?.id || 'emp-1');
   const [tipo, setTipo] = useState<'ACCIDENTE_TRABAJO' | 'ENFERMEDAD_GENERAL' | 'ENFERMEDAD_LABORAL'>('ACCIDENTE_TRABAJO');
   const [codigoCIE10, setCodigoCIE10] = useState<string>('M54.5');
-  const [diagnostico, setDiagnostico] = useState<string>('Lumbago no especificado por sobreesfuerzo en foso mecánico');
+  const [diagnostico, setDiagnostico] = useState<string>(
+    company.id === 'servic-crear'
+      ? 'Dermatitis de contacto por manipulación de desinfectantes'
+      : 'Lumbago no especificado por sobreesfuerzo en foso mecánico'
+  );
   const [fechaInicio, setFechaInicio] = useState<string>('2026-02-15');
   const [fechaFin, setFechaFin] = useState<string>('2026-02-18');
   const [soporteFile, setSoporteFile] = useState<string | null>(null);
@@ -40,6 +49,17 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
   const [filterTipo, setFilterTipo] = useState<string>('TODOS');
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [selectedDocModal, setSelectedDocModal] = useState<IncapacidadRecord | null>(null);
+
+  useEffect(() => {
+    if (currentEmployees.length > 0) {
+      setSelectedEmpId(currentEmployees[0].id);
+      if (company.id === 'servic-crear') {
+        setDiagnostico('Dermatitis de contacto por manipulación de desinfectantes');
+      } else {
+        setDiagnostico('Lumbago no especificado por sobreesfuerzo en foso mecánico');
+      }
+    }
+  }, [company.id, currentEmployees]);
 
   // Auto calculate days
   const calculateDays = (start: string, end: string) => {
@@ -63,7 +83,7 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const emp = workshopEmployees.find((e) => e.id === selectedEmpId) || workshopEmployees[0];
+    const emp = currentEmployees.find((e) => e.id === selectedEmpId) || currentEmployees[0];
     const prefix = company.id === 'servic-crear' ? 'INC-SC-2026' : 'INC-2026';
     const newId = `${prefix}-00${incapacidades.length + 1}`;
     
@@ -106,62 +126,62 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
   });
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-5 bg-white min-h-screen text-[13px] text-slate-800 font-sans">
+    <div className="p-4 sm:p-6 md:p-8 xl:p-10 w-full max-w-[1780px] mx-auto space-y-6 bg-white min-h-screen text-sm sm:text-base text-slate-800 font-sans">
       {/* Toast Notification */}
       {successToast && (
-        <div className="fixed top-4 right-4 left-4 sm:left-auto sm:max-w-[calc(100vw-2rem)] z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 text-[13px] shadow-xl animate-in fade-in">
+        <div className="fixed top-4 right-4 left-4 sm:left-auto sm:max-w-[calc(100vw-2rem)] z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 text-sm shadow-xl animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{successToast}</span>
         </div>
       )}
 
       {/* Header matching Clay styling */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-5">
         <div>
-          <div className="flex items-center gap-2 text-[11px] font-mono-data text-slate-400 uppercase tracking-wide">
+          <div className="flex items-center gap-2 text-xs font-mono-data text-slate-400 uppercase tracking-wide">
             <span>SG-SST COLOMBIA</span>
             <span>•</span>
             <span>DECRETO 1072 ART. 2.2.4.6.21 / RES. 0312</span>
           </div>
-          <h1 className="text-[20px] font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
             Control de Ausentismo e Incapacidades Laborales
           </h1>
-          <p className="text-[13px] text-slate-500 mt-0.5">
+          <p className="text-sm sm:text-base text-slate-500 mt-1">
             Registro oficial de eventos de salud, diagnóstico CIE-10, cálculo de días perdidos e indicadores de severidad.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-[12px] font-mono-data text-slate-700">
-            {company.name} • Riesgo IV
+          <span className="px-3.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-data font-semibold text-slate-700">
+            {company.name} • {company.claseRiesgo}
           </span>
         </div>
       </div>
 
       {/* 4 Clay-style KPI Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
-          <span className="text-[11px] font-medium text-slate-500 block mb-1">Días Perdidos Totales</span>
-          <div className="text-[22px] font-bold text-slate-900 font-mono-data">{totalDias}</div>
-          <span className="text-[11px] text-slate-400">Jornadas laborales no laboradas</span>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
+        <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
+          <span className="text-xs sm:text-sm font-medium text-slate-500 block mb-1">Días Perdidos Totales</span>
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono-data">{totalDias}</div>
+          <span className="text-xs sm:text-sm text-slate-400">Jornadas laborales no laboradas</span>
         </div>
 
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
-          <span className="text-[11px] font-medium text-slate-500 block mb-1">Casos Radicados</span>
-          <div className="text-[22px] font-bold text-blue-600 font-mono-data">{incapacidades.length}</div>
-          <span className="text-[11px] text-slate-400">{totalAccidentes} accidentes / {totalEnfermedades} enf. común</span>
+        <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
+          <span className="text-xs sm:text-sm font-medium text-slate-500 block mb-1">Casos Radicados</span>
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-blue-600 font-mono-data">{incapacidades.length}</div>
+          <span className="text-xs sm:text-sm text-slate-400">{totalAccidentes} accidentes / {totalEnfermedades} enf. común</span>
         </div>
 
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
-          <span className="text-[11px] font-medium text-slate-500 block mb-1">Índice de Severidad (IS)</span>
-          <div className="text-[22px] font-bold text-slate-900 font-mono-data">{indiceSeveridad}</div>
-          <span className="text-[11px] text-slate-400">Días por cada 240.000 HHT</span>
+        <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
+          <span className="text-xs sm:text-sm font-medium text-slate-500 block mb-1">Índice de Severidad (IS)</span>
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono-data">{indiceSeveridad}</div>
+          <span className="text-xs sm:text-sm text-slate-400">Días por cada 240.000 HHT</span>
         </div>
 
-        <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
-          <span className="text-[11px] font-medium text-slate-500 block mb-1">Impacto Financiero Estimado</span>
-          <div className="text-[22px] font-bold text-slate-900 font-mono-data">${totalCosto.toLocaleString('es-CO')}</div>
-          <span className="text-[11px] text-emerald-700 font-medium">Reconocido ARL/EPS</span>
+        <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
+          <span className="text-xs sm:text-sm font-medium text-slate-500 block mb-1">Impacto Financiero Estimado</span>
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono-data">${totalCosto.toLocaleString('es-CO')}</div>
+          <span className="text-xs sm:text-sm text-emerald-700 font-semibold">Reconocido ARL/EPS</span>
         </div>
       </div>
 
@@ -193,7 +213,7 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
                 onChange={(e) => setSelectedEmpId(e.target.value)}
                 className="w-full h-9 bg-white border border-slate-200 rounded-lg px-2.5 text-[13px] text-slate-800 focus:outline-none focus:border-blue-500"
               >
-                {workshopEmployees.map((emp) => (
+                {currentEmployees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.nombre} ({emp.cargo})
                   </option>

@@ -12,7 +12,13 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { HazardRecord, CompanyInfo, ActiveView } from '../types';
-import { SignatureCarlosMendez, SignatureRodrigoGomez, QrAuditStamp } from './SignatureSvgs';
+import {
+  SignatureCarlosMendez,
+  SignatureRodrigoGomez,
+  SignatureAndreaMorales,
+  SignatureClaudiaVaron,
+  QrAuditStamp,
+} from './SignatureSvgs';
 
 interface MatrixViewProps {
   hazards: HazardRecord[];
@@ -115,59 +121,59 @@ export function MatrixView({
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 p-6 space-y-4">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 p-4 sm:p-6 lg:p-8 space-y-5 text-sm sm:text-base">
       {/* Export notification popup */}
       {exportNotice && (
-        <div className="fixed bottom-6 right-6 left-6 sm:left-auto sm:max-w-[calc(100vw-3rem)] bg-slate-900 text-white px-4 py-3 rounded-sm shadow-xl border border-amber-500/40 text-xs font-mono-data flex items-center gap-2 z-50 animate-bounce">
+        <div className="fixed bottom-6 right-6 left-6 sm:left-auto sm:max-w-[calc(100vw-3rem)] bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-amber-500/40 text-xs sm:text-sm font-mono-data flex items-center gap-2 z-50 animate-bounce">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{exportNotice}</span>
         </div>
       )}
 
       {/* CABECERA TÉCNICA DE INGENIERÍA (MEMBRETE OFICIAL) */}
-      <div className="max-w-7xl mx-auto bg-white border border-slate-200 rounded-xl p-5 mb-4 shadow-2xs">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+      <div className="w-full max-w-[1780px] mx-auto bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 mb-4 shadow-2xs">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 mb-3.5">
           <div className="flex items-center gap-3">
-            <div className="bg-[#1877F2] text-white font-bold px-3 py-1 text-[13px] rounded-lg tracking-wide shadow-2xs">
+            <div className="bg-[#1877F2] text-white font-bold px-3 py-1 text-xs sm:text-sm rounded-lg tracking-wide shadow-2xs">
               SST Fácil
             </div>
             <span className="text-slate-300">|</span>
-            <h1 className="text-[13px] font-bold text-slate-900 uppercase tracking-wide">
+            <h1 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">
               SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[11.5px] text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-md">
+            <span className="text-xs text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md font-mono">
               CÓDIGO: SST-MR-001
             </span>
-            <span className="text-[11.5px] text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-md">
+            <span className="text-xs text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md font-mono">
               VERSIÓN: 03
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-[12.5px] text-slate-600">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs sm:text-sm text-slate-600">
           <div>
-            <span className="text-slate-400 text-[11px] block uppercase font-semibold">Organización</span>
-            <span className="font-medium text-slate-900">{company.name}</span>
+            <span className="text-slate-400 text-xs block uppercase font-semibold">Organización</span>
+            <span className="font-bold text-slate-900 text-sm sm:text-base">{company.name}</span>
           </div>
           <div>
-            <span className="text-slate-400 text-[11px] block uppercase font-semibold">NIT</span>
-            <span className="font-medium text-slate-900">{company.nit}</span>
+            <span className="text-slate-400 text-xs block uppercase font-semibold">NIT</span>
+            <span className="font-bold text-slate-900 text-sm sm:text-base">{company.nit}</span>
           </div>
           <div>
-            <span className="text-slate-400 text-[11px] block uppercase font-semibold">Responsable Técnico</span>
-            <span className="font-medium text-slate-900">{company.responsableSST.nombre} (Lic. {company.responsableSST.licencia})</span>
+            <span className="text-slate-400 text-xs block uppercase font-semibold">Responsable Técnico</span>
+            <span className="font-bold text-slate-900 text-sm sm:text-base">{company.responsableSST.nombre} (Lic. {company.responsableSST.licencia})</span>
           </div>
           <div className="lg:text-right">
-            <span className="text-slate-400 text-[11px] block uppercase font-semibold">Fecha de Emisión</span>
-            <span className="font-medium text-slate-900">17/09/2026</span>
+            <span className="text-slate-400 text-xs block uppercase font-semibold">Fecha de Emisión</span>
+            <span className="font-bold text-slate-900 text-sm sm:text-base">17/09/2026</span>
           </div>
         </div>
       </div>
 
       {/* BARRA DE ACCIONES Y FILTROS */}
-      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div className="w-full max-w-[1780px] mx-auto flex flex-wrap items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           <select
             value={filterProceso}
@@ -213,23 +219,23 @@ export function MatrixView({
       </div>
 
       {/* TABLA DENTRO DE MATRIZ TÉCNICA */}
-      <div className="max-w-7xl mx-auto bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs mb-6">
+      <div className="w-full max-w-[1780px] mx-auto bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xs mb-6">
         <div className="overflow-x-auto">
-          <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
+          <table className="table-stack-lg w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200 text-[12px] font-semibold text-slate-700">
-                <th className="py-3 px-2 border-r border-slate-100 w-[8%]">Proceso</th>
-                <th className="py-3 px-2 border-r border-slate-100 w-[8%]">Actividad</th>
-                <th className="py-3 px-2 border-r border-slate-100 w-[15%]">Peligro Identificado</th>
-                <th className="py-3 px-2 border-r border-slate-100 w-[14%]">Efectos Posibles</th>
+              <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-700">
+                <th className="py-3 px-2.5 border-r border-slate-100 w-[8%]">Proceso</th>
+                <th className="py-3 px-2.5 border-r border-slate-100 w-[8%]">Actividad</th>
+                <th className="py-3 px-2.5 border-r border-slate-100 w-[15%]">Peligro Identificado</th>
+                <th className="py-3 px-2.5 border-r border-slate-100 w-[14%]">Efectos Posibles</th>
                 <th className="py-2 px-1 text-center border-r border-slate-100 w-[4%]">P</th>
                 <th className="py-2 px-1 text-center border-r border-slate-100 w-[4%]">S</th>
                 <th className="py-2 px-1 text-center border-r border-slate-100 w-[5%]">P×S</th>
                 <th className="py-2 px-1.5 border-r border-slate-100 w-[9%] text-center">Nivel</th>
-                <th className="py-3 px-2 w-[33%]">Plan de Intervención</th>
+                <th className="py-3 px-2.5 w-[33%]">Plan de Intervención</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-[12.5px]">
+            <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
               {filteredHazards.map((hazard) => {
                 const p = hazard.evaluacion.np;
                 const s = hazard.evaluacion.nc;
@@ -320,7 +326,7 @@ export function MatrixView({
       </div>
 
       {/* PIE DE PÁGINA TÉCNICO / CONTROL DE CAMBIOS */}
-      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-[11px] font-mono-data text-slate-400 border-t border-slate-200 pt-3 gap-2">
+      <div className="w-full max-w-[1780px] mx-auto flex flex-wrap items-center justify-between text-xs font-mono-data text-slate-400 border-t border-slate-200 pt-3.5 gap-2">
         <div>
           METODOLOGÍA: GTC 45 (SEGUNDA ACTUALIZACIÓN) • DECRETO 1072/2015
         </div>
@@ -330,58 +336,58 @@ export function MatrixView({
       </div>
 
       {/* Two Column Technical Details */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="w-full max-w-[1780px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Box 1: Algoritmo de Valoración del Riesgo Legal */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-5 shadow-2xs space-y-3 text-[13px]">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs space-y-3.5 text-xs sm:text-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-blue-600 font-bold text-[13px]">#</span>
-              <h3 className="text-[12.5px] font-bold text-slate-900 uppercase tracking-wide">
+              <span className="text-blue-600 font-bold text-sm">#</span>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Algoritmo de Valoración del Riesgo Legal (GTC 45:2012)
               </h3>
             </div>
-            <span className="text-[11px] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+            <span className="text-xs text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">
               Matemática Normativa
             </span>
           </div>
 
-          <p className="text-[12.5px] text-slate-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             El Nivel de Riesgo (<strong>NR</strong>) es el producto del Nivel de Probabilidad (<strong>NP = ND × NE</strong>) por el Nivel de Consecuencia (<strong>NC</strong>). En talleres de mantenimiento mecánico (CIIU 4520), las intervenciones en controles de ingeniería tienen prioridad sobre los EPP (Art. 2.2.4.6.24 Decreto 1072/2015).
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[12px]">
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <span className="text-[10px] uppercase text-slate-400 font-semibold block">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs uppercase text-slate-400 font-semibold block">
                 PASO 1: DEFICIENCIA & EXPOSICIÓN
               </span>
-              <span className="font-bold text-slate-800 block mt-1 text-[13px]">
+              <span className="font-bold text-slate-800 block mt-1 text-sm">
                 ND × NE = NP
               </span>
-              <span className="text-[11px] text-slate-500 block mt-0.5">
+              <span className="text-xs text-slate-500 block mt-0.5">
                 Frecuencia y exposición sin control.
               </span>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <span className="text-[10px] uppercase text-slate-400 font-semibold block">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs uppercase text-slate-400 font-semibold block">
                 PASO 2: CONSECUENCIA DAÑO
               </span>
-              <span className="font-bold text-slate-800 block mt-1 text-[13px]">
+              <span className="font-bold text-slate-800 block mt-1 text-sm">
                 NC (10 a 100)
               </span>
-              <span className="text-[11px] text-slate-500 block mt-0.5">
+              <span className="text-xs text-slate-500 block mt-0.5">
                 Invalidez, muerte o incapacidad temporal.
               </span>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <span className="text-[10px] uppercase text-slate-400 font-semibold block">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-xs uppercase text-slate-400 font-semibold block">
                 PASO 3: NIVEL DE RIESGO FINAL
               </span>
-              <span className="font-bold text-red-600 block mt-1 text-[13px]">
+              <span className="font-bold text-red-600 block mt-1 text-sm">
                 NR = NP × NC
               </span>
-              <span className="text-[11px] text-slate-500 block mt-0.5">
+              <span className="text-xs text-slate-500 block mt-0.5">
                 Clasificación de Grado I a IV (ARL).
               </span>
             </div>
@@ -389,35 +395,35 @@ export function MatrixView({
         </div>
 
         {/* Box 2: Plan de Acción Inmediato */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-2xs space-y-3 text-[13px]">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
-            <h3 className="text-[12.5px] font-bold text-slate-900 uppercase tracking-wide">
+        <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs space-y-3.5 text-xs sm:text-sm">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">
               Plan de Acción Inmediato
             </h3>
           </div>
 
-          <p className="text-[12.5px] text-slate-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             La zona de <strong className="text-slate-800">Soldadura</strong> y la <strong className="text-slate-800">Bodega 220V</strong> requieren radicar evidencias de cierre técnico ante el COPASST en 5 días hábiles.
           </p>
 
-          <div className="space-y-2 pt-1">
-            <div className="p-2.5 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
-              <span className="font-medium text-red-900 text-[12.5px]">Caretas Fotosensibles Certificadas</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-red-600 text-white rounded-md">
+          <div className="space-y-2.5 pt-1">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between">
+              <span className="font-medium text-red-900 text-xs sm:text-sm">Caretas Fotosensibles Certificadas</span>
+              <span className="text-xs font-bold px-2 py-0.5 bg-red-600 text-white rounded-md">
                 24H
               </span>
             </div>
 
-            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
-              <span className="font-medium text-amber-950 text-[12.5px]">Inspección RETIE Red Eléctrica</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-600 text-white rounded-md">
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
+              <span className="font-medium text-amber-950 text-xs sm:text-sm">Inspección RETIE Red Eléctrica</span>
+              <span className="text-xs font-bold px-2 py-0.5 bg-amber-600 text-white rounded-md">
                 26/OCT
               </span>
             </div>
           </div>
 
-          <div className="pt-2 text-[11.5px] text-slate-500 flex justify-between items-center border-t border-slate-100">
+          <div className="pt-2 text-xs text-slate-500 flex justify-between items-center border-t border-slate-100">
             <span>PRÓXIMA REVISIÓN ORDINARIA:</span>
             <strong className="text-slate-800">24/10/2026</strong>
           </div>
@@ -425,7 +431,7 @@ export function MatrixView({
       </div>
 
       {/* Aprobación Legal y Responsabilidad Técnica */}
-      <div className="max-w-7xl mx-auto bg-white rounded-xl border border-slate-200 p-5 shadow-2xs space-y-3 text-[13px]">
+      <div className="w-full max-w-[1780px] mx-auto bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs space-y-3.5 text-xs sm:text-sm">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
           <h3 className="text-[12.5px] font-bold text-slate-900 uppercase tracking-wide">
             Aprobación Legal y Responsabilidad Técnica
@@ -442,7 +448,11 @@ export function MatrixView({
               ELABORÓ Y EVALUÓ TÉCNICAMENTE:
             </span>
             <div className="h-14 flex items-center justify-center border-b border-slate-200 mb-2 relative">
-              <SignatureCarlosMendez className="w-48 h-12" />
+              {company.id === 'servic-crear' ? (
+                <SignatureAndreaMorales className="w-48 h-12" />
+              ) : (
+                <SignatureCarlosMendez className="w-48 h-12" />
+              )}
               <span className="absolute bottom-0.5 right-1 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
                 Firma Digital
               </span>
@@ -456,13 +466,17 @@ export function MatrixView({
             </p>
           </div>
 
-          {/* Signer 2: Rodrigo Gómez Mendoza */}
+          {/* Signer 2: Representante Legal */}
           <div className="md:col-span-4 p-3.5 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-[10px] uppercase text-slate-400 font-semibold block mb-1">
               APROBÓ & ASIGNÓ RECURSOS:
             </span>
             <div className="h-14 flex items-center justify-center border-b border-slate-200 mb-2 relative">
-              <SignatureRodrigoGomez className="w-48 h-12" />
+              {company.id === 'servic-crear' ? (
+                <SignatureClaudiaVaron className="w-48 h-12" />
+              ) : (
+                <SignatureRodrigoGomez className="w-48 h-12" />
+              )}
               <span className="absolute bottom-0.5 right-1 text-[9px] text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">
                 Autógrafa
               </span>

@@ -362,6 +362,12 @@ class CapacitacionesStorageService {
       updatedAt: new Date().toISOString(),
     };
 
+    const companyData = getCompanyDataset(this.activeCompanyId);
+    const isInternal = capacitadorInitial.entidad.toLowerCase().includes(companyData.company.name.toLowerCase()) ||
+                       capacitadorInitial.entidad.toLowerCase().includes('líder sg-sst') ||
+                       capacitadorInitial.entidad.toLowerCase().includes('especialista sst') ||
+                       capacitadorInitial.entidad.toLowerCase().includes('gerencia');
+
     const sesion: SesionEjecutada = {
       id: sesionId,
       planId: id,
@@ -370,7 +376,7 @@ class CapacitacionesStorageService {
       capacitadorNombre: capacitadorInitial.nombre,
       capacitadorEntidad: capacitadorInitial.entidad,
       capacitadorLicencia: capacitadorInitial.licencia,
-      capacitadorTipo: capacitadorInitial.entidad.includes('Taller Los Andes') ? 'INTERNO' : 'EXTERNO',
+      capacitadorTipo: isInternal ? 'INTERNO' : 'EXTERNO',
       estadoActa: 'PENDIENTE',
       observaciones: 'Sesión programada en el Plan Anual.',
       eficaciaEvaluada: false,
@@ -380,7 +386,6 @@ class CapacitacionesStorageService {
     };
 
     // Create attendee entries
-    const companyData = getCompanyDataset(this.activeCompanyId);
     const attendeeRecords: AsistenciaCalificacion[] = convocadosIds.map((empId) => {
       const emp = companyData.employees.find((e) => e.id === empId);
       return {
@@ -861,9 +866,9 @@ class CapacitacionesStorageService {
         fechaEjecucion: sesion?.fechaEjecucion,
         estado: plan.estado === 'ANULADA' ? ('REPROGRAMADA' as any) : plan.estado,
         capacitador: {
-          nombre: sesion?.capacitadorNombre || 'Sin asignar',
-          entidad: sesion?.capacitadorEntidad || 'Taller Los Andes S.A.S.',
-          licenciaOId: sesion?.capacitadorLicencia || 'Lic. 18492-2018',
+          nombre: sesion?.capacitadorNombre || (this.activeCompanyId === 'servic-crear' ? 'Ing. Andrea Morales Peña' : 'Ing. Carlos Méndez'),
+          entidad: sesion?.capacitadorEntidad || (this.activeCompanyId === 'servic-crear' ? 'SERVIC CREAR S.A.S.' : 'Taller Los Andes S.A.S.'),
+          licenciaOId: sesion?.capacitadorLicencia || (this.activeCompanyId === 'servic-crear' ? 'Lic. 24890-SST Tolima' : 'Lic. 18492-2018 (DDS)'),
         },
         publicoObjetivo: plan.publicoObjetivo,
         convocadosCount: metricas.convocadosTotal,

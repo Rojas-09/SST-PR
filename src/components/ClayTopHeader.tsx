@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
-  Sparkles,
   HelpCircle,
   Bell,
   CheckCircle2,
@@ -11,6 +10,9 @@ import {
   ShieldCheck,
   KeyRound,
   Lock,
+  ChevronsUpDown,
+  Check,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { CompanyInfo, ActiveView } from '../types';
 import { useAuthRole } from '../context/AuthRoleContext';
@@ -24,6 +26,7 @@ interface ClayTopHeaderProps {
   onOpenSettings: () => void;
   onOpenMobileMenu?: () => void;
   onOpenCompanySwitcher?: () => void;
+  onSwitchCompany?: (companyId: string) => void;
 }
 
 export function ClayTopHeader({
@@ -34,10 +37,24 @@ export function ClayTopHeader({
   onOpenSettings,
   onOpenMobileMenu,
   onOpenCompanySwitcher,
+  onSwitchCompany,
 }: ClayTopHeaderProps) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const { currentUser, switchRole, availableUsers } = useAuthRole();
+  const [showCompanyMenu, setShowCompanyMenu] = useState(false);
+  const companyMenuRef = useRef<HTMLDivElement>(null);
+  const { currentUser, switchRole } = useAuthRole();
   const isSSTLeader = currentUser.rol === 'RESPONSABLE_SST';
+
+  // Cerrar dropdown al hacer click fuera
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (companyMenuRef.current && !companyMenuRef.current.contains(event.target as Node)) {
+        setShowCompanyMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const initials = currentUser.nombre
     .replace(/^(Ing\.|Ft\.|Dr\.|Dra\.|Téc\.)\s*/i, '')
@@ -55,9 +72,28 @@ export function ClayTopHeader({
     LECTURA: 'Auditoría / Lectura',
   };
 
+  const handleSelectCompany = (companyId: string) => {
+    if (company.id === companyId) {
+      setShowCompanyMenu(false);
+      return;
+    }
+    if (!isSSTLeader) {
+      // Si no es líder, abre el modal con aviso o permite ver
+      setShowCompanyMenu(false);
+      if (onOpenCompanySwitcher) onOpenCompanySwitcher();
+      return;
+    }
+    if (onSwitchCompany) {
+      onSwitchCompany(companyId);
+    } else if (onOpenCompanySwitcher) {
+      onOpenCompanySwitcher();
+    }
+    setShowCompanyMenu(false);
+  };
+
   return (
     <header className="h-14 bg-white border-b border-slate-200 px-3 sm:px-5 flex items-center justify-between font-sans text-[13px] sticky top-0 z-20">
-      {/* Left indicator with Mobile Hamburger button and Company Switcher */}
+      {/* Left indicator with Mobile Hamburger and Modern Workspace Selector */}
       <div className="flex items-center gap-2 min-w-0">
         {onOpenMobileMenu && (
           <button
@@ -71,63 +107,184 @@ export function ClayTopHeader({
           </button>
         )}
 
-        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-          <span className="font-semibold text-slate-900 text-[13.5px] sm:text-[14px] truncate max-w-[120px] xs:max-w-[170px] sm:max-w-none">
-            {company.name}
-          </span>
-          <span className="hidden lg:inline text-[11px] font-mono-data text-slate-400 shrink-0">
-            NIT {company.nit}
-          </span>
-
-          {/* Company Switcher Pill - Exclusively functional for Líder SG-SST */}
-          {onOpenCompanySwitcher && (
-            <button
-              type="button"
-              onClick={onOpenCompanySwitcher}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer shrink-0 ${
-                isSSTLeader
-                  ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 shadow-2xs'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
-              }`}
-              title={
-                isSSTLeader
-                  ? 'Cambiar Empresa (Habilitado para Líder SG-SST)'
-                  : 'Solo el Líder de SG-SST puede cambiar entre empresas'
+        {/* Enterprise Workspace Selector Pill */}
+        <div className="relative flex-1 sm:flex-initial" ref={companyMenuRef}>
+          <button
+            type="button"
+            onClick={() => {
+              if (isSSTLeader) {
+                setShowCompanyMenu((prev) => !prev);
+              } else if (onOpenCompanySwitcher) {
+                onOpenCompanySwitcher();
               }
+            }}
+            className={`flex items-center gap-2 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl border text-left transition-all group shadow-2xs w-full sm:w-auto sm:min-w-[220px] max-w-full sm:max-w-md anim-button ${
+              isSSTLeader
+                ? 'bg-slate-50/90 hover:bg-blue-50/70 border-slate-200 hover:border-blue-300 cursor-pointer'
+                : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200 cursor-pointer'
+            }`}
+            title={
+              isSSTLeader
+                ? 'Alternar de empresa activa (Multi-empresa Líder SG-SST)'
+                : `Empresa vinculada: ${company.name} • Clic para ver ficha legal`
+            }
+            aria-label="Selector de empresa"
+          >
+            {/* Avatar / Sigla institucional */}
+            <div
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center font-black text-xs shrink-0 shadow-2xs transition-transform group-hover:scale-105 ${
+                company.id === 'servic-crear'
+                  ? 'bg-gradient-to-tr from-emerald-600 to-teal-600 text-white'
+                  : 'bg-slate-900 text-amber-400'
+              }`}
             >
-              <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span className="hidden sm:inline">Cambiar Empresa</span>
-              {isSSTLeader ? (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-              ) : (
-                <Lock className="w-3 h-3 text-slate-400 shrink-0" />
-              )}
-            </button>
+              {company.id === 'servic-crear' ? 'SC' : 'TLA'}
+            </div>
+
+            {/* Nombre y datos de la empresa */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-slate-900 text-sm sm:text-[15px] truncate block leading-tight">
+                  {company.name}
+                </span>
+                {isSSTLeader ? (
+                  <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 shrink-0 transition-colors" />
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Activa" />
+                )}
+              </div>
+              <div className="hidden xs:flex items-center gap-1.5 text-[10.5px] sm:text-xs text-slate-500 font-mono leading-none mt-0.5">
+                <span className="truncate">NIT {company.nit}</span>
+                <span className="text-slate-300">•</span>
+                <span className="font-sans font-semibold text-blue-700">
+                  {company.id === 'servic-crear' ? 'SURA • Ibagué' : 'Positiva • Bogotá'}
+                </span>
+              </div>
+            </div>
+          </button>
+
+          {/* Menú Desplegable Rápido de Alternar Empresa (EXCLUSIVO PARA LÍDER SG-SST) */}
+          {showCompanyMenu && isSSTLeader && (
+            <div className="absolute left-0 mt-2 w-[calc(100vw-2rem)] max-w-[340px] sm:w-88 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 anim-dropdown">
+              <div className="px-2 py-1.5 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <Building2 className="w-4 h-4 text-blue-600" />
+                  <span>Organizaciones Registradas</span>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                  Multi-Empresa SG-SST
+                </span>
+              </div>
+
+              <div className="py-2 space-y-1.5">
+                {/* Opción 1: SERVIC CREAR S.A.S. */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectCompany('servic-crear')}
+                  className={`w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 anim-card ${
+                    company.id === 'servic-crear'
+                      ? 'bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-400/30'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                    SC
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 text-xs truncate">
+                        SERVIC CREAR S.A.S.
+                      </h4>
+                      {company.id === 'servic-crear' ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded-full">
+                          <Check className="w-3 h-3" />
+                          Activa
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.2 rounded">
+                          Cambiar
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                      NIT 901306354-9 • Ibagué, Tolima
+                    </p>
+                    <p className="text-[10.5px] text-emerald-700 font-medium mt-0.5 truncate">
+                      Saneamiento, tanques, alturas & paisajismo STIHL
+                    </p>
+                  </div>
+                </button>
+
+                {/* Opción 2: TALLER LOS ANDES S.A.S. */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectCompany('taller-los-andes')}
+                  className={`w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 anim-card ${
+                    company.id === 'taller-los-andes'
+                      ? 'bg-blue-50/70 border-blue-300 ring-1 ring-blue-400/30'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-slate-900 text-amber-400 font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                    TLA
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 text-xs truncate">
+                        Taller Los Andes S.A.S.
+                      </h4>
+                      {company.id === 'taller-los-andes' ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded-full">
+                          <Check className="w-3 h-3" />
+                          Activa
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.2 rounded">
+                          Cambiar
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                      NIT 901.458.210-3 • Bogotá D.C.
+                    </p>
+                    <p className="text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
+                      Metalmecánica pesada, soldadura & automotriz
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              {/* Botón para ver la Ficha Legal y Servicios completos */}
+              <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                {onOpenCompanySwitcher && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCompanyMenu(false);
+                      onOpenCompanySwitcher();
+                    }}
+                    className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-200 transition-colors cursor-pointer anim-button"
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Ver Ficha Legal y Portafolio Completo</span>
+                  </button>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
 
       {/* Right Clay-style controls */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-        {/* Clay Vibrant Blue Primary Button */}
-        <button
-          type="button"
-          onClick={onOpenNewHazard}
-          className="bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-lg px-2.5 sm:px-3.5 py-1.5 font-medium text-[12px] sm:text-[13px] flex items-center gap-1.5 shadow-2xs cursor-pointer transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-white" />
-          <span className="hidden xs:inline">+ Registrar</span>
-          <span className="hidden sm:inline">Peligro</span>
-        </button>
-
         {/* Riesgo & ARL Status Pill */}
         <button
           type="button"
           onClick={onOpenSettings}
-          className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-[12px] font-medium transition-colors cursor-pointer"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
         >
-          <Shield className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Riesgo IV • SURA</span>
+          <Shield className="w-4 h-4 text-emerald-600" />
+          <span>{company.claseRiesgo || 'Riesgo IV'} • {company.arl || (company.id === 'servic-crear' ? 'SURA' : 'Positiva')}</span>
         </button>
 
         {/* Help icon (hidden on small phones to save header space) */}
@@ -177,7 +334,7 @@ export function ClayTopHeader({
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-[360px] sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-5 z-50 animate-in fade-in">
+            <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-[360px] sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-5 z-50 max-h-[85vh] overflow-y-auto anim-dropdown-right">
               <div className="flex items-center gap-3.5 pb-3.5 border-b border-slate-100">
                 <div className="w-12 h-12 rounded-full bg-slate-900 text-amber-400 font-black text-base flex items-center justify-center shrink-0 ring-2 ring-blue-500/20 shadow-xs">
                   {initials}
@@ -217,10 +374,10 @@ export function ClayTopHeader({
                       setShowProfileMenu(false);
                       onOpenCompanySwitcher();
                     }}
-                    className="w-full mt-1.5 py-1.5 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200 transition-colors cursor-pointer"
+                    className="w-full mt-1.5 py-1.5 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200 transition-colors cursor-pointer anim-button"
                   >
                     <Building2 className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{isSSTLeader ? 'Alternar Empresa (Líder SG-SST)' : 'Ver Selector de Empresas'}</span>
+                    <span>{isSSTLeader ? 'Alternar Entre Empresas (Líder SG-SST)' : `Ver Ficha Legal (${company.name})`}</span>
                   </button>
                 )}
               </div>
@@ -260,12 +417,12 @@ export function ClayTopHeader({
                       </div>
                       <div className={`text-xs truncate mt-0.5 ${currentUser.rol === r ? 'text-blue-100' : 'text-slate-500'}`}>
                         {r === 'ADMINISTRADOR'
-                          ? 'Gerencia General'
+                          ? (company.id === 'servic-crear' ? 'Gerencia SERVIC CREAR' : 'Gerencia Taller Los Andes')
                           : r === 'RESPONSABLE_SST'
-                          ? 'Líder SG-SST'
+                          ? (company.id === 'servic-crear' ? 'Líder SG-SST Tolima' : 'Líder SG-SST Bogotá')
                           : r === 'INSTRUCTOR_EXTERNO'
-                          ? 'Positiva ARL'
-                          : 'Auditor Mintrabajo'}
+                          ? (company.id === 'servic-crear' ? 'STIHL Col. / SURA' : 'Positiva ARL')
+                          : (company.id === 'servic-crear' ? 'Auditor MinTrabajo Tolima' : 'Auditor Mintrabajo')}
                       </div>
                     </button>
                   ))}

@@ -70,8 +70,12 @@ export function ContactsModal({ isOpen, onClose, company }: ContactsModalProps) 
           <div className="grid grid-cols-2 gap-2 text-[11px]">
             <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
               <span className="text-slate-400 block text-[10px]">ARL Afiliada:</span>
-              <strong className="text-slate-800">Seguros SURA</strong>
-              <span className="text-slate-500 block text-[10px] mt-0.5">Línea: 018000 511 414</span>
+              <strong className="text-slate-800">
+                {company.id === 'servic-crear' ? 'Seguros SURA' : 'Positiva Compañía de Seguros'}
+              </strong>
+              <span className="text-slate-500 block text-[10px] mt-0.5">
+                {company.id === 'servic-crear' ? 'Línea: 018000 511 414' : 'Línea: 018000 111 170'}
+              </span>
             </div>
             <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
               <span className="text-slate-400 block text-[10px]">COPASST / Veeduría:</span>

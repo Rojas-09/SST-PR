@@ -32,15 +32,19 @@ export function MainExplorerView({
   const [filterLevel, setFilterLevel] = useState<'ALL' | 'CRITICO' | 'ALTO' | 'MEJORABLE'>('ALL');
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
 
+  const isServicCrear = company.id === 'servic-crear';
+  const sstLeaderShort = isServicCrear ? 'Andrea M.' : 'Carlos M.';
+  const matrixCode = isServicCrear ? 'SST-SC-MR-01' : 'SST-MR-001';
+
   const tableItems = useMemo(() => {
     const items = [
       {
         id: 'item-1',
         title: 'Matriz General GTC 45',
-        subLabel: 'Matriz GTC 45 • Taller Los Andes S.A.S. (SST-MR-001)',
+        subLabel: `Matriz GTC 45 • ${company.name} (${matrixCode})`,
         hazardRef: hazards[0],
         iconType: 'target',
-        contributor: 'Carlos M.',
+        contributor: sstLeaderShort,
         updated: 'Hace 2 días',
         created: 'Hace 6 días',
         level: 'NIVEL_I',
@@ -79,7 +83,7 @@ export function MainExplorerView({
         subLabel: `${hazards[2]?.code || 'PEL-2026-003'}: ${hazards[2]?.title || 'Peligro Locativo'}`,
         hazardRef: hazards[2] || hazards[0],
         iconType: 'activity',
-        contributor: 'Carlos M.',
+        contributor: sstLeaderShort,
         updated: 'Ayer',
         created: 'Ayer',
         level: 'NIVEL_III',
@@ -93,7 +97,7 @@ export function MainExplorerView({
         hazardRef: null,
         targetView: 'diagnostico-0312' as ActiveView,
         iconType: 'target',
-        contributor: 'Carlos M.',
+        contributor: sstLeaderShort,
         updated: 'Hace 7 min',
         created: '15/01/2026',
         level: 'NIVEL_IV',

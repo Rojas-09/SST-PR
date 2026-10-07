@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SlidersHorizontal, Clock, X, Send, Sparkles, Bot, User, CheckCircle2 } from 'lucide-react';
 import { CompanyInfo, HazardRecord } from '../types';
 
@@ -25,21 +25,33 @@ export function FloatingAssistant({
   hazards,
   onSelectHazard,
 }: FloatingAssistantProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'msg-1',
-      sender: 'ai',
-      text: `Hola ${company.responsableSST.nombre.split(' ')[1] || 'Carlos'}, ¿en qué puedo ayudarte hoy? Recuerda que soy un asistente normativo para validar la GTC 45, Decreto 1072 y Resolución 0312 de ${company.name}.`,
-      timestamp: 'Ahora',
-      suggestions: [
-        '¿Cuáles son los peligros Nivel I críticos del taller?',
-        '¿Cómo se calcula el Nivel de Riesgo en la GTC 45?',
-        '¿Qué requisitos exige la Resolución 0312 para Riesgo IV?',
-      ],
-    },
-  ]);
+  const isServicCrear = company.id === 'servic-crear';
+
+  const buildInitialGreeting = (): Message => ({
+    id: `msg-${Date.now()}`,
+    sender: 'ai',
+    text: `Hola ${company.responsableSST.nombre}, ¿en qué puedo ayudarte hoy? Recuerda que soy tu asistente normativo para validar la GTC 45, Decreto 1072 y Resolución 0312 de ${company.name}.`,
+    timestamp: 'Ahora',
+    suggestions: isServicCrear
+      ? [
+          '¿Cuáles son los peligros Nivel I en lavado de tanques y poda?',
+          '¿Cómo se calcula el Nivel de Riesgo en la GTC 45?',
+          '¿Qué estándares aplican para SERVIC CREAR bajo Res. 0312?',
+        ]
+      : [
+          '¿Cuáles son los peligros Nivel I críticos del taller?',
+          '¿Cómo se calcula el Nivel de Riesgo en la GTC 45?',
+          '¿Qué requisitos exige la Resolución 0312 para Riesgo IV?',
+        ],
+  });
+
+  const [messages, setMessages] = useState<Message[]>([buildInitialGreeting()]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    setMessages([buildInitialGreeting()]);
+  }, [company.id]);
 
   if (!isOpen) return null;
 
@@ -64,15 +76,24 @@ export function FloatingAssistant({
 
       if (q.includes('crítico') || q.includes('nivel i') || q.includes('urgente') || q.includes('peligros')) {
         const crit = hazards.filter((h) => h.evaluacion.level === 'NIVEL_I');
-        reply = `Actualmente ${company.name} cuenta con ${crit.length} situaciones críticas (Nivel I - No Aceptable) con orden de intervención perentoria:\n\n1. Bahía 4 (Soldadura): Operario realizando corte/soldadura sin careta fotosensible ni guantes de 16". Riesgo de quemaduras severas y daño ocular permanente.\n2. Bodega Principal: Conexión 220V expuesta a filtraciones de lluvia por cubierta deteriorada. Riesgo de choque eléctrico e incendio.\n\nAmbas requieren controles de ingeniería y dotación certificada inmediata antes de reiniciar labores.`;
+        if (isServicCrear) {
+          reply = `Actualmente ${company.name} cuenta con ${crit.length} situaciones críticas (Nivel I - No Aceptable) con orden de intervención perentoria:\n\n1. Lavado y Desinfección de Tanques de Agua Potable (SER-001): Espacio confinado con riesgo de asfixia por hipoclorito y caída de altura.\n2. Sostenimiento de Zonas Verdes y Poda (SER-002): Corte y proyección de partículas con maquinaria de combustión o corte afilado.\n\nAmbas requieren permisos de trabajo en espacio confinado/alturas y EPP específico certificado.`;
+        } else {
+          reply = `Actualmente ${company.name} cuenta con ${crit.length} situaciones críticas (Nivel I - No Aceptable) con orden de intervención perentoria:\n\n1. Bahía 4 (Soldadura): Operario realizando corte/soldadura sin careta fotosensible ni guantes de 16". Riesgo de quemaduras severas y daño ocular permanente.\n2. Bodega Principal: Conexión 220V expuesta a filtraciones de lluvia por cubierta deteriorada. Riesgo de choque eléctrico e incendio.\n\nAmbas requieren controles de ingeniería y dotación certificada inmediata antes de reiniciar labores.`;
+        }
       } else if (q.includes('gtc 45') || q.includes('cálculo') || q.includes('formula') || q.includes('nr')) {
         reply = `En la Guía Técnica Colombiana GTC 45 (2ª actualización), el cálculo matemático es estrictamente:\n\n• ND (Nivel de Deficiencia) × NE (Nivel de Exposición) = NP (Nivel de Probabilidad)\n• NP × NC (Nivel de Consecuencia) = NR (Nivel de Riesgo)\n\nInterpretación:\n• Nivel I (600 a 4000): Situación crítica, suspender actividades hasta corregir.\n• Nivel II (150 a 500): Corregir y adoptar medidas de control prioritarias.\n• Nivel III (40 a 120): Mejorar si es posible, justificar intervención.\n• Nivel IV (20): Mantener medidas preventivas actuales.`;
       } else if (q.includes('0312') || q.includes('estándares') || q.includes('mintrabajo') || q.includes('resolución')) {
-        reply = `Para ${company.name} (Riesgo IV, 8 trabajadores), la Resolución 0312/2019 exige el cumplimiento de los 21 estándares mínimos para unidades productivas de alto riesgo.\n\n• Estado actual del taller: 78.5% de cumplimiento.\n• Puntos pendientes: Plan Anual de Capacitación firmado y simulacro de evacuación con ARL SURA.`;
+        reply = `Para ${company.name} (${company.claseRiesgo || 'Riesgo IV'}, ${company.trabajadores || 8} trabajadores), la Resolución 0312/2019 exige el cumplimiento de los estándares mínimos para unidades productivas de alto riesgo.\n\n• Cumplimiento actual: Cumple con el ciclo PHVA.\n• Puntos prioritarios: Plan Anual de Capacitación firmado y plan de emergencias con la ARL ${company.arl || (isServicCrear ? 'Seguros SURA' : 'Positiva ARL')}.`;
       } else if (q.includes('incapacidad') || q.includes('ausentismo') || q.includes('cie') || q.includes('médic')) {
-        reply = `En el módulo de ausentismo tienes 3 incapacidades radicadas:\n• Hernando Vargas: M54.5 Lumbago por sobreesfuerzo en foso (4 días).\n• Javier Ortiz: S61.0 Herida en mano por amoladora (5 días).\n• Carlos Morales: J00 Rinofaringitis común (3 días).\n\nTotal días perdidos: 17 jornadas con un Índice de Severidad de 2.1.`;
+        if (isServicCrear) {
+          reply = `En el módulo de ausentismo de ${company.name} se registran las siguientes novedades:\n• Jhon Jairo Bonilla: S61.0 Laceración en mano en poda (4 días).\n• Carlos Eduardo Téllez: T59.8 Intoxicación leve por cloro residual en piscinas (3 días).\n• Martha Rocío Penagos: M54.5 Lumbago por postura forzada en aseo (4 días).\n\nCasos bajo monitoreo y con radicación ante ARL SURA.`;
+        } else {
+          reply = `En el módulo de ausentismo tienes 3 incapacidades radicadas:\n• Hernando Vargas: M54.5 Lumbago por sobreesfuerzo en foso (4 días).\n• Javier Ortiz: S61.0 Herida en mano por amoladora (5 días).\n• Carlos Morales: J00 Rinofaringitis común (3 días).\n\nTotal días perdidos: 17 jornadas con un Índice de Severidad de 2.1.`;
+        }
       } else {
-        reply = `He registrado tu solicitud: "${text}". Los registros del SG-SST de ${company.name} se encuentran sincronizados con la ARL Seguros SURA y el Representante Legal Rodrigo Gómez. ¿Deseas consultar la matriz de riesgos, radicar una incapacidad o revisar las actas de dotación?`;
+        const arlName = company.arl || (isServicCrear ? 'Seguros SURA' : 'Positiva ARL');
+        reply = `He registrado tu solicitud: "${text}". Los registros del SG-SST de ${company.name} se encuentran sincronizados con la ARL ${arlName} y la Gerencia General representada por ${company.representanteLegal.nombre}. ¿Deseas consultar la matriz de riesgos, radicar una incapacidad o revisar las actas de dotación?`;
       }
 
       setMessages((prev) => [

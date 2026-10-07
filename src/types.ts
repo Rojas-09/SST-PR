@@ -99,6 +99,8 @@ export interface CompanyInfo {
   claseRiesgo: string;
   ciiu: string;
   sede: string;
+  arl?: string;
+  actividadEconomica?: string;
   trabajadores?: number;
   direccion1?: string;
   direccion2?: string;
@@ -151,6 +153,7 @@ export type ActiveView =
   | 'gestion-peligros'
   | 'capacitaciones'
   | 'calendario'
+  | 'vencimientos'
   | 'diagnostico-0312'
   | 'ausentismo'
   | 'actas-entrega'

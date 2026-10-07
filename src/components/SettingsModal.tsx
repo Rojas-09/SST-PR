@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { X, Building2, Save, Check } from 'lucide-react';
 import { CompanyInfo } from '../types';
 
@@ -17,6 +17,10 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const [formData, setFormData] = useState<CompanyInfo>(company);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setFormData(company);
+  }, [company]);
 
   if (!isOpen) return null;
 

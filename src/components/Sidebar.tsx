@@ -37,6 +37,7 @@ interface SidebarProps {
   onOpenNewHazard?: () => void;
   onClose?: () => void;
   onOpenCompanySwitcher?: () => void;
+  onSwitchCompany?: (companyId: string) => void;
 }
 
 export function Sidebar({
@@ -52,9 +53,22 @@ export function Sidebar({
   onOpenNewHazard,
   onClose,
   onOpenCompanySwitcher,
+  onSwitchCompany,
 }: SidebarProps) {
   const { currentUser } = useAuthRole();
   const isSSTLeader = currentUser.rol === 'RESPONSABLE_SST';
+  const otherCompanyId = company.id === 'servic-crear' ? 'taller-los-andes' : 'servic-crear';
+  const otherCompanyName = company.id === 'servic-crear' ? 'Taller Los Andes' : 'SERVIC CREAR';
+
+  const handleToggleCompany = () => {
+    if (isSSTLeader && onSwitchCompany) {
+      onSwitchCompany(otherCompanyId);
+      if (onClose) onClose();
+    } else if (onOpenCompanySwitcher) {
+      onOpenCompanySwitcher();
+      if (onClose) onClose();
+    }
+  };
   // Cálculo dinámico de estándares aplicables según régimen Res. 0312
   const riskNum = company.claseRiesgo?.includes('V') && !company.claseRiesgo?.includes('IV') ? 5 :
                   company.claseRiesgo?.includes('IV') ? 4 :
@@ -64,7 +78,7 @@ export function Sidebar({
   const applicableStandards = workers > 50 || riskNum >= 4 ? 60 : (workers >= 11 ? 21 : 7);
 
   return (
-    <aside className="w-60 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full overflow-y-auto select-none font-sans py-4 px-3 text-[13px]">
+    <aside className="w-full md:w-60 bg-white md:border-r border-slate-200 flex flex-col justify-between shrink-0 h-full overflow-y-auto select-none font-sans py-4 px-3 text-[13px]">
       <div className="space-y-4">
         {/* Clay-style Brand Logo Header */}
         <div className="px-2 py-1 flex items-center justify-between">
@@ -95,54 +109,76 @@ export function Sidebar({
           )}
         </div>
 
-        {/* Company Badge & Multi-Company Switcher Card */}
-        <div className="mx-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs space-y-1.5">
-          <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-            <span className="flex items-center gap-1 text-slate-600">
-              <Building2 className="w-3.5 h-3.5 text-blue-600" />
-              <span>Empresa Activa</span>
-            </span>
+        {/* Modern Enterprise Organization Card with direct switcher action */}
+        <div className="mx-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs space-y-2">
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs shrink-0 shadow-2xs ${
+                company.id === 'servic-crear'
+                  ? 'bg-gradient-to-tr from-emerald-600 to-teal-600 text-white'
+                  : 'bg-slate-900 text-amber-400'
+              }`}
+            >
+              {company.id === 'servic-crear' ? 'SC' : 'TLA'}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-bold text-slate-900 text-xs truncate leading-tight" title={company.name}>
+                {company.name}
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                NIT {company.nit}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-[10.5px] px-1 text-slate-500 font-medium">
+            <span>{company.sede?.includes('Ibagué') ? 'Ibagué, Tolima' : 'Bogotá D.C.'}</span>
             <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-1.5 py-0.2 rounded">
               {company.claseRiesgo?.includes('IV') ? 'Riesgo IV' : 'Riesgo III'}
             </span>
           </div>
-          <div className="font-bold text-slate-900 text-[12.5px] truncate leading-tight" title={company.name}>
-            {company.name}
-          </div>
-          <div className="text-[11px] font-mono text-slate-400 truncate">
-            NIT {company.nit}
-          </div>
+
+          {/* Botón explícito para alternar directamente a la otra empresa - EXCLUSIVO PARA LÍDER SG-SST */}
+          {isSSTLeader && (
+            <button
+              type="button"
+              onClick={handleToggleCompany}
+              className="w-full py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border bg-white hover:bg-blue-50 text-blue-700 border-blue-200 shadow-2xs anim-button"
+              title={`Alternar de empresa activa a ${otherCompanyName}`}
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span className="truncate">Alternar a {otherCompanyName}</span>
+            </button>
+          )}
+
           {onOpenCompanySwitcher && (
             <button
               type="button"
-              onClick={onOpenCompanySwitcher}
-              className={`w-full mt-1.5 py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
-                isSSTLeader
-                  ? 'bg-white hover:bg-blue-50 text-blue-700 border-blue-200 shadow-2xs'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200'
-              }`}
+              onClick={() => {
+                onOpenCompanySwitcher();
+                if (onClose) onClose();
+              }}
+              className="w-full text-center text-[10.5px] text-slate-500 hover:text-blue-700 font-medium hover:underline transition-colors cursor-pointer pt-0.5 anim-button"
             >
-              <ArrowLeftRight className="w-3 h-3 text-blue-600" />
-              <span>{isSSTLeader ? 'Cambiar Empresa' : 'Cambiar (Líder SG-SST)'}</span>
-              {!isSSTLeader && <Lock className="w-2.5 h-2.5 text-slate-400" />}
+              {isSSTLeader ? 'Ver ficha legal y portafolio →' : `Ver ficha legal de ${company.name} →`}
             </button>
           )}
         </div>
 
-        {/* Primary Navigation in Spanish with Key SG-SST Names */}
-        <nav className="space-y-0.5">
+        {/* Primary Navigation in Spanish with Key SG-SST Names and Fluid Micro-interactions */}
+        <nav className="space-y-1">
           {/* Inicio */}
           <button
             type="button"
             onClick={() => onNavigate('inicio')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] font-medium anim-menu-item group cursor-pointer text-left ${
               activeView === 'inicio'
-                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <Home className={`w-4 h-4 shrink-0 ${activeView === 'inicio' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
+              <Home className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeView === 'inicio' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
               <span>Inicio</span>
             </div>
           </button>
@@ -151,17 +187,17 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('matriz-gtc45')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'matriz-gtc45'
-                ? 'bg-slate-100 text-slate-900 font-semibold'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <LayoutGrid className="w-4 h-4 text-slate-600 shrink-0" strokeWidth={1.75} />
+              <LayoutGrid className="w-4 h-4 text-slate-600 shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
               <span>Matriz GTC 45</span>
             </div>
-            <span className="text-[11px] font-mono text-slate-500 shrink-0">
+            <span className="text-[11px] font-mono text-slate-500 shrink-0 group-hover:bg-slate-200 px-1.5 py-0.2 rounded transition-colors">
               {hazardCount}
             </span>
           </button>
@@ -170,14 +206,14 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('gestion-peligros')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'gestion-peligros' || activeView === 'peligro-detalle'
-                ? 'bg-slate-100 text-slate-900 font-semibold'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <AlertTriangle className="w-4 h-4 text-slate-600 shrink-0" strokeWidth={1.75} />
+              <AlertTriangle className="w-4 h-4 text-slate-600 shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
               <span>Peligros</span>
             </div>
             {criticalCount > 0 && (
@@ -191,17 +227,17 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('ausentismo')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'ausentismo'
-                ? 'bg-slate-100 text-slate-900 font-semibold'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-purple-600 shrink-0" strokeWidth={1.75} />
+              <Calendar className="w-4 h-4 text-purple-600 shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
               <span>Incapacidades</span>
             </div>
-            <span className="text-[11px] font-mono text-slate-500 shrink-0">
+            <span className="text-[11px] font-mono text-slate-500 shrink-0 group-hover:bg-slate-200 px-1.5 py-0.2 rounded transition-colors">
               {incapacidadCount}
             </span>
           </button>
@@ -210,14 +246,14 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('diagnostico-0312')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'diagnostico-0312'
-                ? 'bg-slate-100 text-slate-900 font-semibold'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+              <FileCheck className="w-4 h-4 text-emerald-600 shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
               <span>Estándares 0312</span>
             </div>
             <span className="text-[10px] font-mono font-medium text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded shrink-0">
@@ -229,14 +265,14 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('actas-entrega')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'actas-entrega'
-                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <ShieldCheck className={`w-4 h-4 shrink-0 ${activeView === 'actas-entrega' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
+              <ShieldCheck className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeView === 'actas-entrega' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
               <span>Entrega EPP</span>
             </div>
           </button>
@@ -245,17 +281,17 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('capacitaciones')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'capacitaciones'
-                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <GraduationCap className={`w-4 h-4 shrink-0 ${activeView === 'capacitaciones' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
+              <GraduationCap className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeView === 'capacitaciones' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
               <span>Capacitaciones</span>
             </div>
-            <span className="text-[11px] font-mono text-slate-500 shrink-0">
+            <span className="text-[11px] font-mono text-slate-500 shrink-0 group-hover:bg-slate-200 px-1.5 py-0.2 rounded transition-colors">
               {capacitacionesCount}
             </span>
           </button>
@@ -264,14 +300,14 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onNavigate('calendario')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left ${
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
               activeView === 'calendario'
-                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs'
-                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
             }`}
           >
             <div className="flex items-center gap-3">
-              <CalendarDays className={`w-4 h-4 shrink-0 ${activeView === 'calendario' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
+              <CalendarDays className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${activeView === 'calendario' ? 'text-blue-600' : 'text-slate-600'}`} strokeWidth={1.75} />
               <span>Calendario</span>
             </div>
           </button>
@@ -279,17 +315,15 @@ export function Sidebar({
           {/* Vencimientos */}
           <button
             type="button"
-            onClick={() => {
-              onNavigate('inicio');
-              setTimeout(() => {
-                const el = document.getElementById('seccion-proximos-vencimientos');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 80);
-            }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-normal transition-colors cursor-pointer text-left text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+            onClick={() => onNavigate('vencimientos')}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[13px] anim-menu-item group cursor-pointer text-left ${
+              activeView === 'vencimientos'
+                ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs border-l-2 border-blue-600 pl-2.5'
+                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
+            }`}
           >
             <div className="flex items-center gap-3">
-              <Clock className="w-4 h-4 text-amber-600 shrink-0" strokeWidth={1.75} />
+              <Clock className="w-4 h-4 text-amber-600 shrink-0 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
               <span>Vencimientos</span>
             </div>
             <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200/60">
@@ -364,7 +398,7 @@ export function Sidebar({
           className="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-[13px] font-normal text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer text-left"
         >
           <Settings className="w-4 h-4 text-slate-600" strokeWidth={1.75} />
-          <span>Configuración ARL</span>
+          <span>Configuración ARL ({company.id === 'servic-crear' ? 'SURA' : 'Positiva'})</span>
         </button>
 
         {/* Normativas y Recursos */}

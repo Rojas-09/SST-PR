@@ -466,25 +466,25 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 bg-[#F8F9FF] min-h-screen text-slate-800">
+    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1780px] mx-auto space-y-6 bg-[#F8F9FF] min-h-screen text-slate-800 text-sm sm:text-base">
       {/* Toast Notification on Save */}
       {saveSuccessNotification && (
-        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-          <div className="text-xs">
+          <div className="text-xs sm:text-sm">
             <p className="font-bold">Diagnóstico Guardado y Acta Convalidada</p>
-            <p className="text-slate-300 text-[11px]">Se registró la constancia formal en el expediente de Taller Los Andes S.A.S.</p>
+            <p className="text-slate-300 text-xs">Se registró la constancia formal en el expediente de {company.name}.</p>
           </div>
         </div>
       )}
 
       {/* Toast Notification on PDF Download */}
       {pdfDownloaded && (
-        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
           <FileDown className="w-5 h-5 text-amber-400 shrink-0" />
-          <div className="text-xs">
+          <div className="text-xs sm:text-sm">
             <p className="font-bold">Formato Técnico Generado (.pdf)</p>
-            <p className="text-slate-300 text-[11px]">Expediente documental preparado para inspección de MinTrabajo y ARL.</p>
+            <p className="text-slate-300 text-xs">Expediente documental preparado para inspección de MinTrabajo y ARL.</p>
           </div>
         </div>
       )}
@@ -492,20 +492,20 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
       {/* TOP HEADER SECTION */}
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 border-b border-slate-200 pb-5">
         <div className="space-y-1.5 max-w-4xl">
-          <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-slate-500">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <ShieldCheck className="w-4 h-4 text-slate-600" />
             <span>SISTEMA DE GESTIÓN SG-SST • DIAGNÓSTICO TÉCNICO</span>
           </div>
 
-          <h1 className="text-[22px] sm:text-[24px] font-bold text-slate-900 tracking-tight leading-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
             Diagnóstico Inicial de Estándares Mínimos
           </h1>
 
-          <p className="text-[13px] text-slate-600 leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
             Determinación de aplicabilidad según la Resolución 0312 de 2019 del Ministerio del Trabajo (Decreto 1072 de 2015).
           </p>
 
-          <div className="text-[12px] text-slate-500 pt-1 leading-normal">
+          <div className="text-xs sm:text-sm text-slate-500 pt-1 leading-normal">
             Razón Social: <strong className="text-slate-700">{company.name}</strong> • NIT: <strong className="text-slate-700">{company.nit}</strong> • Actividad Económica: <span className="text-slate-700">CIIU 4520 – Mantenimiento mecánico y carrocería</span> • Sede: <span className="text-slate-700">{company.sede}</span>
           </div>
         </div>
@@ -515,7 +515,7 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
           <button
             type="button"
             onClick={handleSaveActa}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-lg text-[13px] font-medium transition-colors shadow-2xs cursor-pointer"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-xl text-xs sm:text-sm font-bold transition-colors shadow-xs cursor-pointer"
           >
             <ShieldCheck className="w-4 h-4 text-white" />
             <span>Guardar Diagnóstico y Generar Acta</span>

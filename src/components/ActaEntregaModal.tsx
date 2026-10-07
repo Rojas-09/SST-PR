@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { X, CheckSquare, ShieldCheck, PenTool, CheckCircle2 } from 'lucide-react';
 import { HazardRecord, CompanyInfo } from '../types';
-import { SignatureCarlosMendez } from './SignatureSvgs';
+import { SignatureCarlosMendez, SignatureAndreaMorales } from './SignatureSvgs';
 
 interface ActaEntregaModalProps {
   isOpen: boolean;
@@ -150,7 +150,11 @@ export function ActaEntregaModal({
                 FIRMA RESPONSABLE SST (EMISOR)
               </span>
               <div className="h-12 flex items-center">
-                <SignatureCarlosMendez className="w-40 h-10" />
+                {company.id === 'servic-crear' ? (
+                  <SignatureAndreaMorales className="w-40 h-10" />
+                ) : (
+                  <SignatureCarlosMendez className="w-40 h-10" />
+                )}
               </div>
               <span className="font-semibold font-sans text-slate-800 block leading-tight text-[12.5px]">
                 {company.responsableSST.nombre}

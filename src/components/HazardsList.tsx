@@ -36,18 +36,18 @@ export function HazardsList({
   });
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+    <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 space-y-6 text-sm sm:text-base">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block font-semibold">
             SISTEMA DE GESTIÓN SST • INVENTARIO TÉCNICO
           </span>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-0.5">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
             Peligros Identificados en Planta
           </h1>
-          <p className="text-xs text-slate-600 mt-1">
-            Inspección de campo activa para Taller Los Andes S.A.S. Valoración según <strong>GTC 45:2012</strong>.
+          <p className="text-sm sm:text-base text-slate-600 mt-1">
+            Inspección de campo activa para {company?.name || 'la empresa'}. Valoración según <strong>GTC 45:2012</strong>.
           </p>
         </div>
 

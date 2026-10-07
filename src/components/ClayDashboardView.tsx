@@ -199,65 +199,41 @@ export function ClayDashboardView({
   }, [hazards, activeTab, searchQuery]);
 
   return (
-    <div className="flex-1 bg-white min-h-full flex flex-col font-sans text-[13px] text-slate-800 p-6 md:p-8">
+    <div className="flex-1 bg-white min-h-full flex flex-col font-sans text-sm sm:text-base text-slate-800 p-4 sm:p-6 md:p-8 xl:p-10 w-full max-w-[1780px] mx-auto">
       {/* Clay-style Hero Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="text-[20px] md:text-[22px] font-bold text-slate-900 tracking-tight">
-            Hola {company.responsableSST.nombre.split(' ')[1] || 'Carlos'}, ¿listo para gestionar el SG-SST?
+      <div className="mb-6 lg:mb-8">
+        <div className="flex items-center justify-between mb-3.5">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Hola {company.responsableSST.nombre}, ¿listo para gestionar el SG-SST?
           </h1>
           <button
             type="button"
             onClick={() => setShowHero(!showHero)}
-            className="flex items-center gap-1 text-[12px] font-medium text-slate-500 hover:text-slate-800 cursor-pointer border border-slate-200 px-2 py-1 rounded-md"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 cursor-pointer border border-slate-200 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
           >
             <span>{showHero ? 'Mostrar menos' : 'Mostrar accesos'}</span>
-            {showHero ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {showHero ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
 
         {showHero && (
           <div className="space-y-4 animate-in fade-in duration-150">
-            {/* Clay-style Colorful Search / Copilot Input Bar */}
-            <form
-              onSubmit={handleHeroSubmit}
-              className="relative flex items-center bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-slate-300 focus-within:border-blue-500 transition-colors p-1"
-            >
-              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-500 flex items-center justify-center text-white ml-2 shrink-0">
-                <Sparkles className="w-3.5 h-3.5" />
-              </div>
-              <input
-                type="text"
-                value={heroPrompt}
-                onChange={(e) => setHeroPrompt(e.target.value)}
-                placeholder="Pregúntame cualquier norma del SG-SST, cálculo de GTC 45 o describe qué peligro deseas registrar..."
-                className="w-full bg-transparent px-3 py-2 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="w-7 h-7 rounded-lg bg-[#1877F2] hover:bg-[#1464CC] text-white flex items-center justify-center mr-1 cursor-pointer transition-colors shadow-2xs shrink-0"
-                title="Consultar Copilot"
-              >
-                ↑
-              </button>
-            </form>
-
             {/* 4 Clay-style Quick Action Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
               {/* Card 1: Matriz GTC 45 */}
               <div
                 onClick={() => onNavigate('matriz-gtc45')}
-                className="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer group"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
                     🔍
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-[13.5px] group-hover:text-blue-600">
+                  <h3 className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-600">
                     Matriz GTC 45
                   </h3>
                 </div>
-                <p className="text-[12px] text-slate-500 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                   Evalúa deficiencia, exposición y calcula el Nivel de Riesgo (NR = NP × NC).
                 </p>
               </div>
@@ -265,17 +241,17 @@ export function ClayDashboardView({
               {/* Card 2: Incapacidades y Ausentismo (DESTACADO Y DIRECTO) */}
               <div
                 onClick={() => onNavigate('ausentismo')}
-                className="p-3.5 rounded-xl border border-blue-200 bg-blue-50/30 hover:border-blue-500 hover:shadow-xs transition-all cursor-pointer group"
+                className="p-4 rounded-xl border border-blue-200 bg-blue-50/40 hover:border-blue-500 hover:shadow-xs transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
                     🏥
                   </div>
-                  <h3 className="font-semibold text-blue-900 text-[13.5px] group-hover:text-blue-700">
+                  <h3 className="font-bold text-blue-900 text-sm sm:text-base group-hover:text-blue-700">
                     Incapacidades y Ausentismo
                   </h3>
                 </div>
-                <p className="text-[12px] text-slate-600 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   Registra certificados CIE-10, calcula días perdidos y costos de ARL/EPS.
                 </p>
               </div>
@@ -283,17 +259,17 @@ export function ClayDashboardView({
               {/* Card 3: Peligros Críticos */}
               <div
                 onClick={() => onNavigate('gestion-peligros')}
-                className="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-red-400 hover:shadow-xs transition-all cursor-pointer group"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-red-400 hover:shadow-xs transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
                     ⚠️
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-[13.5px] group-hover:text-red-600">
+                  <h3 className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-red-600">
                     Peligros Críticos (Nivel I)
                   </h3>
                 </div>
-                <p className="text-[12px] text-slate-500 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                   2 situaciones con orden de intervención obligatoria en soldadura y bodega 220V.
                 </p>
               </div>
@@ -301,18 +277,18 @@ export function ClayDashboardView({
               {/* Card 4: Diagnóstico 0312 */}
               <div
                 onClick={() => onNavigate('diagnostico-0312')}
-                className="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer group"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
                     📋
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-[13.5px] group-hover:text-blue-600">
+                  <h3 className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-600">
                     Estándares Res. 0312
                   </h3>
                 </div>
-                <p className="text-[12px] text-slate-500 leading-relaxed">
-                  Verifica los 21 estándares mínimos de Ley (78.5% cumplimiento legal).
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  Verifica los 60 estándares mínimos de Ley (90.5% cumplimiento legal).
                 </p>
               </div>
             </div>
@@ -321,13 +297,13 @@ export function ClayDashboardView({
       </div>
 
       {/* Clay-style Segmented Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-4 sm:mb-5">
         <button
           type="button"
           onClick={() => setActiveTab('all')}
-          className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             activeTab === 'all'
-              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs'
+              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs font-bold'
               : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
@@ -336,9 +312,9 @@ export function ClayDashboardView({
         <button
           type="button"
           onClick={() => setActiveTab('gtc45')}
-          className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             activeTab === 'gtc45'
-              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs'
+              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs font-bold'
               : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
@@ -347,9 +323,9 @@ export function ClayDashboardView({
         <button
           type="button"
           onClick={() => setActiveTab('incapacidades')}
-          className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             activeTab === 'incapacidades'
-              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs'
+              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs font-bold'
               : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
@@ -358,20 +334,20 @@ export function ClayDashboardView({
         <button
           type="button"
           onClick={() => setActiveTab('diagnostico')}
-          className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             activeTab === 'diagnostico'
-              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs'
+              ? 'border border-blue-500 text-blue-600 bg-white shadow-2xs font-bold'
               : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
-          Diagnóstico 0312 (21)
+          Diagnóstico 0312 (60)
         </button>
       </div>
 
       {/* Table Header Controls matching Clay */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-[15px] font-bold text-slate-900 tracking-tight">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
             {activeTab === 'incapacidades'
               ? 'Registros de Incapacidad y Ausentismo'
               : activeTab === 'gtc45'
@@ -383,57 +359,57 @@ export function ClayDashboardView({
 
           <div className="flex items-center gap-1.5 ml-3">
             {/* Responsable dropdown pill */}
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-[12px] text-slate-700">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700">
               <span className="text-slate-400">Responsable:</span>
-              <span className="font-medium">Todos</span>
-              <ChevronDown className="w-3 h-3 text-slate-400 ml-0.5" />
+              <span className="font-semibold">Todos</span>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
             </div>
 
             {/* Filtros dropdown pill */}
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-[12px] text-slate-700 cursor-pointer hover:bg-slate-50">
-              <SlidersHorizontal className="w-3 h-3 text-slate-500" />
-              <span>Filtros</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-700 cursor-pointer hover:bg-slate-50">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
+              <span className="font-semibold">Filtros</span>
             </div>
           </div>
         </div>
 
         {/* Right Search & Clay Vibrant Blue Button */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar registro..."
-              className="pl-8 pr-3 py-1 bg-white border border-slate-200 rounded-lg text-[12.5px] text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-44 transition-colors"
+              className="pl-9 pr-3.5 py-1.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-48 sm:w-56 transition-colors"
             />
           </div>
 
           <button
             type="button"
             onClick={onOpenNewHazard}
-            className="bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-lg px-3.5 py-1.5 font-medium text-[13px] flex items-center gap-1.5 shadow-2xs cursor-pointer transition-colors"
+            className="bg-[#1877F2] hover:bg-[#1464CC] text-white rounded-xl px-4 py-2 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xs cursor-pointer transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>+ Nuevo</span>
           </button>
         </div>
       </div>
 
       {/* The Clay Table Container */}
-      <div className="border border-slate-200 rounded-xl overflow-x-auto bg-white shadow-2xs">
-        <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
+      <div className="border border-slate-200 rounded-2xl overflow-x-auto bg-white shadow-2xs">
+        <table className="table-stack-lg w-full text-left border-collapse text-sm sm:text-base">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/50 text-[12px] font-semibold text-slate-600">
-              <th className="py-2.5 px-2.5 font-semibold w-[22%]">Nombre del Registro</th>
-              <th className="py-2.5 px-1.5 text-center w-[4%] font-semibold" title="Favorito">★</th>
-              <th className="py-2.5 px-2.5 font-semibold w-[16%]">Etiquetas / Estado</th>
-              <th className="py-2.5 px-2.5 font-semibold w-[13%]">Fecha de Creación</th>
-              <th className="py-2.5 px-2.5 font-semibold w-[13%]">Última Edición</th>
-              <th className="py-2.5 px-2.5 font-semibold w-[14%]">Responsable</th>
-              <th className="py-2.5 px-2.5 font-semibold w-[10%]">Acceso</th>
-              <th className="py-2.5 px-1.5 text-center w-[8%] font-semibold"></th>
+            <tr className="border-b border-slate-200 bg-slate-50/80 text-xs sm:text-sm font-bold text-slate-700">
+              <th className="py-3 px-3.5 font-bold w-[24%]">Nombre del Registro</th>
+              <th className="py-3 px-2 text-center w-[4%] font-bold" title="Favorito">★</th>
+              <th className="py-3 px-3 font-bold w-[16%]">Etiquetas / Estado</th>
+              <th className="py-3 px-3 font-bold w-[13%]">Fecha de Creación</th>
+              <th className="py-3 px-3 font-bold w-[13%]">Última Edición</th>
+              <th className="py-3 px-3 font-bold w-[14%]">Responsable</th>
+              <th className="py-3 px-3 font-bold w-[10%]">Acceso</th>
+              <th className="py-3 px-2 text-center w-[6%] font-bold"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -452,22 +428,22 @@ export function ClayDashboardView({
                   className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
                 >
                   {/* Nombre & Icon */}
-                  <td data-label="Nombre del Registro" className="py-3 px-2">
-                    <div className="flex items-start gap-2">
-                      <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                  <td data-label="Nombre del Registro" className="py-3.5 px-3.5">
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
                         {row.category === 'incapacidades' ? (
-                          <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                          <Calendar className="w-4 h-4 text-blue-600" />
                         ) : row.category === 'diagnostico' ? (
-                          <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                          <FileCheck className="w-4 h-4 text-emerald-600" />
                         ) : (
-                          <FileSpreadsheet className="w-3.5 h-3.5 text-slate-700" />
+                          <FileSpreadsheet className="w-4 h-4 text-slate-700" />
                         )}
                       </div>
                       <div>
-                        <span className="font-medium text-slate-900 group-hover:text-blue-600 block">
+                        <span className="font-semibold text-slate-900 group-hover:text-blue-600 block leading-snug">
                           {row.title}
                         </span>
-                        <span className="text-[11px] font-mono-data text-slate-400">
+                        <span className="text-xs font-mono-data text-slate-400">
                           {row.code}
                         </span>
                       </div>
@@ -475,7 +451,7 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Favorito Star */}
-                  <td data-label="Favorito" className="py-3 px-1 text-center">
+                  <td data-label="Favorito" className="py-3.5 px-2 text-center">
                     <button
                       type="button"
                       onClick={(e) => toggleFavorite(row.id, e)}
@@ -483,7 +459,7 @@ export function ClayDashboardView({
                       title={isFav ? 'Quitar de favoritos' : 'Marcar favorito'}
                     >
                       <Star
-                        className={`w-3.5 h-3.5 ${
+                        className={`w-4 h-4 ${
                           isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
                         }`}
                       />
@@ -491,12 +467,12 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Tags */}
-                  <td data-label="Etiquetas / Estado" className="py-3 px-3">
+                  <td data-label="Etiquetas / Estado" className="py-3.5 px-3">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {row.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border ${
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                             tag.color === 'red'
                               ? 'bg-red-50 text-red-700 border-red-200'
                               : tag.color === 'purple'
@@ -515,30 +491,30 @@ export function ClayDashboardView({
                   </td>
 
                   {/* Creado el */}
-                  <td data-label="Fecha de Creación" className="py-3 px-3 text-slate-500 text-[12.5px]">
+                  <td data-label="Fecha de Creación" className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
                     {row.createdAt}
                   </td>
 
                   {/* Última edición */}
-                  <td data-label="Última Edición" className="py-3 px-3 text-slate-500 text-[12.5px]">
+                  <td data-label="Última Edición" className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
                     {row.lastOpened}
                   </td>
 
                   {/* Responsable */}
-                  <td data-label="Responsable" className="py-3 px-3">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-5 h-5 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold flex items-center justify-center">
+                  <td data-label="Responsable" className="py-3.5 px-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-900 text-amber-400 text-xs font-bold flex items-center justify-center">
                         CM
                       </div>
-                      <span className="text-[12.5px] text-slate-700">
+                      <span className="text-xs sm:text-sm text-slate-700 font-medium">
                         {row.owner}
                       </span>
                     </div>
                   </td>
 
                   {/* Acceso */}
-                  <td data-label="Acceso" className="py-3 px-3">
-                    <span className="text-[12px] text-slate-500 font-medium hover:text-slate-900">
+                  <td data-label="Acceso" className="py-3.5 px-3">
+                    <span className="text-xs sm:text-sm text-slate-500 font-medium hover:text-slate-900">
                       {row.access}
                     </span>
                   </td>

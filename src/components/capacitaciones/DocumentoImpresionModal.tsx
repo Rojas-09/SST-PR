@@ -1,5 +1,20 @@
-import React from 'react';
-import { X, Printer, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  X,
+  Printer,
+  ExternalLink,
+  Users,
+  FileText,
+  CheckSquare,
+  Square,
+  UserPlus,
+  PenTool,
+  CheckCircle2,
+  Layers,
+  ShieldCheck,
+  Building2,
+  Plus,
+} from 'lucide-react';
 import {
   PlanCapacitacion,
   SesionEjecutada,
@@ -8,6 +23,8 @@ import {
 } from '../../types/capacitaciones';
 import { CompanyInfo, HazardRecord } from '../../types';
 import { PrintTemplates } from './PrintTemplates';
+import { GestionTrabajadoresModal } from './GestionTrabajadoresModal';
+import { useAuthRole } from '../../context/AuthRoleContext';
 
 interface DocumentoImpresionModalProps {
   isOpen: boolean;
@@ -19,6 +36,7 @@ interface DocumentoImpresionModalProps {
   planes?: PlanCapacitacion[];
   company: CompanyInfo;
   hazards?: HazardRecord[];
+  onWorkersUpdated?: () => void;
 }
 
 export function DocumentoImpresionModal({
@@ -31,7 +49,17 @@ export function DocumentoImpresionModal({
   planes = [],
   company,
   hazards = [],
+  onWorkersUpdated,
 }: DocumentoImpresionModalProps) {
+  const { currentUser } = useAuthRole();
+  const canManageWorkers = currentUser.rol === 'ADMINISTRADOR' || currentUser.rol === 'RESPONSABLE_SST';
+
+  // Option to include registered workers or leave sheet blank for manual filling
+  const [includeSystemWorkers, setIncludeSystemWorkers] = useState<boolean>(true);
+  const [blankRowsCount, setBlankRowsCount] = useState<number>(5);
+  const [isWorkersCrudOpen, setIsWorkersCrudOpen] = useState<boolean>(false);
+  const [activeMode, setActiveMode] = useState<'SYSTEM' | 'BLANK' | 'MIXED'>('MIXED');
+
   if (!isOpen) return null;
 
   const titleMap: Record<PrintTemplateType, { title: string; subtitle: string; landscape?: boolean }> = {
@@ -302,6 +330,135 @@ export function DocumentoImpresionModal({
           </div>
         </div>
 
+        {/* Dynamic Worker & Blank Sheet Setup Banner (Solo para Planillas y Actas) */}
+        {(template === 'LISTA_ASISTENCIA' || template === 'ACTA_OFICIAL') && (
+          <div className="bg-slate-800 border-b border-slate-700 px-3.5 sm:px-6 py-2.5 sm:py-3 text-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  Modalidad de Participantes
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-white">
+                  ¿Cómo desea estructurar la planilla de asistencia?
+                </span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-300">
+                Seleccione si desea emitir con la nómina cargada en el sistema o dejar renglones en blanco para que los operarios firmen a mano.
+              </p>
+            </div>
+
+            {/* Mode Selector and CRUD Controls */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex rounded-xl bg-slate-900 p-1 border border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveMode('SYSTEM');
+                    setIncludeSystemWorkers(true);
+                    setBlankRowsCount(0);
+                  }}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMode === 'SYSTEM'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
+                  title="Incluir solo trabajadores registrados en el sistema"
+                >
+                  <Users className="w-3.5 h-3.5 text-blue-300" />
+                  <span>Nómina Digital ({asistencias.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveMode('BLANK');
+                    setIncludeSystemWorkers(false);
+                    if (blankRowsCount === 0) setBlankRowsCount(10);
+                  }}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMode === 'BLANK'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
+                  title="Planilla en blanco para diligenciar a mano en campo"
+                >
+                  <PenTool className="w-3.5 h-3.5 text-amber-300" />
+                  <span>En Blanco (A Mano)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveMode('MIXED');
+                    setIncludeSystemWorkers(true);
+                    if (blankRowsCount === 0) setBlankRowsCount(5);
+                  }}
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMode === 'MIXED'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
+                  title="Trabajadores registrados + campos vacíos de apoyo"
+                >
+                  <Layers className="w-3.5 h-3.5 text-emerald-300" />
+                  <span>Mixta</span>
+                </button>
+              </div>
+
+              {/* Selector de Renglones en Blanco (activo en modo BLANK o MIXED) */}
+              {(activeMode === 'BLANK' || activeMode === 'MIXED') && (
+                <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-xl text-xs">
+                  <span className="text-slate-400 font-medium text-[11px] whitespace-nowrap">
+                    Renglones vacíos:
+                  </span>
+                  {[5, 10, 15, 20].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      onClick={() => setBlankRowsCount(num)}
+                      className={`px-2 py-0.5 rounded text-xs font-bold transition-colors cursor-pointer ${
+                        blankRowsCount === num
+                          ? 'bg-amber-500 text-slate-950 shadow-2xs font-mono'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800 font-mono'
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                  <input
+                    type="number"
+                    min={1}
+                    max={50}
+                    value={blankRowsCount}
+                    onChange={(e) => setBlankRowsCount(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                    className="w-12 px-1.5 py-0.5 bg-slate-800 border border-slate-600 rounded text-center text-xs font-mono text-white outline-none focus:border-amber-400"
+                    title="Número de campos vacíos"
+                  />
+                </div>
+              )}
+
+              {/* Botón de Gestión de Trabajadores (CRUD) para Responsable SST y Administrador */}
+              <button
+                type="button"
+                onClick={() => setIsWorkersCrudOpen(true)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border ${
+                  canManageWorkers
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500 shadow-xs'
+                    : 'bg-slate-700 hover:bg-slate-600 text-slate-200 border-slate-600'
+                }`}
+                title={
+                  canManageWorkers
+                    ? 'Gestionar nómina de trabajadores del SG-SST (Crear, Editar, Eliminar)'
+                    : 'Ver nómina de trabajadores (Modo consulta)'
+                }
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Gestionar Trabajadores (CRUD)</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Paper Sheet Preview Area */}
         <div className="flex-1 overflow-y-auto p-2 sm:p-8 flex justify-center bg-slate-200/80">
           <div
@@ -320,10 +477,29 @@ export function DocumentoImpresionModal({
                 planes={planes}
                 company={company}
                 hazards={hazards}
+                includeSystemWorkers={includeSystemWorkers}
+                blankRowsCount={blankRowsCount}
               />
             </div>
           </div>
         </div>
+
+        {/* Modal CRUD de Trabajadores (Para Responsable SST y Administrador) */}
+        {isWorkersCrudOpen && (
+          <GestionTrabajadoresModal
+            isOpen={isWorkersCrudOpen}
+            onClose={() => setIsWorkersCrudOpen(false)}
+            company={company}
+            onWorkersChanged={() => {
+              if (onWorkersUpdated) onWorkersUpdated();
+            }}
+            onOpenBlankSheet={() => {
+              setActiveMode('BLANK');
+              setIncludeSystemWorkers(false);
+              setBlankRowsCount(15);
+            }}
+          />
+        )}
       </div>
     </div>
   );

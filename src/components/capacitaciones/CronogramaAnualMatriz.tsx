@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Calendar,
   Filter,
@@ -32,82 +32,110 @@ import {
 import { HazardRecord, CompanyInfo } from '../../types';
 import { useAuthRole } from '../../context/AuthRoleContext';
 import { capacitacionesStorage } from '../../services/capacitacionesStorage';
-import { workshopEmployees } from '../../data/initialData';
+import { getCompanyDataset } from '../../data/companiesData';
 import { CATALOGO_IMPLEMENTOS, ImplementoCapacitacion } from '../../data/implementosCatalog';
 
+export const getAvailableTrainers = (companyId: string) => {
+  if (companyId === 'servic-crear') {
+    return [
+      {
+        id: 'cap-andrea-morales',
+        nombre: 'Ing. Andrea Morales Peña',
+        entidad: 'SERVIC CREAR S.A.S.',
+        cargo: 'Líder SG-SST',
+        licencia: 'Lic. 24890-SST Tolima',
+        tipo: 'INTERNO' as const,
+      },
+      {
+        id: 'cap-stihl-colombia',
+        nombre: 'Instructor Técnico STIHL Colombia',
+        entidad: 'STIHL Colombia • Soporte Técnico Especializado',
+        cargo: 'Especialista en Maquinaria a Batería y Poda',
+        licencia: 'Cert. STIHL-COL-4412',
+        tipo: 'EXTERNO' as const,
+      },
+      {
+        id: 'cap-sura-asesor',
+        nombre: 'Asesor Técnico Especializado ARL SURA',
+        entidad: 'Seguros SURA ARL',
+        cargo: 'Consultor de Riesgos Laborales Clase IV',
+        licencia: 'Lic. SURA-8841-BOG',
+        tipo: 'EXTERNO' as const,
+      },
+      {
+        id: 'cap-sc-gerencia',
+        nombre: 'Dra. Claudia Patricia Varón',
+        entidad: 'SERVIC CREAR S.A.S.',
+        cargo: 'Gerente General / Representante Legal',
+        licencia: 'Gerencia Legal SC-2026',
+        tipo: 'INTERNO' as const,
+      },
+      {
+        id: 'cap-elena-santamaria',
+        nombre: 'Dra. Elena Santamaría',
+        entidad: 'Ministerio del Trabajo (Mintrabajo)',
+        cargo: 'Inspectora Laboral / Auditora SST',
+        licencia: 'Credencial MT-09412',
+        tipo: 'EXTERNO' as const,
+      },
+    ];
+  }
+
+  return [
+    {
+      id: 'cap-carlos-mendez',
+      nombre: 'Ing. Carlos Méndez',
+      entidad: 'Taller Los Andes S.A.S.',
+      cargo: 'Responsable SG-SST',
+      licencia: 'Lic. 18492-2018 (DDS)',
+      tipo: 'INTERNO' as const,
+    },
+    {
+      id: 'cap-claudia-vega',
+      nombre: 'Ft. Claudia Marcela Vega',
+      entidad: 'Positiva ARL • Fisioterapia & Ergonomía',
+      cargo: 'Especialista en Ergonomía Ocupacional',
+      licencia: 'Reg. Nacional Fisioterapia 39481',
+      tipo: 'EXTERNO' as const,
+    },
+    {
+      id: 'cap-mauricio-penaloza',
+      nombre: 'Ing. Mauricio Peñaloza',
+      entidad: 'Positiva ARL • Consultoría Técnica',
+      cargo: 'Especialista en Riesgo Eléctrico RETIE',
+      licencia: 'Mat. Profesional CN-84910',
+      tipo: 'EXTERNO' as const,
+    },
+    {
+      id: 'cap-norton',
+      nombre: 'Téc. Instructor Norton / Abrasivos de Colombia',
+      entidad: 'Abrasivos de Colombia S.A.S.',
+      cargo: 'Asesor Técnico Certificado de Fabricante',
+      licencia: 'Cert. TC-99214-COL',
+      tipo: 'EXTERNO' as const,
+    },
+    {
+      id: 'cap-rodrigo-gomez',
+      nombre: 'Ing. Rodrigo Gómez V.',
+      entidad: 'Taller Los Andes S.A.S.',
+      cargo: 'Gerente General / Representante Legal',
+      licencia: 'Mat. Copnia 25202-0984',
+      tipo: 'INTERNO' as const,
+    },
+    {
+      id: 'cap-elena-santamaria',
+      nombre: 'Dra. Elena Santamaría',
+      entidad: 'Ministerio del Trabajo (Mintrabajo)',
+      cargo: 'Inspectora Laboral / Auditora SST',
+      licencia: 'Credencial MT-09412',
+      tipo: 'EXTERNO' as const,
+    },
+  ];
+};
+
 export const AVAILABLE_TRAINERS = [
-  {
-    id: 'cap-carlos-mendez',
-    nombre: 'Ing. Carlos Méndez',
-    entidad: 'Taller Los Andes S.A.S.',
-    cargo: 'Responsable SG-SST',
-    licencia: 'Lic. 18492-2018 (DDS)',
-    tipo: 'INTERNO' as const,
-  },
-  {
-    id: 'cap-andrea-morales',
-    nombre: 'Ing. Andrea Morales Peña',
-    entidad: 'SERVIC CREAR S.A.S.',
-    cargo: 'Líder SG-SST',
-    licencia: 'Lic. 24890-SST Tolima',
-    tipo: 'INTERNO' as const,
-  },
-  {
-    id: 'cap-stihl-colombia',
-    nombre: 'Instructor Técnico STIHL Colombia',
-    entidad: 'STIHL Colombia • Soporte Técnico Especializado',
-    cargo: 'Especialista en Maquinaria a Batería y Poda',
-    licencia: 'Cert. STIHL-COL-4412',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-claudia-vega',
-    nombre: 'Ft. Claudia Marcela Vega',
-    entidad: 'Positiva ARL • Fisioterapia & Ergonomía',
-    cargo: 'Especialista en Ergonomía Ocupacional',
-    licencia: 'Reg. Nacional Fisioterapia 39481',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-mauricio-penaloza',
-    nombre: 'Ing. Mauricio Peñaloza',
-    entidad: 'Positiva ARL • Consultoría Técnica',
-    cargo: 'Especialista en Riesgo Eléctrico RETIE',
-    licencia: 'Mat. Profesional CN-84910',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-norton',
-    nombre: 'Téc. Instructor Norton / Abrasivos de Colombia',
-    entidad: 'Abrasivos de Colombia S.A.S.',
-    cargo: 'Asesor Técnico Certificado de Fabricante',
-    licencia: 'Cert. TC-99214-COL',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-sura-asesor',
-    nombre: 'Asesor Técnico Especializado ARL SURA',
-    entidad: 'Seguros SURA ARL',
-    cargo: 'Consultor de Riesgos Laborales Clase IV',
-    licencia: 'Lic. SURA-8841-BOG',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-elena-santamaria',
-    nombre: 'Dra. Elena Santamaría',
-    entidad: 'Ministerio del Trabajo (Mintrabajo)',
-    cargo: 'Inspectora Laboral / Auditora SST',
-    licencia: 'Credencial MT-09412',
-    tipo: 'EXTERNO' as const,
-  },
-  {
-    id: 'cap-rodrigo-gomez',
-    nombre: 'Ing. Rodrigo Gómez V.',
-    entidad: 'Taller Los Andes S.A.S.',
-    cargo: 'Gerente General / Representante Legal',
-    licencia: 'Mat. Copnia 25202-0984',
-    tipo: 'INTERNO' as const,
-  },
+  ...getAvailableTrainers('taller-los-andes'),
+  ...getAvailableTrainers('servic-crear'),
 ];
 
 interface CronogramaAnualMatrizProps {
@@ -172,7 +200,15 @@ export function CronogramaAnualMatriz({
   const [newModalidad, setNewModalidad] = useState<ModalidadCapacitacion>('PRESENCIAL_TEORICO_PRACTICO');
   const [newDuracionHoras, setNewDuracionHoras] = useState(2);
   const [newFecha, setNewFecha] = useState('2026-04-15');
-  const [selectedTrainerId, setSelectedTrainerId] = useState<string>('cap-carlos-mendez');
+  
+  const activeTrainers = useMemo(() => getAvailableTrainers(company.id), [company.id]);
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string>(() => activeTrainers[0]?.id || 'cap-1');
+
+  useEffect(() => {
+    if (activeTrainers.length > 0) {
+      setSelectedTrainerId(activeTrainers[0].id);
+    }
+  }, [company.id, activeTrainers]);
 
   // Implementos selection state
   const [selectedImplementos, setSelectedImplementos] = useState<string[]>([
@@ -253,7 +289,7 @@ export function CronogramaAnualMatriz({
 
     // Trainer lookup
     const trainerObj =
-      AVAILABLE_TRAINERS.find((t) => t.id === selectedTrainerId) || AVAILABLE_TRAINERS[0];
+      activeTrainers.find((t) => t.id === selectedTrainerId) || activeTrainers[0];
 
     // Overlap validation
     const overlapMsg = checkOverlap(newFecha, trainerObj.id, newArea);
@@ -274,6 +310,8 @@ export function CronogramaAnualMatriz({
     const nextNumber = planes.length + 1;
     const codigo = `CAP-${selectedYear}-00${nextNumber}`;
     const mes = parseInt(newFecha.split('-')[1], 10);
+
+    const enrolledEmployees = getCompanyDataset(company.id).employees;
 
     capacitacionesStorage.createPlan(
       {
@@ -304,7 +342,7 @@ export function CronogramaAnualMatriz({
         entidad: trainerObj.entidad,
         licencia: trainerObj.licencia,
       },
-      workshopEmployees.map((e) => e.id)
+      enrolledEmployees.map((e) => e.id)
     );
 
     setIsNewPlanModalOpen(false);
@@ -800,204 +838,194 @@ export function CronogramaAnualMatriz({
 
       {/* Modal: Nueva Capacitación en el Plan */}
       {isNewPlanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh]">
-            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <PlusCircle className="w-5 h-5 text-blue-400" />
-                <h3 className="font-bold text-sm">Programar Nueva Capacitación en el SG-SST</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh]">
+            {/* Modal Header (Fixed at top) */}
+            <div className="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-600/30 text-blue-400 flex items-center justify-center shrink-0">
+                  <PlusCircle className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm sm:text-base truncate">Programar Nueva Capacitación</h3>
+                  <p className="text-[11px] text-slate-300 truncate">
+                    {company.name} • {company.claseRiesgo} • Plan Anual {selectedYear}
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsNewPlanModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-                title="Cerrar modal"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors text-base font-bold cursor-pointer"
+                title="Cerrar"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleCreatePlanSubmit} className="p-6 sm:p-7 overflow-y-auto space-y-5 text-sm">
-              {/* Empresa Responsable Amarrada al SG-SST (No editable por el momento) */}
-              <div className="p-3.5 sm:p-4 bg-slate-100 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                    <Building2 className="w-5 h-5" />
+            {/* Modal Scrollable Body */}
+            <form onSubmit={handleCreatePlanSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 text-xs sm:text-sm">
+                {/* Tema de Capacitación con atajos rápidos */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-bold text-slate-800">
+                      Tema de la Capacitación *
+                    </label>
+                    <span className="text-[11px] text-slate-400">GTC 45 / Dec. 1072</span>
                   </div>
-                  <div className="min-w-0">
-                    <span className="font-black text-slate-900 block text-sm truncate">
-                      Empresa Titular SG-SST: {company.name}
-                    </span>
-                    <span className="text-xs text-slate-600 font-mono mt-0.5 block truncate">
-                      NIT {company.nit} • Clase de Riesgo {company.claseRiesgo} • CIIU {company.ciiu}
-                    </span>
+                  <input
+                    type="text"
+                    required
+                    value={newTema}
+                    onChange={(e) => setNewTema(e.target.value)}
+                    placeholder="Ej: Prevención de atrapamientos y guardas en tornos"
+                    className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm bg-white"
+                  />
+                  {/* Quick suggestion pills */}
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    {[
+                      'Uso de EPP y Dotación',
+                      'Riesgo Mecánico en Tornos',
+                      'Seguridad en Fosas de Taller',
+                      'Prevención de Riesgo Eléctrico',
+                      'Manejo de Sustancias Químicas',
+                    ].map((sug) => (
+                      <button
+                        key={sug}
+                        type="button"
+                        onClick={() => setNewTema(sug)}
+                        className="text-[10.5px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-600 font-medium transition-colors cursor-pointer border border-slate-200"
+                      >
+                        + {sug}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <span className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-200/90 text-slate-800 flex items-center gap-1.5 shrink-0 border border-slate-300 shadow-2xs w-fit">
-                  <Lock className="w-4 h-4 text-blue-600" />
-                  <span>Empresa Amarrada (No editable)</span>
-                </span>
-              </div>
 
-              <div>
-                <label className="block font-bold text-slate-800 mb-1.5 text-sm">Tema de Capacitación *</label>
-                <input
-                  type="text"
-                  required
-                  value={newTema}
-                  onChange={(e) => setNewTema(e.target.value)}
-                  placeholder="Ej: Prevención de Atrapamientos y Guardas de Protección en Tornos"
-                  className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-800 mb-1.5 text-sm">Objetivo de la Formación *</label>
-                <textarea
-                  rows={2}
-                  required
-                  value={newObjetivo}
-                  onChange={(e) => setNewObjetivo(e.target.value)}
-                  placeholder="Defina el objetivo formativo medible..."
-                  className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Objetivo Formativo */}
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Peligro Asociado (GTC 45)</label>
+                  <label className="block font-bold text-slate-800 mb-1">
+                    Objetivo Formativo Medible *
+                  </label>
+                  <textarea
+                    rows={2}
+                    required
+                    value={newObjetivo}
+                    onChange={(e) => setNewObjetivo(e.target.value)}
+                    placeholder="Defina el objetivo formativo específico..."
+                    className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm resize-none bg-white"
+                  />
+                </div>
+
+                {/* Peligro Asociado y Área Dirigida en Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">
+                      Peligro Asociado (GTC 45)
+                    </label>
+                    <select
+                      value={newPeligroId}
+                      onChange={(e) => {
+                        setNewPeligroId(e.target.value);
+                        const hz = hazards.find((h) => h.id === e.target.value);
+                        if (hz) setNewArea(hz.zonaLugar);
+                      }}
+                      className="w-full py-2 px-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm truncate"
+                    >
+                      <option value="">Capacitación General del SG-SST</option>
+                      {hazards.map((h) => (
+                        <option key={h.id} value={h.id}>
+                          {h.code} • {h.factorEspecifico} ({h.evaluacion.level})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">
+                      Área / Proceso Dirigido *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newArea}
+                      onChange={(e) => setNewArea(e.target.value)}
+                      placeholder="Ej: Zona de Torno y Fresado"
+                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm bg-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Modalidad, Duración y Fecha Programada */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">Modalidad</label>
+                    <select
+                      value={newModalidad}
+                      onChange={(e) => setNewModalidad(e.target.value as ModalidadCapacitacion)}
+                      className="w-full py-2 px-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm"
+                    >
+                      <option value="PRESENCIAL_TEORICO_PRACTICO">Presencial Práctico</option>
+                      <option value="TALLER_PUESTO_TRABAJO">Taller en Puesto</option>
+                      <option value="CHARLA_5_MIN">Charla Operativa (5m)</option>
+                      <option value="VIRTUAL_ARL">Virtual ARL</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">Duración (Horas)</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={12}
+                      value={newDuracionHoras}
+                      onChange={(e) => setNewDuracionHoras(Number(e.target.value))}
+                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm font-mono bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">Fecha Programada *</label>
+                    <input
+                      type="date"
+                      required
+                      value={newFecha}
+                      onChange={(e) => setNewFecha(e.target.value)}
+                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm font-mono bg-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Capacitador Asignado */}
+                <div>
+                  <label className="block font-bold text-slate-800 mb-1">
+                    Capacitador / Entidad Responsable *
+                  </label>
                   <select
-                    value={newPeligroId}
-                    onChange={(e) => {
-                      setNewPeligroId(e.target.value);
-                      const hz = hazards.find((h) => h.id === e.target.value);
-                      if (hz) setNewArea(hz.zonaLugar);
-                    }}
-                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm"
+                    value={selectedTrainerId}
+                    onChange={(e) => setSelectedTrainerId(e.target.value)}
+                    className="w-full py-2 px-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm font-medium truncate"
                   >
-                    <option value="">Capacitación General del SG-SST</option>
-                    {hazards.map((h) => (
-                      <option key={h.id} value={h.id}>
-                        {h.code} • {h.factorEspecifico} ({h.evaluacion.level})
+                    {activeTrainers.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.nombre} — {t.entidad} ({t.licencia})
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Área / Proceso Dirigido *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newArea}
-                    onChange={(e) => setNewArea(e.target.value)}
-                    placeholder="Ej: Zona de Torno y Fresado"
-                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm"
-                  />
-                </div>
-              </div>
+                {/* Implementos y EPP Requeridos (Sleek, wrap-safe, zero overflow) */}
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/80 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
+                      <Wrench className="w-4 h-4 text-blue-600 shrink-0" />
+                      <span>Implementos y EPP a Requerir ({selectedImplementos.length})</span>
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-mono">Para la sesión</span>
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Modalidad</label>
-                  <select
-                    value={newModalidad}
-                    onChange={(e) => setNewModalidad(e.target.value as ModalidadCapacitacion)}
-                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm"
-                  >
-                    <option value="PRESENCIAL_TEORICO_PRACTICO">Presencial Teórico-Práctico</option>
-                    <option value="TALLER_PUESTO_TRABAJO">Taller en Puesto de Trabajo</option>
-                    <option value="CHARLA_5_MIN">Charla Operativa (5 Minutos)</option>
-                    <option value="VIRTUAL_ARL">Virtual ARL / Plataforma</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Duración (Horas)</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={12}
-                    value={newDuracionHoras}
-                    onChange={(e) => setNewDuracionHoras(Number(e.target.value))}
-                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1.5 text-sm">Fecha Programada *</label>
-                  <input
-                    type="date"
-                    required
-                    value={newFecha}
-                    onChange={(e) => setNewFecha(e.target.value)}
-                    className="w-full p-2.5 sm:p-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm font-mono"
-                  />
-                </div>
-              </div>
-
-              {/* Capacitador Asignado como SELECT */}
-              <div>
-                <label className="block font-bold text-slate-800 mb-1.5 text-sm">
-                  Capacitador / Entidad Responsable (Seleccionar) *
-                </label>
-                <select
-                  value={selectedTrainerId}
-                  onChange={(e) => setSelectedTrainerId(e.target.value)}
-                  className="w-full p-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-sm font-semibold"
-                >
-                  {AVAILABLE_TRAINERS.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.nombre} — {t.entidad} ({t.cargo} • {t.licencia})
-                    </option>
-                  ))}
-                </select>
-                {(() => {
-                  const currentT =
-                    AVAILABLE_TRAINERS.find((t) => t.id === selectedTrainerId) || AVAILABLE_TRAINERS[0];
-                  return (
-                    <div className="mt-1.5 text-xs text-slate-600 flex items-center gap-2">
-                      <span className="font-bold text-slate-800">{currentT.entidad}</span>
-                      <span>•</span>
-                      <span className="font-mono">{currentT.licencia}</span>
-                      <span>•</span>
-                      <span className="px-2 py-0.5 rounded-md bg-slate-100 font-mono text-xs font-bold text-slate-700">
-                        {currentT.tipo === 'INTERNO' ? 'Capacitador Interno' : 'Capacitador Externo / ARL'}
-                      </span>
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* Implementos, Equipos y EPP Requeridos con SELECT y Búsqueda con Filtro */}
-              <div className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-slate-50/70 space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <label className="block font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                    <Wrench className="w-4 h-4 text-blue-600" />
-                    <span>Implementos, Equipos y EPP que se Ocuparán ({selectedImplementos.length})</span>
-                  </label>
-                  <span className="text-xs text-slate-500 font-medium">
-                    Filtra y selecciona cada elemento específico
-                  </span>
-                </div>
-
-                {/* Search input with live filter */}
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={implementoFilterText}
-                    onChange={(e) => setImplementoFilterText(e.target.value)}
-                    placeholder="Filtrar implementos (ej: guantes de nitrilo, guantes de poda, careta, LOTO, extintor)..."
-                    className="w-full text-sm py-2.5 pl-9 pr-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none"
-                  />
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
-                </div>
-
-                {/* SELECT Dropdown for Implementos */}
-                <div>
-                  <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                    Seleccionar implemento del catálogo (desplegable) *:
-                  </label>
+                  {/* Dropdown selector */}
                   <select
                     value=""
                     onChange={(e) => {
@@ -1005,9 +1033,9 @@ export function CronogramaAnualMatriz({
                         toggleImplemento(e.target.value);
                       }
                     }}
-                    className="w-full text-sm p-2.5 sm:p-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none font-semibold text-slate-800"
+                    className="w-full text-xs sm:text-sm py-2 px-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none font-medium text-slate-800"
                   >
-                    <option value="">-- Elige un implemento para agregar a la capacitación --</option>
+                    <option value="">-- Seleccionar implemento o EPP del catálogo --</option>
                     {filteredImplementosList.map((item) => (
                       <option key={item.id} value={item.nombre}>
                         {selectedImplementos.includes(item.nombre) ? '✓ ' : '+ '}
@@ -1015,118 +1043,86 @@ export function CronogramaAnualMatriz({
                       </option>
                     ))}
                   </select>
-                </div>
 
-                {/* Category Pills */}
-                <div className="flex flex-wrap gap-1.5">
-                  {(
-                    [
-                      { id: 'TODOS', label: 'Todos' },
-                      { id: 'EPP_ESPECIFICO', label: 'EPP Específico' },
-                      { id: 'HERRAMIENTAS_SEGURIDAD', label: 'Herramientas de Seguridad' },
-                      { id: 'EMERGENCIAS_CONTROL', label: 'Control de Emergencias / Derrames' },
-                      { id: 'MATERIAL_DIDACTICO', label: 'Material Didáctico' },
-                    ] as const
-                  ).map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setSelectedImplementoCategory(cat.id)}
-                      className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-                        selectedImplementoCategory === cat.id
-                          ? 'bg-blue-600 text-white shadow-2xs'
-                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* List of distinct implementos with descriptions */}
-                <div className="max-h-48 overflow-y-auto border border-slate-200 rounded-xl bg-white divide-y divide-slate-100">
-                  {filteredImplementosList.length === 0 ? (
-                    <div className="p-3 text-center text-slate-400 text-xs italic">
-                      No se encontraron implementos con ese filtro.
-                    </div>
-                  ) : (
-                    filteredImplementosList.map((item) => {
-                      const isSelected = selectedImplementos.includes(item.nombre);
+                  {/* Quick-add chips for high-frequency EPP */}
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {[
+                      'Gafas de seguridad',
+                      'Careta fotosensible',
+                      'Guantes de carnaza',
+                      'Protector auditivo tipo copa',
+                      'Botas de seguridad con puntera',
+                    ].map((quickItem) => {
+                      const isSelected = selectedImplementos.some((s) => s.toLowerCase().includes(quickItem.toLowerCase().substring(0, 8)));
                       return (
-                        <div
-                          key={item.id}
-                          onClick={() => toggleImplemento(item.nombre)}
-                          className={`p-2.5 sm:p-3 flex items-start gap-3 text-xs sm:text-sm cursor-pointer transition-colors ${
-                            isSelected ? 'bg-blue-50/90 hover:bg-blue-50' : 'hover:bg-slate-50'
+                        <button
+                          key={quickItem}
+                          type="button"
+                          onClick={() => toggleImplemento(quickItem)}
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-lg border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
                           }`}
                         >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => {}}
-                            className="mt-0.5 w-4 h-4 rounded text-blue-600 border-slate-300 cursor-pointer pointer-events-none"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-slate-900 flex items-center justify-between text-xs sm:text-sm">
-                              <span className="truncate">{item.nombre}</span>
-                              {item.normaReferencia && (
-                                <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 ml-2 shrink-0 font-semibold">
-                                  {item.normaReferencia}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-600 leading-relaxed mt-0.5">{item.descripcion}</p>
-                          </div>
-                        </div>
+                          {isSelected ? '✓ ' : '+ '}
+                          {quickItem}
+                        </button>
                       );
-                    })
+                    })}
+                  </div>
+
+                  {/* Selected implementos badges with guaranteed zero mobile overflow */}
+                  {selectedImplementos.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1 w-full max-w-full overflow-hidden">
+                      {selectedImplementos.map((nombre) => (
+                        <span
+                          key={nombre}
+                          className="max-w-full inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-lg text-xs font-semibold break-words"
+                        >
+                          <Tag className="w-3 h-3 text-blue-600 shrink-0" />
+                          <span className="break-words line-clamp-1 max-w-[220px] xs:max-w-[280px] sm:max-w-md">
+                            {nombre}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleImplemento(nombre);
+                            }}
+                            className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold text-xs shrink-0 ml-0.5"
+                            title="Quitar"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
 
-                {/* Selected implementos badges */}
-                {selectedImplementos.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-1.5">
-                    {selectedImplementos.map((nombre) => (
-                      <span
-                        key={nombre}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-900 border border-blue-200 rounded-lg text-xs sm:text-sm font-semibold"
-                      >
-                        <Tag className="w-3.5 h-3.5 text-blue-600" />
-                        <span className="truncate max-w-[320px]">{nombre}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleImplemento(nombre)}
-                          className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold ml-1 text-sm"
-                          title="Quitar implemento"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
+                {formWarning && (
+                  <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>{formWarning}</span>
                   </div>
                 )}
+
+                {formError && <p className="text-red-600 font-bold text-xs">{formError}</p>}
               </div>
 
-              {formWarning && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs sm:text-sm flex items-center gap-2.5">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-                  <span>{formWarning}</span>
-                </div>
-              )}
-
-              {formError && <p className="text-red-600 font-bold text-xs sm:text-sm">{formError}</p>}
-
-              <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3 pt-4 border-t border-slate-200">
+              {/* Modal Sticky Footer (Always visible, perfectly positioned) */}
+              <div className="shrink-0 p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex flex-col-reverse xs:flex-row xs:items-center justify-end gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setIsNewPlanModalOpen(false)}
-                  className="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-sm cursor-pointer text-center"
+                  className="w-full xs:w-auto px-4 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs sm:text-sm cursor-pointer text-center transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm shadow-md cursor-pointer text-center"
+                  className="w-full xs:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer text-center transition-colors"
                 >
                   Registrar en Cronograma
                 </button>

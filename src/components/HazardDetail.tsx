@@ -51,26 +51,26 @@ export function HazardDetail({
   const isLevelOne = hazard.evaluacion.level === 'NIVEL_I';
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 font-sans text-[13px] text-slate-800">
+    <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 space-y-6 font-sans text-sm sm:text-base text-slate-800">
       {/* Top Breadcrumb & Status Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-[13px] font-normal">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-normal">
         <div className="flex items-center gap-2 text-slate-500">
           <button
             onClick={onBack}
-            className="flex items-center gap-1 font-normal text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 font-medium text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Volver a Gestión de Peligros
+            <ArrowLeft className="w-4 h-4" /> Volver a Gestión de Peligros
           </button>
           <span>/</span>
           <span>Peligros</span>
           <span>/</span>
           <span>Ficha Técnica</span>
           <span>/</span>
-          <span className="text-slate-800 font-medium">{hazard.code}</span>
+          <span className="text-slate-800 font-bold">{hazard.code}</span>
         </div>
 
-        <div className="text-[12px] font-normal text-slate-500 flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+        <div className="text-xs font-normal text-slate-500 flex items-center gap-2">
+          <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500" />
           Decreto 1072/2015 • Res. 0312/2019 • GTC 45:2012
         </div>
       </div>

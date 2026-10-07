@@ -20,6 +20,27 @@ export function SignatureRodrigoGomez({ className = "w-48 h-14" }: { className?:
   );
 }
 
+export function SignatureAndreaMorales({ className = "w-48 h-14" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 240 70" className={className} fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Realistic cursive signature representation for Ing. Andrea Morales Peña (SERVIC CREAR) */}
+      <path d="M15 50 C 25 15, 38 12, 45 42 C 50 25, 60 20, 70 38 C 80 18, 92 48, 105 32 C 115 28, 125 42, 138 28 C 148 40, 160 25, 175 35 C 190 25, 205 32, 222 28" />
+      <path d="M25 54 Q 110 46 225 38" strokeWidth="1.6" />
+      <path d="M165 18 C 175 14, 190 16, 200 24" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+export function SignatureClaudiaVaron({ className = "w-48 h-14" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 240 70" className={className} fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Realistic cursive signature representation for Dra. Claudia Patricia Varón (SERVIC CREAR) */}
+      <path d="M20 38 C 30 18, 55 16, 50 48 C 65 32, 75 22, 85 45 C 95 30, 110 25, 120 40 C 135 22, 150 42, 170 30 C 185 36, 200 25, 220 32" />
+      <path d="M35 58 Q 120 48 215 44" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 export function QrAuditStamp({ code = "MINTRAD-2026-V02-BOG" }: { code?: string }) {
   return (
     <div className="flex flex-col items-center justify-center p-3 bg-blue-50/60 border border-blue-200/80 rounded">
