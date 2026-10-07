@@ -242,6 +242,16 @@ export function CapacitacionesView({
               <Printer className="w-4 h-4 text-blue-600" />
               <span>Informes e Impresión</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setIsWorkersCrudOpen(true)}
+              className="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs"
+              title="Gestionar base de datos de trabajadores del SG-SST (CRUD)"
+            >
+              <Users className="w-4 h-4 text-white" />
+              <span>Nómina SG-SST</span>
+            </button>
           </div>
         </div>
 

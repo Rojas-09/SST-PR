@@ -331,37 +331,119 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="table-stack-lg w-full text-left border-collapse text-[13px]">
+        {/* VISTA MÓVIL: Tarjetas estructuradas impecables (< md) */}
+        <div className="block md:hidden p-3.5 space-y-3.5 bg-slate-50/50">
+          {filteredIncapacidades.map((inc) => (
+            <div
+              key={inc.id}
+              className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3"
+            >
+              {/* Encabezado: Código y Estado */}
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <span className="font-mono font-bold text-xs px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg">
+                  {inc.codigo}
+                </span>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                      inc.tipo === 'ACCIDENTE_TRABAJO'
+                        ? 'bg-amber-50 text-amber-900 border-amber-300'
+                        : 'bg-indigo-50 text-indigo-900 border-indigo-200'
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${inc.tipo === 'ACCIDENTE_TRABAJO' ? 'bg-amber-500' : 'bg-indigo-500'}`} />
+                    <span>{inc.tipo === 'ACCIDENTE_TRABAJO' ? 'Accidente Laboral' : 'Enfermedad Común'}</span>
+                  </span>
+
+                  <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                    <span>{inc.estado === 'RECONOCIDO' ? 'Reconocido' : inc.estado === 'EN_COBRO_ARL_EPS' ? 'En cobro' : 'Radicado'}</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Datos del Trabajador */}
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm leading-snug">
+                  {inc.empleado}
+                </h4>
+                <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                  {inc.cargo} • <span className="font-mono">C.C. {inc.cedula}</span>
+                </p>
+              </div>
+
+              {/* Diagnóstico Médico & CIE-10 */}
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1 text-xs">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-slate-800 font-mono text-[11.5px] px-1.5 py-0.5 bg-white border border-slate-200 rounded">
+                    CIE-10 [{inc.codigoCIE10}]
+                  </span>
+                  <span className="text-[11px] font-medium text-slate-500">
+                    {inc.entidadExpide}
+                  </span>
+                </div>
+                <p className="text-slate-700 leading-relaxed pt-0.5">
+                  {inc.diagnostico}
+                </p>
+              </div>
+
+              {/* Fila de Métricas: Días, Vigencia y Costo */}
+              <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100 text-xs">
+                <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-bold block text-[10px] uppercase">
+                    Duración & Vigencia
+                  </span>
+                  <span className="font-bold text-slate-900 mt-0.5 block">
+                    {inc.diasIncapacidad} días <span className="font-normal text-slate-500 text-[11px]">({inc.fechaInicio} al {inc.fechaFin})</span>
+                  </span>
+                </div>
+
+                <div className="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-bold block text-[10px] uppercase">
+                    Costo Asumido
+                  </span>
+                  <span className="font-bold text-blue-700 font-mono mt-0.5 block">
+                    ${inc.costoAsumido.toLocaleString('es-CO')}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* VISTA ESCRITORIO: Tabla Completa con Min-Width Seguro (>= md) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse text-[13px] min-w-[880px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 text-[12.5px] font-semibold text-slate-700">
-                <th className="py-3 px-2.5 w-[9%]">Código</th>
-                <th className="py-3 px-2.5 w-[15%]">Trabajador</th>
-                <th className="py-3 px-2.5 text-center w-[14%]">Origen / ARL</th>
-                <th className="py-3 px-2.5 w-[20%]">CIE-10 &amp; Diagnóstico</th>
-                <th className="py-3 px-1.5 text-center w-[5%]">Días</th>
-                <th className="py-3 px-2.5 w-[12%]">Vigencia</th>
-                <th className="py-3 px-2.5 text-center w-[13%]">Estado</th>
-                <th className="py-3 px-2.5 text-right w-[12%]">Costo Estimado</th>
+                <th className="py-3 px-3 w-[11%]">Código</th>
+                <th className="py-3 px-3 w-[17%]">Trabajador</th>
+                <th className="py-3 px-3 text-center w-[15%]">Origen / ARL</th>
+                <th className="py-3 px-3 w-[22%]">CIE-10 &amp; Diagnóstico</th>
+                <th className="py-3 px-2 text-center w-[6%]">Días</th>
+                <th className="py-3 px-3 w-[14%]">Vigencia</th>
+                <th className="py-3 px-3 text-center w-[12%]">Estado</th>
+                <th className="py-3 px-3 text-right w-[13%]">Costo Estimado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredIncapacidades.map((inc) => (
                 <tr key={inc.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td data-label="Código" className="py-3.5 px-2.5 font-medium text-blue-600">
+                  <td className="py-3.5 px-3 font-medium text-blue-600 font-mono">
                     {inc.codigo}
                   </td>
-                  <td data-label="Trabajador" className="py-3.5 px-2.5">
-                    <span className="font-medium text-slate-900 block text-[13px]">{inc.empleado}</span>
-                    <span className="text-[11.5px] text-slate-500">{inc.cargo} • C.C. {inc.cedula}</span>
+                  <td className="py-3.5 px-3">
+                    <span className="font-bold text-slate-900 block text-[13px]">{inc.empleado}</span>
+                    <span className="text-[11.5px] text-slate-500 font-medium">{inc.cargo} • C.C. {inc.cedula}</span>
                   </td>
-                  <td data-label="Origen / ARL" className="py-3.5 px-2.5 text-center">
+                  <td className="py-3.5 px-3 text-center">
                     <div className="flex flex-col items-center justify-center gap-1">
                       <span
-                        className={`inline-flex items-center justify-center gap-1.5 px-2 py-1 rounded-full text-[12px] font-medium border shadow-2xs ${
+                        className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-2xs ${
                           inc.tipo === 'ACCIDENTE_TRABAJO'
-                            ? 'bg-amber-50 text-amber-900 border-amber-300/80'
-                            : 'bg-indigo-50 text-indigo-900 border-indigo-200/80'
+                            ? 'bg-amber-50 text-amber-900 border-amber-300'
+                            : 'bg-indigo-50 text-indigo-900 border-indigo-200'
                         }`}
                       >
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${inc.tipo === 'ACCIDENTE_TRABAJO' ? 'bg-amber-500' : 'bg-indigo-500'}`} />
@@ -372,25 +454,25 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
                       </span>
                     </div>
                   </td>
-                  <td data-label="CIE-10 & Diagnóstico" className="py-3.5 px-2.5">
-                    <span className="font-semibold text-slate-900 text-[12.5px]">
+                  <td className="py-3.5 px-3">
+                    <span className="font-mono font-bold text-slate-900 text-xs bg-slate-100 px-1 py-0.5 rounded">
                       [{inc.codigoCIE10}]
                     </span>{' '}
                     <span className="text-slate-700 text-[13px]">{inc.diagnostico}</span>
                   </td>
-                  <td data-label="Días" className="py-3.5 px-1.5 text-center font-bold text-slate-900 text-[13px]">
+                  <td className="py-3.5 px-2 text-center font-bold text-slate-900 text-[13px] font-mono">
                     {inc.diasIncapacidad} d
                   </td>
-                  <td data-label="Vigencia" className="py-3.5 px-2.5 text-[12.5px] text-slate-600">
+                  <td className="py-3.5 px-3 text-xs text-slate-600 font-medium">
                     {inc.fechaInicio} al {inc.fechaFin}
                   </td>
-                  <td data-label="Estado" className="py-3.5 px-2.5 text-center">
-                    <span className="inline-flex items-center justify-center gap-1 text-[11.5px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+                  <td className="py-3.5 px-3 text-center">
+                    <span className="inline-flex items-center justify-center gap-1 text-[11.5px] px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      {inc.estado === 'RECONOCIDO' ? 'Reconocido' : inc.estado === 'EN_COBRO_ARL_EPS' ? 'En cobro ARL' : 'Radicado'}
+                      <span>{inc.estado === 'RECONOCIDO' ? 'Reconocido' : inc.estado === 'EN_COBRO_ARL_EPS' ? 'En cobro ARL' : 'Radicado'}</span>
                     </span>
                   </td>
-                  <td data-label="Costo Estimado" className="py-3.5 px-2.5 text-right font-medium text-slate-900 text-[13px]">
+                  <td className="py-3.5 px-3 text-right font-bold text-slate-900 font-mono text-[13px]">
                     ${inc.costoAsumido.toLocaleString('es-CO')}
                   </td>
                 </tr>

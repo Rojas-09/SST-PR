@@ -955,67 +955,94 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
         </div>
 
         {/* Mobile View: High-fidelity structured responsive cards (< md) */}
-        <div className="block md:hidden space-y-3.5 mt-4">
+        <div className="block md:hidden space-y-4 mt-4">
           {hazards.slice(0, 4).map((hazard) => {
             const isCrit = hazard.evaluacion.level === 'NIVEL_I';
+            const controlInmediato =
+              hazard.planIntervencion?.epp?.titulo ||
+              hazard.planIntervencion?.ingenieria?.titulo ||
+              hazard.planIntervencion?.administrativa?.titulo ||
+              'Inspección y control perentorio en puesto';
+
             return (
               <div
                 key={hazard.id}
-                className="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-3 relative overflow-hidden"
+                className={`p-4 rounded-2xl border bg-white shadow-2xs space-y-3 relative overflow-hidden break-words border-l-4 ${
+                  isCrit ? 'border-slate-200 border-l-red-600' : 'border-slate-200 border-l-amber-500'
+                }`}
               >
-                {/* Top Bar: Code and Priority Tag */}
+                {/* Top Row: Code Pill + Criticality Tag */}
                 <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <span className="font-mono font-bold text-xs px-2.5 py-1 bg-slate-900 text-amber-300 rounded-lg shadow-2xs shrink-0">
-                    {hazard.code}
-                  </span>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="font-mono font-black text-xs px-2.5 py-1 bg-slate-900 text-amber-300 rounded-lg shadow-2xs shrink-0">
+                      {hazard.code}
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-500 truncate max-w-[130px] xs:max-w-[180px]">
+                      {hazard.tipoPeligroGeneral}
+                    </span>
+                  </div>
                   <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 shadow-2xs ${
                       isCrit
-                        ? 'bg-red-600 text-white shadow-xs'
+                        ? 'bg-red-600 text-white'
                         : 'bg-amber-500 text-slate-950 font-bold'
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse shrink-0" />
                     <span>{isCrit ? 'Nivel I • Crítico' : 'Nivel II • Alto'} (NR {hazard.evaluacion.nr})</span>
                   </span>
                 </div>
 
-                {/* Title & Location */}
-                <div>
-                  <h4 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                {/* Title & Sede / Ubicación */}
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-900 text-sm sm:text-base leading-snug break-words">
                     {hazard.title}
                   </h4>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium mt-1">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium pt-0.5">
                     <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span className="truncate">{hazard.zonaLugar}</span>
+                    <span className="truncate">{hazard.zonaLugar} • {hazard.proceso}</span>
                   </div>
                 </div>
 
-                {/* Immediate Intervention Callout Box */}
-                <div className="p-3 bg-red-50/90 border border-red-200/80 rounded-xl space-y-1.5 text-xs">
-                  <div className="font-extrabold text-red-900 flex items-center gap-1.5 text-[11px] uppercase tracking-wide">
-                    <ShieldAlert className="w-4 h-4 text-red-600 shrink-0" />
-                    <span>Medida de Intervención Perentoria</span>
+                {/* Efecto en Salud & Intervención Perentoria */}
+                <div className="space-y-2 text-xs">
+                  {/* Salud */}
+                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-0.5">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                      Efecto Crítico en Salud
+                    </span>
+                    <p className="text-slate-800 font-medium leading-relaxed break-words">
+                      {hazard.efectosSalud}
+                    </p>
                   </div>
-                  <p className="text-slate-800 font-semibold leading-relaxed">
-                    {hazard.planIntervencion.epp.titulo}
-                  </p>
-                  <div className="pt-1 border-t border-red-200/60 text-slate-600 text-[11px] leading-relaxed">
-                    <strong className="text-slate-700">Efecto en salud:</strong> {hazard.efectosSalud}
+
+                  {/* Medida Perentoria */}
+                  <div className="p-3 bg-red-50/90 border border-red-200/90 rounded-xl space-y-1 text-xs">
+                    <div className="font-extrabold text-red-900 flex items-center gap-1.5 text-[11px] uppercase tracking-wide">
+                      <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                      <span>Medida de Intervención Perentoria</span>
+                    </div>
+                    <p className="text-slate-900 font-bold leading-relaxed break-words">
+                      {controlInmediato}
+                    </p>
+                    <div className="pt-1.5 mt-1 border-t border-red-200/60 flex items-center justify-between text-[10.5px] text-slate-600 font-mono">
+                      <span>Plazo: {hazard.planIntervencion?.plazoLegal || 'Inmediato (24h)'}</span>
+                      <span className="truncate max-w-[150px]">Resp: {hazard.planIntervencion?.responsable || 'Líder SST'}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Touch-friendly Action Button */}
+                {/* Touch Action Button */}
                 <button
                   type="button"
                   onClick={() => {
                     onSelectHazard(hazard);
                     onNavigate('gestion-peligros');
                   }}
-                  className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
+                  className="w-full h-11 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
                 >
                   <span>Intervenir Peligro Ahora</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </div>
             );

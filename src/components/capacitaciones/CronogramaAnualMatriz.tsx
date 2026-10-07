@@ -22,6 +22,10 @@ import {
   Wrench,
   Check,
   Tag,
+  UserPlus,
+  PenTool,
+  Layers,
+  X,
 } from 'lucide-react';
 import {
   PlanCapacitacion,
@@ -34,6 +38,7 @@ import { useAuthRole } from '../../context/AuthRoleContext';
 import { capacitacionesStorage } from '../../services/capacitacionesStorage';
 import { getCompanyDataset } from '../../data/companiesData';
 import { CATALOGO_IMPLEMENTOS, ImplementoCapacitacion } from '../../data/implementosCatalog';
+import { GestionTrabajadoresModal } from './GestionTrabajadoresModal';
 
 export const getAvailableTrainers = (companyId: string) => {
   if (companyId === 'servic-crear') {
@@ -210,12 +215,17 @@ export function CronogramaAnualMatriz({
     }
   }, [company.id, activeTrainers]);
 
-  // Implementos selection state
+  // Implementos selection state (clean default without overflow)
   const [selectedImplementos, setSelectedImplementos] = useState<string[]>([
-    'Gafas de seguridad panorámicas con filtro UV 400',
+    'Gafas de seguridad',
   ]);
   const [implementoFilterText, setImplementoFilterText] = useState('');
   const [selectedImplementoCategory, setSelectedImplementoCategory] = useState<string>('TODOS');
+
+  // Worker enrollment & attendance sheet format state (Item 4)
+  const [isManageWorkersModalOpen, setIsManageWorkersModalOpen] = useState(false);
+  const [convocatoriaMode, setConvocatoriaMode] = useState<'SISTEMA' | 'BLANCO' | 'MIXTA'>('SISTEMA');
+  const [blankRowsModalCount, setBlankRowsModalCount] = useState<number>(5);
 
   const [formError, setFormError] = useState('');
   const [formWarning, setFormWarning] = useState('');
@@ -426,7 +436,17 @@ export function CronogramaAnualMatriz({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setIsManageWorkersModalOpen(true)}
+              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              title="Gestionar trabajadores de la empresa en el SG-SST (CRUD)"
+            >
+              <Users className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Nómina SG-SST</span>
+            </button>
+
             {canCreatePlan() && (
               <button
                 type="button"
@@ -836,12 +856,12 @@ export function CronogramaAnualMatriz({
         </div>
       )}
 
-      {/* Modal: Nueva Capacitación en el Plan */}
+      {/* Modal: Nueva Capacitación en el Plan (Intuitivo, compacto, responsive sin desbordes) */}
       {isNewPlanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/75 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[88vh]">
             {/* Modal Header (Fixed at top) */}
-            <div className="px-4 py-3 sm:px-5 sm:py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+            <div className="px-4 py-3 sm:px-6 sm:py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="w-8 h-8 rounded-lg bg-blue-600/30 text-blue-400 flex items-center justify-center shrink-0">
                   <PlusCircle className="w-5 h-5" />
@@ -857,7 +877,7 @@ export function CronogramaAnualMatriz({
                 type="button"
                 onClick={() => setIsNewPlanModalOpen(false)}
                 className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors text-base font-bold cursor-pointer"
-                title="Cerrar"
+                title="Cerrar ventana"
               >
                 ✕
               </button>
@@ -865,64 +885,67 @@ export function CronogramaAnualMatriz({
 
             {/* Modal Scrollable Body */}
             <form onSubmit={handleCreatePlanSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5 text-xs sm:text-sm">
-                {/* Tema de Capacitación con atajos rápidos */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="font-bold text-slate-800">
-                      Tema de la Capacitación *
+              <div className="flex-1 overflow-y-auto px-4 py-3.5 sm:px-6 sm:py-4 space-y-3.5 text-xs sm:text-sm">
+                {/* 1. Tema y Objetivo Formativo */}
+                <div className="space-y-2.5 bg-slate-50/80 p-3 sm:p-3.5 rounded-xl border border-slate-200">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <GraduationCap className="w-4 h-4 text-blue-600 shrink-0" />
+                        <span>Tema de la Capacitación *</span>
+                      </label>
+                      <span className="text-[10.5px] text-slate-500 font-mono">GTC 45 / Dec. 1072</span>
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={newTema}
+                      onChange={(e) => setNewTema(e.target.value)}
+                      placeholder="Ej: Prevención de atrapamientos y guardas en tornos mecánicos"
+                      className="w-full py-1.5 sm:py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm bg-white"
+                    />
+                    {/* Compact quick-topic chips in a single wrap row */}
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {[
+                        'Uso de EPP y Dotación',
+                        'Riesgo Mecánico en Tornos',
+                        'Seguridad en Fosas y Alturas',
+                        'Prevención Riesgo Eléctrico',
+                        'Manejo de Sustancias Químicas',
+                      ].map((sug) => (
+                        <button
+                          key={sug}
+                          type="button"
+                          onClick={() => setNewTema(sug)}
+                          className="text-[10px] px-2 py-0.5 rounded-md bg-white hover:bg-blue-50 hover:text-blue-700 text-slate-600 font-medium transition-colors cursor-pointer border border-slate-200"
+                        >
+                          + {sug}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-900 mb-1">
+                      Objetivo Formativo Medible *
                     </label>
-                    <span className="text-[11px] text-slate-400">GTC 45 / Dec. 1072</span>
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={newTema}
-                    onChange={(e) => setNewTema(e.target.value)}
-                    placeholder="Ej: Prevención de atrapamientos y guardas en tornos"
-                    className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm bg-white"
-                  />
-                  {/* Quick suggestion pills */}
-                  <div className="flex flex-wrap gap-1.5 mt-1.5">
-                    {[
-                      'Uso de EPP y Dotación',
-                      'Riesgo Mecánico en Tornos',
-                      'Seguridad en Fosas de Taller',
-                      'Prevención de Riesgo Eléctrico',
-                      'Manejo de Sustancias Químicas',
-                    ].map((sug) => (
-                      <button
-                        key={sug}
-                        type="button"
-                        onClick={() => setNewTema(sug)}
-                        className="text-[10.5px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-600 font-medium transition-colors cursor-pointer border border-slate-200"
-                      >
-                        + {sug}
-                      </button>
-                    ))}
+                    <textarea
+                      rows={2}
+                      required
+                      value={newObjetivo}
+                      onChange={(e) => setNewObjetivo(e.target.value)}
+                      placeholder="Defina el objetivo de aprendizaje específico para el personal operativo..."
+                      className="w-full py-1.5 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm resize-none bg-white"
+                    />
                   </div>
                 </div>
 
-                {/* Objetivo Formativo */}
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">
-                    Objetivo Formativo Medible *
-                  </label>
-                  <textarea
-                    rows={2}
-                    required
-                    value={newObjetivo}
-                    onChange={(e) => setNewObjetivo(e.target.value)}
-                    placeholder="Defina el objetivo formativo específico..."
-                    className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm resize-none bg-white"
-                  />
-                </div>
-
-                {/* Peligro Asociado y Área Dirigida en Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 2. Parámetros de Programación en Grid Compacto */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  {/* Peligro GTC 45 */}
                   <div>
                     <label className="block font-bold text-slate-800 mb-1">
-                      Peligro Asociado (GTC 45)
+                      Peligro Vinculado (GTC 45)
                     </label>
                     <select
                       value={newPeligroId}
@@ -931,7 +954,7 @@ export function CronogramaAnualMatriz({
                         const hz = hazards.find((h) => h.id === e.target.value);
                         if (hz) setNewArea(hz.zonaLugar);
                       }}
-                      className="w-full py-2 px-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm truncate"
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs truncate font-medium text-slate-800"
                     >
                       <option value="">Capacitación General del SG-SST</option>
                       {hazards.map((h) => (
@@ -942,9 +965,10 @@ export function CronogramaAnualMatriz({
                     </select>
                   </div>
 
+                  {/* Área o Proceso */}
                   <div>
                     <label className="block font-bold text-slate-800 mb-1">
-                      Área / Proceso Dirigido *
+                      Área / Proceso Convocado *
                     </label>
                     <input
                       type="text"
@@ -952,19 +976,17 @@ export function CronogramaAnualMatriz({
                       value={newArea}
                       onChange={(e) => setNewArea(e.target.value)}
                       placeholder="Ej: Zona de Torno y Fresado"
-                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm bg-white"
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs bg-white font-medium text-slate-800"
                     />
                   </div>
-                </div>
 
-                {/* Modalidad, Duración y Fecha Programada */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Modalidad */}
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">Modalidad</label>
+                    <label className="block font-bold text-slate-800 mb-1">Modalidad Pedagógica</label>
                     <select
                       value={newModalidad}
                       onChange={(e) => setNewModalidad(e.target.value as ModalidadCapacitacion)}
-                      className="w-full py-2 px-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm"
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs font-medium text-slate-800"
                     >
                       <option value="PRESENCIAL_TEORICO_PRACTICO">Presencial Práctico</option>
                       <option value="TALLER_PUESTO_TRABAJO">Taller en Puesto</option>
@@ -973,6 +995,19 @@ export function CronogramaAnualMatriz({
                     </select>
                   </div>
 
+                  {/* Fecha Programada */}
+                  <div>
+                    <label className="block font-bold text-slate-800 mb-1">Fecha Programada *</label>
+                    <input
+                      type="date"
+                      required
+                      value={newFecha}
+                      onChange={(e) => setNewFecha(e.target.value)}
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs font-mono bg-white"
+                    />
+                  </div>
+
+                  {/* Duración (Horas) */}
                   <div>
                     <label className="block font-bold text-slate-800 mb-1">Duración (Horas)</label>
                     <input
@@ -981,79 +1016,49 @@ export function CronogramaAnualMatriz({
                       max={12}
                       value={newDuracionHoras}
                       onChange={(e) => setNewDuracionHoras(Number(e.target.value))}
-                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm font-mono bg-white"
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs font-mono bg-white"
                     />
                   </div>
 
+                  {/* Capacitador Asignado */}
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">Fecha Programada *</label>
-                    <input
-                      type="date"
-                      required
-                      value={newFecha}
-                      onChange={(e) => setNewFecha(e.target.value)}
-                      className="w-full py-2 px-3 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-xs sm:text-sm font-mono bg-white"
-                    />
+                    <label className="block font-bold text-slate-800 mb-1">Capacitador / Responsable *</label>
+                    <select
+                      value={selectedTrainerId}
+                      onChange={(e) => setSelectedTrainerId(e.target.value)}
+                      className="w-full py-1.5 px-2.5 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs font-medium truncate text-slate-800"
+                    >
+                      {activeTrainers.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.nombre} ({t.entidad})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
-                {/* Capacitador Asignado */}
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">
-                    Capacitador / Entidad Responsable *
-                  </label>
-                  <select
-                    value={selectedTrainerId}
-                    onChange={(e) => setSelectedTrainerId(e.target.value)}
-                    className="w-full py-2 px-3 border border-slate-300 rounded-xl bg-white outline-none focus:border-blue-500 text-xs sm:text-sm font-medium truncate"
-                  >
-                    {activeTrainers.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.nombre} — {t.entidad} ({t.licencia})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Implementos y EPP Requeridos (Sleek, wrap-safe, zero overflow) */}
-                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/80 space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
+                {/* 3. Implementos y EPP Requeridos (Zero mobile overflow garantizado) */}
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/80 space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
                     <label className="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
                       <Wrench className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span>Implementos y EPP a Requerir ({selectedImplementos.length})</span>
+                      <span>Implementos y EPP para la Sesión ({selectedImplementos.length})</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-mono">Para la sesión</span>
+                    <span className="text-[10.5px] text-slate-500 font-mono">Norma técnica de protección</span>
                   </div>
 
-                  {/* Dropdown selector */}
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        toggleImplemento(e.target.value);
-                      }
-                    }}
-                    className="w-full text-xs sm:text-sm py-2 px-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none font-medium text-slate-800"
-                  >
-                    <option value="">-- Seleccionar implemento o EPP del catálogo --</option>
-                    {filteredImplementosList.map((item) => (
-                      <option key={item.id} value={item.nombre}>
-                        {selectedImplementos.includes(item.nombre) ? '✓ ' : '+ '}
-                        {item.nombre} ({item.normaReferencia || item.categoria})
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Quick-add chips for high-frequency EPP */}
-                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                  {/* Quick-add chips for high-frequency EPP with zero horizontal overflow */}
+                  <div className="flex flex-wrap gap-1.5">
                     {[
                       'Gafas de seguridad',
                       'Careta fotosensible',
                       'Guantes de carnaza',
                       'Protector auditivo tipo copa',
-                      'Botas de seguridad con puntera',
+                      'Botas con puntera',
                     ].map((quickItem) => {
-                      const isSelected = selectedImplementos.some((s) => s.toLowerCase().includes(quickItem.toLowerCase().substring(0, 8)));
+                      const isSelected = selectedImplementos.some(
+                        (s) => s.toLowerCase().includes(quickItem.toLowerCase().substring(0, 6))
+                      );
                       return (
                         <button
                           key={quickItem}
@@ -1072,16 +1077,35 @@ export function CronogramaAnualMatriz({
                     })}
                   </div>
 
-                  {/* Selected implementos badges with guaranteed zero mobile overflow */}
+                  {/* Dropdown selector for complete catalog */}
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        toggleImplemento(e.target.value);
+                      }
+                    }}
+                    className="w-full text-xs py-1.5 px-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-500 outline-none font-medium text-slate-800 truncate"
+                  >
+                    <option value="">-- Agregar otro EPP o herramienta del catálogo --</option>
+                    {filteredImplementosList.map((item) => (
+                      <option key={item.id} value={item.nombre}>
+                        {selectedImplementos.includes(item.nombre) ? '✓ ' : '+ '}
+                        {item.nombre} ({item.normaReferencia || item.categoria})
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Selected badges list - Guaranteed responsive zero overflow */}
                   {selectedImplementos.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 pt-1 w-full max-w-full overflow-hidden">
                       {selectedImplementos.map((nombre) => (
                         <span
                           key={nombre}
-                          className="max-w-full inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-lg text-xs font-semibold break-words"
+                          className="max-w-full inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-lg text-xs font-semibold overflow-hidden shadow-2xs"
                         >
                           <Tag className="w-3 h-3 text-blue-600 shrink-0" />
-                          <span className="break-words line-clamp-1 max-w-[220px] xs:max-w-[280px] sm:max-w-md">
+                          <span className="truncate max-w-[130px] xs:max-w-[180px] sm:max-w-[260px]">
                             {nombre}
                           </span>
                           <button
@@ -1091,7 +1115,7 @@ export function CronogramaAnualMatriz({
                               toggleImplemento(nombre);
                             }}
                             className="p-0.5 hover:text-red-600 rounded cursor-pointer font-bold text-xs shrink-0 ml-0.5"
-                            title="Quitar"
+                            title="Quitar implemento"
                           >
                             ✕
                           </button>
@@ -1099,6 +1123,96 @@ export function CronogramaAnualMatriz({
                       ))}
                     </div>
                   )}
+                </div>
+
+                {/* 4. Módulo de Convocatoria de Trabajadores / Planilla de Asistencia (Item 4) */}
+                <div className="border border-emerald-200/80 bg-emerald-50/50 rounded-xl p-3 space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <label className="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>¿Cómo convocará y registrará a los trabajadores?</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsManageWorkersModalOpen(true)}
+                      className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                      title="Administrar base de datos de trabajadores (CRUD)"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      <span>Gestionar Nómina (CRUD)</span>
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Indique si desea convocar a la nómina cargada en el sistema SG-SST o dejar la planilla con renglones en blanco para que los operarios diligencien y firmen a mano en taller.
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                    {/* Selector de modo */}
+                    <div className="inline-flex rounded-xl bg-white p-1 border border-emerald-200 shadow-2xs">
+                      <button
+                        type="button"
+                        onClick={() => setConvocatoriaMode('SISTEMA')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          convocatoriaMode === 'SISTEMA'
+                            ? 'bg-blue-600 text-white shadow-2xs'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <Users className="w-3 h-3" />
+                        <span>Nómina Digital</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setConvocatoriaMode('BLANCO')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          convocatoriaMode === 'BLANCO'
+                            ? 'bg-blue-600 text-white shadow-2xs'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <PenTool className="w-3 h-3" />
+                        <span>En Blanco (A Mano)</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setConvocatoriaMode('MIXTA')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          convocatoriaMode === 'MIXTA'
+                            ? 'bg-blue-600 text-white shadow-2xs'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <Layers className="w-3 h-3" />
+                        <span>Mixta</span>
+                      </button>
+                    </div>
+
+                    {/* Selector de Renglones vacíos si es Blanco o Mixto */}
+                    {(convocatoriaMode === 'BLANCO' || convocatoriaMode === 'MIXTA') && (
+                      <div className="flex items-center gap-1.5 bg-white border border-emerald-200 px-2.5 py-1 rounded-xl text-xs shadow-2xs">
+                        <span className="text-slate-600 font-semibold text-[11px] whitespace-nowrap">
+                          Renglones vacíos:
+                        </span>
+                        {[5, 10, 15, 20].map((num) => (
+                          <button
+                            key={num}
+                            type="button"
+                            onClick={() => setBlankRowsModalCount(num)}
+                            className={`px-2 py-0.5 rounded text-xs font-bold font-mono transition-colors cursor-pointer ${
+                              blankRowsModalCount === num
+                                ? 'bg-amber-500 text-slate-950 shadow-2xs'
+                                : 'text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            {num}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {formWarning && (
@@ -1111,25 +1225,43 @@ export function CronogramaAnualMatriz({
                 {formError && <p className="text-red-600 font-bold text-xs">{formError}</p>}
               </div>
 
-              {/* Modal Sticky Footer (Always visible, perfectly positioned) */}
-              <div className="shrink-0 p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex flex-col-reverse xs:flex-row xs:items-center justify-end gap-2 sm:gap-3">
+              {/* Modal Sticky Footer (Siempre visible en cualquier pantalla sin desbordes) */}
+              <div className="shrink-0 p-3 sm:px-6 sm:py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsNewPlanModalOpen(false)}
-                  className="w-full xs:w-auto px-4 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs sm:text-sm cursor-pointer text-center transition-colors"
+                  className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="w-full xs:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer text-center transition-colors"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer transition-colors flex items-center gap-1.5"
                 >
-                  Registrar en Cronograma
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Programar en Cronograma</span>
                 </button>
               </div>
             </form>
           </div>
         </div>
+      )}
+
+      {/* Modal de Gestión de Trabajadores (CRUD) accesible desde Cronograma */}
+      {isManageWorkersModalOpen && (
+        <GestionTrabajadoresModal
+          isOpen={isManageWorkersModalOpen}
+          onClose={() => setIsManageWorkersModalOpen(false)}
+          company={company}
+          onWorkersChanged={() => {
+            onRefreshData();
+          }}
+          onOpenBlankSheet={() => {
+            setConvocatoriaMode('BLANCO');
+            setBlankRowsModalCount(15);
+            setIsManageWorkersModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

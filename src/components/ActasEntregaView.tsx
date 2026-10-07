@@ -290,10 +290,129 @@ export function ActasEntregaView({
         </div>
       </div>
 
-      {/* Main Actas Table with consistent font-sans and 13px font-size */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden font-sans">
-        <div className="overflow-x-auto">
-          <table className="table-stack-lg w-full text-left border-collapse font-sans text-[13px]">
+      {/* Main Actas Container with Responsive Mobile Cards and Desktop Table */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden font-sans">
+        {/* VISTA MÓVIL: Tarjetas estructuradas e impecables (< md) */}
+        <div className="block md:hidden p-3.5 space-y-3.5 bg-slate-50/50">
+          {filteredActas.map((hazard, index) => {
+            const worker = workersDirectory[hazard.id] || {
+              nombre: 'Trabajador Operativo',
+              cedula: 'N/A',
+              cargo: hazard.zonaLugar.split('•')[0].trim(),
+              fecha: '2026',
+            };
+            const isFirmada = hazard.estadoEntregaEPP === 'FIRMADA';
+
+            return (
+              <div
+                key={hazard.id}
+                className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3"
+              >
+                {/* Cabecera: Código de Acta y Estado */}
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-xs px-2.5 py-1 bg-slate-100 text-slate-800 rounded-lg">
+                      ACT-EPP-2026-{String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-[11px] text-slate-400 font-mono">
+                      {worker.fecha}
+                    </span>
+                  </div>
+
+                  {isFirmada ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      Firmada Oficial
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                      Pendiente Firma
+                    </span>
+                  )}
+                </div>
+
+                {/* Trabajador Receptor */}
+                <div>
+                  <h4 className="font-bold text-slate-900 text-sm leading-snug">
+                    {worker.nombre}
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {worker.cargo} • <span className="font-mono">C.C. {worker.cedula}</span>
+                  </p>
+                </div>
+
+                {/* Peligro Asociado */}
+                <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                  <span className="text-slate-400 font-bold block text-[10px] uppercase">
+                    Peligro Asociado (GTC 45)
+                  </span>
+                  <span className="font-semibold text-slate-800 mt-0.5 block">
+                    {hazard.title}
+                  </span>
+                  <span className="text-slate-500 text-[11px] font-mono mt-0.5 block">
+                    {hazard.code} • {hazard.evaluacion.levelText}
+                  </span>
+                </div>
+
+                {/* Equipos Entregados */}
+                <div className="space-y-1.5 pt-1 text-xs">
+                  <span className="text-slate-500 font-bold text-[11px] uppercase block">
+                    Dotación y EPP Entregados:
+                  </span>
+                  {hazard.planIntervencion.epp.items.map((item, i) => (
+                    <div key={i} className="flex items-start gap-2 text-slate-700 text-xs">
+                      <CheckCircle2
+                        className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
+                          isFirmada ? 'text-emerald-600' : 'text-slate-300'
+                        }`}
+                      />
+                      <span className="leading-snug">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Botones de Acción */}
+                <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
+                  {!isFirmada ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenActaModalForHazard(hazard)}
+                      className="flex-1 py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+                    >
+                      <PenTool className="w-3.5 h-3.5" />
+                      <span>Diligenciar y Firmar Acta</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handlePrintCertificate(hazard)}
+                      className="flex-1 py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-slate-600" />
+                      <span>Ver Certificado Oficial</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectHazard(hazard);
+                      onNavigate('gestion-peligros');
+                    }}
+                    className="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 cursor-pointer transition-colors"
+                    title="Ver en Gestión de Peligros"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* VISTA ESCRITORIO: Tabla Completa con Min-Width Seguro (>= md) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse font-sans text-[13px] min-w-[880px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-[12px] font-sans font-semibold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-3 font-sans w-[12%]">Acta / Cód.</th>
@@ -317,7 +436,7 @@ export function ActasEntregaView({
                 return (
                   <tr key={hazard.id} className="hover:bg-slate-50/70 transition-colors font-sans">
                     {/* Code and Date */}
-                    <td data-label="Acta / Cód." className="py-3.5 px-3 font-sans">
+                    <td className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-semibold text-slate-900 text-[13px]">
                         ACT-EPP-2026-{String(index + 1).padStart(2, '0')}
                       </div>
@@ -327,7 +446,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Worker Info */}
-                    <td data-label="Trabajador Receptor" className="py-3.5 px-3 font-sans">
+                    <td className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-semibold text-slate-900 text-[13px]">
                         {worker.nombre}
                       </div>
@@ -337,7 +456,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Associated Hazard */}
-                    <td data-label="Peligro Asociado (GTC 45)" className="py-3.5 px-3 font-sans">
+                    <td className="py-3.5 px-3 font-sans">
                       <div className="font-sans font-medium text-slate-800 text-[13px]">
                         {hazard.title}
                       </div>
@@ -347,7 +466,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* EPP Items List */}
-                    <td data-label="Equipos de Protección Entregados" className="py-3.5 px-3 font-sans">
+                    <td className="py-3.5 px-3 font-sans">
                       <div className="space-y-1 font-sans">
                         {hazard.planIntervencion.epp.items.map((item, i) => (
                           <div key={i} className="flex items-start gap-1.5 text-slate-700 text-[12.5px] font-sans font-normal">
@@ -363,7 +482,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Status Badge */}
-                    <td data-label="Estado" className="py-3.5 px-3 text-center font-sans">
+                    <td className="py-3.5 px-3 text-center font-sans">
                       {isFirmada ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-sans font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -378,7 +497,7 @@ export function ActasEntregaView({
                     </td>
 
                     {/* Action buttons */}
-                    <td data-label="Acciones" className="py-3.5 px-3 text-right font-sans">
+                    <td className="py-3.5 px-3 text-right font-sans">
                       <div className="flex flex-wrap items-center justify-end gap-1.5 font-sans">
                         {!isFirmada ? (
                           <button

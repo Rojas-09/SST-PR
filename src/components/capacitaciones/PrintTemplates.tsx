@@ -99,7 +99,9 @@ export function PrintTemplates({
               {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
                 <div className="col-span-12 pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
                   <strong>Implementos, Equipos y EPP Utilizados:</strong>{' '}
-                  <span className="break-words">{plan.implementosRequeridos.join(' • ')}</span>
+                  <span className="break-words break-all max-w-full inline-block leading-relaxed">
+                    {plan.implementosRequeridos.join(' • ')}
+                  </span>
                 </div>
               )}
             </div>
@@ -286,7 +288,9 @@ export function PrintTemplates({
             {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
               <div className="pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
                 <strong>Implementos, Equipos y EPP Obligatorios en Campo:</strong>{' '}
-                <span className="break-words">{plan.implementosRequeridos.join(' • ')}</span>
+                <span className="break-words break-all max-w-full inline-block leading-relaxed">
+                  {plan.implementosRequeridos.join(' • ')}
+                </span>
               </div>
             )}
           </div>

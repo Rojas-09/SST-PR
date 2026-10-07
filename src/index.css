@@ -96,94 +96,41 @@
     overflow-x: visible;
   }
 
-  /* En pantallas chicas las tablas densas se vuelven tarjetas apiladas:
-     cada fila muestra "Campo: valor" usando data-label, sin scroll horizontal. */
-  @media (max-width: 767px) {
+  /* En pantallas chicas y medianas las tablas densas se vuelven tarjetas apiladas o garantizan scroll seguro */
+  @media (max-width: 1023px) {
     .table-stack,
-    .table-stack tbody,
-    .table-stack tr,
-    .table-stack td {
-      display: block;
-      width: 100%;
-    }
-    .table-stack thead {
-      display: none;
-    }
-    .table-stack tr {
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
-    }
-    .table-stack tr:last-child {
-      margin-bottom: 0;
-    }
-    .table-stack tbody > tr:hover {
-      background: #FFFFFF;
-    }
-    .table-stack td {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 6px 0;
-      border: none !important;
-      text-align: left;
-    }
-    .table-stack td::before {
-      content: attr(data-label);
-      flex: 0 0 auto;
-      width: 40%;
-      font-weight: 600;
-      font-size: 10.5px;
-      line-height: 1.6;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      color: #64748B;
-    }
-    .table-stack td > * {
-      flex: 1 1 auto;
-      min-width: 0;
-      text-align: right;
-    }
-    /* Filas de estado vacio (colSpan): mensaje centrado sin etiqueta */
-    .table-stack td:not([data-label]) {
-      display: block;
-      text-align: center;
-    }
-    .table-stack td:not([data-label])::before {
-      content: none;
-    }
-  }
-
-  /* Las tablas más anchas también se apilan en tablet, hasta el breakpoint lg */
-  @media (min-width: 768px) and (max-width: 1023px) {
     .table-stack-lg,
+    .table-stack tbody,
     .table-stack-lg tbody,
+    .table-stack tr,
     .table-stack-lg tr,
+    .table-stack td,
     .table-stack-lg td {
       display: block;
       width: 100%;
     }
+    .table-stack thead,
     .table-stack-lg thead {
       display: none;
     }
+    .table-stack tr,
     .table-stack-lg tr {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgb(15 23 42 / 0.05);
     }
+    .table-stack tr:last-child,
     .table-stack-lg tr:last-child {
       margin-bottom: 0;
     }
+    .table-stack tbody > tr:hover,
     .table-stack-lg tbody > tr:hover {
       background: #FFFFFF;
     }
+    .table-stack td,
     .table-stack-lg td {
       display: flex;
       align-items: flex-start;
@@ -193,27 +140,31 @@
       border: none !important;
       text-align: left;
     }
+    .table-stack td::before,
     .table-stack-lg td::before {
       content: attr(data-label);
       flex: 0 0 auto;
-      width: 40%;
-      font-weight: 600;
-      font-size: 10.5px;
-      line-height: 1.6;
+      width: 38%;
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 1.5;
       text-transform: uppercase;
       letter-spacing: 0.02em;
       color: #64748B;
     }
+    .table-stack td > *,
     .table-stack-lg td > * {
       flex: 1 1 auto;
       min-width: 0;
       text-align: right;
     }
     /* Filas de estado vacio (colSpan): mensaje centrado sin etiqueta */
+    .table-stack td:not([data-label]),
     .table-stack-lg td:not([data-label]) {
       display: block;
       text-align: center;
     }
+    .table-stack td:not([data-label])::before,
     .table-stack-lg td:not([data-label])::before {
       content: none;
     }

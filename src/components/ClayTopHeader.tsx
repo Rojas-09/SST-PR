@@ -141,22 +141,22 @@ export function ClayTopHeader({
               {company.id === 'servic-crear' ? 'SC' : 'TLA'}
             </div>
 
-            {/* Nombre y datos de la empresa */}
+            {/* Nombre y datos de la empresa con máxima claridad institucional */}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-slate-900 text-sm sm:text-[15px] truncate block leading-tight">
+                <span className="font-extrabold text-slate-950 text-xs xs:text-sm sm:text-[15px] truncate block leading-tight tracking-tight">
                   {company.name}
                 </span>
                 {isSSTLeader ? (
-                  <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 shrink-0 transition-colors" />
+                  <ChevronsUpDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-600 shrink-0 transition-colors" />
                 ) : (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Activa" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 shadow-2xs" title="Empresa Activa" />
                 )}
               </div>
-              <div className="hidden xs:flex items-center gap-1.5 text-[10.5px] sm:text-xs text-slate-500 font-mono leading-none mt-0.5">
-                <span className="truncate">NIT {company.nit}</span>
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-slate-600 font-mono leading-none mt-0.5">
+                <span className="truncate font-semibold">NIT {company.nit}</span>
                 <span className="text-slate-300">•</span>
-                <span className="font-sans font-semibold text-blue-700">
+                <span className="font-sans font-bold text-blue-700 truncate">
                   {company.id === 'servic-crear' ? 'SURA • Ibagué' : 'Positiva • Bogotá'}
                 </span>
               </div>
