@@ -610,27 +610,27 @@ export function CalendarioVencimientos({
       {/* HEADER: Title, Month Navigation & Quick Stats */}
       <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs space-y-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 shrink-0">
                 <CalendarDays className="w-3.5 h-3.5 text-blue-600" />
                 CALENDARIO CRONOLÓGICO SG-SST
               </span>
-              <span className="text-slate-400 text-xs">•</span>
-              <span className="text-[12px] text-slate-500 font-normal">
-                {company.name} (Riesgo IV)
+              <span className="text-slate-300 text-xs hidden sm:inline">•</span>
+              <span className="text-[11.5px] text-slate-600 font-medium truncate">
+                {company.name} ({company.claseRiesgo || 'Riesgo IV'})
               </span>
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               Cronograma Mensual de Vencimientos y Actividades Clave
             </h2>
-            <p className="text-[12.5px] text-slate-600 mt-0.5">
+            <p className="text-[12px] sm:text-[12.5px] text-slate-600 mt-0.5 max-w-3xl leading-relaxed">
               Visualización temporal de capacitaciones obligatorias (Res. 0312), inspecciones técnicas GTC 45, reintegros laborales y actas de EPP.
             </p>
           </div>
 
           {/* Month Controller Navigation */}
-          <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+          <div className="flex items-center gap-2 self-start md:self-auto shrink-0 flex-wrap">
             <button
               type="button"
               onClick={handleGoToDefault}
@@ -665,27 +665,52 @@ export function CalendarioVencimientos({
           </div>
         </div>
 
-        {/* Quick Month Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-slate-100">
-          <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-            <span className="text-[10.5px] font-semibold text-slate-500 uppercase block">Total Fechas Clave</span>
-            <span className="text-base font-bold text-slate-900 block mt-0.5">{monthStats.total} citas</span>
+        {/* Quick Month Metrics Bar (Responsive for tablet and mobile without collision) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 pt-2 border-t border-slate-100">
+          <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
+              Total Fechas Clave
+            </span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-slate-900 font-mono">{monthStats.total}</span>
+              <span className="text-xs text-slate-500 font-medium">citas</span>
+            </div>
           </div>
-          <div className="p-2 bg-teal-50/60 rounded-lg border border-teal-100">
-            <span className="text-[10.5px] font-semibold text-teal-700 uppercase block">Capacitaciones</span>
-            <span className="text-base font-bold text-teal-800 block mt-0.5">{monthStats.capacitaciones} programadas</span>
+          <div className="p-2.5 bg-teal-50/70 rounded-xl border border-teal-100 min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-bold text-teal-700 uppercase tracking-wider block truncate">
+              Capacitaciones
+            </span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-teal-800 font-mono">{monthStats.capacitaciones}</span>
+              <span className="text-xs text-teal-700 font-medium truncate">programadas</span>
+            </div>
           </div>
-          <div className="p-2 bg-amber-50/60 rounded-lg border border-amber-100">
-            <span className="text-[10.5px] font-semibold text-amber-700 uppercase block">Inspecciones</span>
-            <span className="text-base font-bold text-amber-800 block mt-0.5">{monthStats.inspecciones} técnicas</span>
+          <div className="p-2.5 bg-amber-50/70 rounded-xl border border-amber-100 min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-bold text-amber-700 uppercase tracking-wider block truncate">
+              Inspecciones
+            </span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-amber-800 font-mono">{monthStats.inspecciones}</span>
+              <span className="text-xs text-amber-700 font-medium truncate">técnicas</span>
+            </div>
           </div>
-          <div className="p-2 bg-purple-50/60 rounded-lg border border-purple-100">
-            <span className="text-[10.5px] font-semibold text-purple-700 uppercase block">Incapacidades</span>
-            <span className="text-base font-bold text-purple-800 block mt-0.5">{monthStats.incapacidades} reintegros</span>
+          <div className="p-2.5 bg-purple-50/70 rounded-xl border border-purple-100 min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-bold text-purple-700 uppercase tracking-wider block truncate">
+              Incapacidades
+            </span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-purple-800 font-mono">{monthStats.incapacidades}</span>
+              <span className="text-xs text-purple-700 font-medium truncate">reintegros</span>
+            </div>
           </div>
-          <div className="p-2 bg-red-50/60 rounded-lg border border-red-100 col-span-2 sm:col-span-1">
-            <span className="text-[10.5px] font-semibold text-red-700 uppercase block">Atención Inmediata</span>
-            <span className="text-base font-bold text-red-800 block mt-0.5">{monthStats.urgentes} urgentes</span>
+          <div className="p-2.5 bg-red-50/70 rounded-xl border border-red-100 col-span-2 sm:col-span-1 min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-bold text-red-700 uppercase tracking-wider block truncate">
+              Atención Inmediata
+            </span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base sm:text-lg font-black text-red-800 font-mono">{monthStats.urgentes}</span>
+              <span className="text-xs text-red-700 font-medium truncate">urgentes</span>
+            </div>
           </div>
         </div>
 

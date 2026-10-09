@@ -94,16 +94,16 @@ export function DocumentoImpresionModal({
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 12px;
+      font-size: 13.5px;
       margin: 8mm;
       color: #000;
       background: #fff;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 11.5px; }
-    th, td { border: 1px solid #000; padding: 5px 8px; text-align: left; }
-    th { background: #f1f5f9; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px; }
+    th, td { border: 1px solid #000; padding: 7px 10px; text-align: left; }
+    th { background: #f1f5f9; font-weight: bold; font-size: 13px; }
     .avoid-break, tr { page-break-inside: avoid; break-inside: avoid; }
     .text-center { text-align: center; }
     .text-right { text-align: right; }
@@ -121,34 +121,40 @@ export function DocumentoImpresionModal({
     .col-span-2 { grid-column: span 2 / span 2; }
     .gap-1 { gap: 0.25rem; }
     .gap-2 { gap: 0.5rem; }
+    .gap-2\\.5 { gap: 0.625rem; }
     .gap-3 { gap: 0.75rem; }
     .gap-4 { gap: 1rem; }
     .gap-8 { gap: 2rem; }
+    .gap-10 { gap: 2.5rem; }
     .p-1 { padding: 0.25rem; }
     .p-1\\.5 { padding: 0.375rem; }
     .p-2 { padding: 0.5rem; }
+    .p-2\\.5 { padding: 0.625rem; }
     .p-3 { padding: 0.75rem; }
+    .p-3\\.5 { padding: 0.875rem; }
     .p-4 { padding: 1rem; }
     .border { border: 1px solid #000; }
     .border-black { border-color: #000; }
-    .border-dotted { border-style: dotted; }
     .border-t { border-top: 1px solid #000; }
     .border-b { border-bottom: 1px solid #000; }
     .border-b-2 { border-bottom: 2px solid #000; }
     .pt-1 { padding-top: 0.25rem; }
     .pt-1\\.5 { padding-top: 0.375rem; }
     .pt-2 { padding-top: 0.5rem; }
+    .pt-2\\.5 { padding-top: 0.625rem; }
     .pt-4 { padding-top: 1rem; }
     .pt-5 { padding-top: 1.25rem; }
     .pt-6 { padding-top: 1.5rem; }
+    .pt-7 { padding-top: 1.75rem; }
     .pb-2 { padding-bottom: 0.5rem; }
     .pb-3 { padding-bottom: 0.75rem; }
     .mb-3 { margin-bottom: 0.75rem; }
     .mt-0\\.5 { margin-top: 0.125rem; }
     .mt-1 { margin-top: 0.25rem; }
     .mt-1\\.5 { margin-top: 0.375rem; }
-    .text-xs { font-size: 11px; }
-    .text-sm { font-size: 13px; }
+    .mt-2 { margin-top: 0.5rem; }
+    .text-xs { font-size: 12px; }
+    .text-sm { font-size: 13.5px; }
     .text-base { font-size: 15px; }
     .text-lg { font-size: 17px; }
     .text-xl { font-size: 20px; }
@@ -166,8 +172,12 @@ export function DocumentoImpresionModal({
     .w-24 { width: 6rem; }
     .w-28 { width: 7rem; }
     .w-32 { width: 8rem; }
+    .w-36 { width: 9rem; }
     .w-56 { width: 14rem; }
+    .w-64 { width: 16rem; }
     .h-11 { height: 2.75rem; }
+    .h-12 { height: 3rem; }
+    .h-14 { height: 3.5rem; }
     .align-middle { vertical-align: middle; }
     .align-bottom { vertical-align: bottom; }
     .mx-auto { margin-left: auto; margin-right: auto; }
@@ -177,6 +187,7 @@ export function DocumentoImpresionModal({
     .space-y-3 > * + * { margin-top: 0.75rem; }
     .space-y-4 > * + * { margin-top: 1rem; }
     .bg-white { background-color: #ffffff; }
+    .bg-slate-50 { background-color: #f8fafc; }
     .bg-slate-200 { background-color: #e2e8f0; }
     .bg-slate-100 { background-color: #f1f5f9; }
     .text-slate-900 { color: #0f172a; }

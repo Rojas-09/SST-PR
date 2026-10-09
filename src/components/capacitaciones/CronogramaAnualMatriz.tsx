@@ -26,6 +26,9 @@ import {
   PenTool,
   Layers,
   X,
+  CheckSquare,
+  Square,
+  UserCheck,
 } from 'lucide-react';
 import {
   PlanCapacitacion,
@@ -39,6 +42,7 @@ import { capacitacionesStorage } from '../../services/capacitacionesStorage';
 import { getCompanyDataset } from '../../data/companiesData';
 import { CATALOGO_IMPLEMENTOS, ImplementoCapacitacion } from '../../data/implementosCatalog';
 import { GestionTrabajadoresModal } from './GestionTrabajadoresModal';
+import { workersStorage, WorkerRecord } from '../../services/workersStorage';
 
 export const getAvailableTrainers = (companyId: string) => {
   if (companyId === 'servic-crear') {
@@ -149,6 +153,7 @@ interface CronogramaAnualMatrizProps {
   company: CompanyInfo;
   onSelectPlan: (planId: string) => void;
   onRefreshData: () => void;
+  onOpenCreatePlan?: () => void;
 }
 
 const MONTH_NAMES = [
@@ -172,6 +177,7 @@ export function CronogramaAnualMatriz({
   company,
   onSelectPlan,
   onRefreshData,
+  onOpenCreatePlan,
 }: CronogramaAnualMatrizProps) {
   const { currentUser, canCreatePlan, canReschedulePlan, canAnnulPlan, canDeletePhysicalPlan } =
     useAuthRole();
@@ -222,10 +228,87 @@ export function CronogramaAnualMatriz({
   const [implementoFilterText, setImplementoFilterText] = useState('');
   const [selectedImplementoCategory, setSelectedImplementoCategory] = useState<string>('TODOS');
 
-  // Worker enrollment & attendance sheet format state (Item 4)
+  // Worker enrollment & attendance sheet format state (Items 4 & 6)
   const [isManageWorkersModalOpen, setIsManageWorkersModalOpen] = useState(false);
   const [convocatoriaMode, setConvocatoriaMode] = useState<'SISTEMA' | 'BLANCO' | 'MIXTA'>('SISTEMA');
   const [blankRowsModalCount, setBlankRowsModalCount] = useState<number>(5);
+
+  // Worker selection state (Item 4)
+  const [workersList, setWorkersList] = useState<WorkerRecord[]>([]);
+  const [selectedWorkerIds, setSelectedWorkerIds] = useState<string[]>([]);
+  const [workerSearchQuery, setWorkerSearchQuery] = useState('');
+  const [isQuickAddWorkerOpen, setIsQuickAddWorkerOpen] = useState(false);
+  const [quickNombre, setQuickNombre] = useState('');
+  const [quickCedula, setQuickCedula] = useState('');
+  const [quickCargo, setQuickCargo] = useState('');
+
+  // Load workers for company
+  useEffect(() => {
+    const list = workersStorage.getWorkers(company.id);
+    setWorkersList(list);
+    setSelectedWorkerIds(list.map((w) => w.id));
+  }, [company.id, isNewPlanModalOpen]);
+
+  // Lock background scroll when modal is open (Item 1)
+  useEffect(() => {
+    if (isNewPlanModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isNewPlanModalOpen]);
+
+  const filteredWorkersToEnroll = useMemo(() => {
+    const q = workerSearchQuery.toLowerCase().trim();
+    if (!q) return workersList;
+    return workersList.filter(
+      (w) =>
+        w.nombre.toLowerCase().includes(q) ||
+        w.cedula.toLowerCase().includes(q) ||
+        w.cargo.toLowerCase().includes(q) ||
+        (w.area && w.area.toLowerCase().includes(q))
+    );
+  }, [workersList, workerSearchQuery]);
+
+  const toggleWorkerSelection = (id: string) => {
+    setSelectedWorkerIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllWorkers = () => {
+    const allFilteredIds = filteredWorkersToEnroll.map((w) => w.id);
+    setSelectedWorkerIds((prev) => Array.from(new Set([...prev, ...allFilteredIds])));
+  };
+
+  const handleDeselectAllWorkers = () => {
+    const filteredSet = new Set(filteredWorkersToEnroll.map((w) => w.id));
+    setSelectedWorkerIds((prev) => prev.filter((id) => !filteredSet.has(id)));
+  };
+
+  const handleQuickAddWorker = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickNombre.trim() || !quickCedula.trim()) return;
+    const newW = workersStorage.createWorker(company.id, {
+      nombre: quickNombre.trim(),
+      cedula: quickCedula.trim(),
+      cargo: quickCargo.trim() || 'Operario Técnico',
+      area: newArea.trim() || 'Operaciones',
+      eps: 'SURA EPS',
+      arl: company.arl || 'Positiva',
+      estado: 'ACTIVO',
+    });
+    const updated = workersStorage.getWorkers(company.id);
+    setWorkersList(updated);
+    setSelectedWorkerIds((prev) => [...prev, newW.id]);
+    setQuickNombre('');
+    setQuickCedula('');
+    setQuickCargo('');
+    setIsQuickAddWorkerOpen(false);
+  };
 
   const [formError, setFormError] = useState('');
   const [formWarning, setFormWarning] = useState('');
@@ -450,7 +533,13 @@ export function CronogramaAnualMatriz({
             {canCreatePlan() && (
               <button
                 type="button"
-                onClick={() => setIsNewPlanModalOpen(true)}
+                onClick={() => {
+                  if (onOpenCreatePlan) {
+                    onOpenCreatePlan();
+                  } else {
+                    setIsNewPlanModalOpen(true);
+                  }
+                }}
                 className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
               >
                 <PlusCircle className="w-4 h-4" />

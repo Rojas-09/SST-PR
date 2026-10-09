@@ -55,7 +55,13 @@ export function GestionTrabajadoresModal({
   useEffect(() => {
     if (isOpen) {
       loadWorkers();
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen, company.id]);
 
   const loadWorkers = () => {
@@ -144,8 +150,8 @@ export function GestionTrabajadoresModal({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/75 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[88vh]">
         {/* Header */}
         <div className="px-4 py-3 sm:px-6 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
@@ -171,8 +177,8 @@ export function GestionTrabajadoresModal({
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+        {/* Modal Body - Single unified fluid scroll container */}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-5 space-y-4">
           {/* Quick Choice Banner: Digital vs Blank Paper with Fields Selector */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
@@ -411,7 +417,7 @@ export function GestionTrabajadoresModal({
                 </button>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+              <div className="divide-y divide-slate-100">
                 {filteredWorkers.map((w) => (
                   <div
                     key={w.id}

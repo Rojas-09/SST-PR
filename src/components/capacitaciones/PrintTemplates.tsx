@@ -52,52 +52,61 @@ export function PrintTemplates({
     <div id="print-root-container" className="printable-content font-sans text-black bg-white p-2 sm:p-4">
       {/* TEMPLATE 1: ACTA OFICIAL DE CAPACITACIÓN */}
       {template === 'ACTA_OFICIAL' && plan && sesion && (
-        <div className="space-y-4 text-xs sm:text-sm">
+        <div className="space-y-4 text-sm sm:text-base">
           {/* Institutional Header */}
           <table className="w-full border-collapse border border-black mb-3">
             <tbody>
               <tr>
-                <td className="w-1/4 p-3 border border-black text-center align-middle bg-white">
-                  <div className="font-black text-base uppercase text-slate-900">{company.name}</div>
-                  <div className="text-xs font-mono text-slate-700 mt-0.5">NIT: {company.nit}</div>
-                  <div className="text-xs font-bold text-slate-700 mt-0.5">{company.claseRiesgo} • CIIU {company.ciiu}</div>
+                <td className="w-1/4 p-3.5 border border-black text-center align-middle bg-white">
+                  <div className="font-black text-base sm:text-lg uppercase text-slate-900">{company.name}</div>
+                  <div className="text-xs sm:text-sm font-mono text-slate-700 mt-1">NIT: {company.nit}</div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-700 mt-0.5">{company.claseRiesgo} • CIIU {company.ciiu}</div>
                 </td>
-                <td className="w-2/4 p-3 border border-black text-center align-middle bg-white">
-                  <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                <td className="w-2/4 p-3.5 border border-black text-center align-middle bg-white">
+                  <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700">
                     SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO (SG-SST)
                   </div>
-                  <h1 className="text-base sm:text-lg font-black uppercase text-black mt-1">
+                  <h1 className="text-base sm:text-xl font-black uppercase text-black mt-1">
                     ACTA OFICIAL DE ASISTENCIA Y EVALUACIÓN DE CAPACITACIÓN
                   </h1>
-                  <div className="text-xs text-slate-600 font-semibold mt-0.5">
-                    Cumplimiento Decreto 1072/2015 (Art. 2.2.4.6.11) • Res. 0312/2019 Estándar 2.2.1
+                  <div className="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
+                    Decreto 1072 de 2015 (Art. 2.2.4.6.11) • Resolución 0312 de 2019 Estándar 2.2.1
                   </div>
                 </td>
-                <td className="w-1/4 p-3 border border-black text-xs font-mono leading-relaxed bg-white">
-                  <div><strong>Código:</strong> {plan.codigo}</div>
-                  <div><strong>Versión:</strong> 03</div>
+                <td className="w-1/4 p-3.5 border border-black text-xs sm:text-sm leading-relaxed bg-white">
+                  <div><strong>Código Plan:</strong> {plan.codigo}</div>
+                  <div><strong>Versión:</strong> 03 Oficial</div>
                   <div><strong>Fecha:</strong> {sesion.fechaEjecucion || plan.fechaProgramada}</div>
-                  <div><strong>Estado:</strong> {sesion.estadoActa}</div>
+                  <div><strong>Estado:</strong> {sesion.estadoActa === 'CONVALIDADA' ? 'Convalidada SST' : sesion.estadoActa === 'FIRMADA' ? 'Firmada' : 'En Ejecución'}</div>
                 </td>
               </tr>
             </tbody>
           </table>
 
           {/* Section 1: General Info */}
-          <div className="border border-black p-3 space-y-1.5 bg-white print-avoid-break text-xs sm:text-sm">
-            <div className="grid grid-cols-12 gap-2">
-              <div className="col-span-12"><strong>Tema:</strong> {plan.tema}</div>
-              <div className="col-span-12"><strong>Objetivo:</strong> {plan.objetivo}</div>
-              <div className="col-span-6"><strong>Peligro GTC 45:</strong> {plan.codigoPeligro || 'General'} - {plan.tipoPeligroGTC45}</div>
-              <div className="col-span-6"><strong>Área Dirigida:</strong> {plan.areaDirigida}</div>
-              <div className="col-span-4"><strong>Modalidad:</strong> {plan.modalidad.replace(/_/g, ' ')}</div>
+          <div className="border border-black p-3.5 space-y-2 bg-white print-avoid-break text-xs sm:text-sm">
+            <div className="grid grid-cols-12 gap-2.5">
+              <div className="col-span-12"><strong>Tema de Capacitación:</strong> {plan.tema}</div>
+              <div className="col-span-12"><strong>Objetivo Formativo:</strong> {plan.objetivo}</div>
+              <div className="col-span-6"><strong>Peligro GTC 45:</strong> {plan.tipoPeligroGTC45 || 'Seguridad y Salud en el Trabajo'}</div>
+              <div className="col-span-6"><strong>Área Convocada:</strong> {plan.areaDirigida}</div>
+              <div className="col-span-4">
+                <strong>Modalidad:</strong>{' '}
+                {plan.modalidad === 'PRESENCIAL_TEORICO_PRACTICO'
+                  ? 'Presencial Teórico-Práctico'
+                  : plan.modalidad === 'TALLER_PUESTO_TRABAJO'
+                  ? 'Taller en Puesto de Trabajo'
+                  : plan.modalidad === 'CHARLA_5_MIN'
+                  ? 'Charla de Seguridad (5 Min)'
+                  : 'Virtual ARL'}
+              </div>
               <div className="col-span-4"><strong>Duración:</strong> {plan.duracionHoras} Horas</div>
-              <div className="col-span-4"><strong>Fecha Ejecución:</strong> {sesion.fechaEjecucion}</div>
-              <div className="col-span-6"><strong>Instructor:</strong> {sesion.capacitadorNombre} ({sesion.capacitadorEntidad})</div>
-              <div className="col-span-6"><strong>Licencia / Id:</strong> {sesion.capacitadorLicencia}</div>
-              <div className="col-span-12"><strong>Normativa Legal:</strong> {plan.normativaAplicable}</div>
+              <div className="col-span-4"><strong>Fecha Ejecución:</strong> {sesion.fechaEjecucion || plan.fechaProgramada}</div>
+              <div className="col-span-6"><strong>Instructor / Capacitador:</strong> {sesion.capacitadorNombre} ({sesion.capacitadorEntidad})</div>
+              <div className="col-span-6"><strong>Licencia SST / Documento:</strong> {sesion.capacitadorLicencia}</div>
+              <div className="col-span-12"><strong>Marco Legal Aplicable:</strong> {plan.normativaAplicable}</div>
               {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
-                <div className="col-span-12 pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
+                <div className="col-span-12 pt-2 border-t border-black text-xs sm:text-sm break-words overflow-hidden">
                   <strong>Implementos, Equipos y EPP Utilizados:</strong>{' '}
                   <span className="break-words break-all max-w-full inline-block leading-relaxed">
                     {plan.implementosRequeridos.join(' • ')}
@@ -108,21 +117,26 @@ export function PrintTemplates({
           </div>
 
           {/* Section 2: Attendance & Grades Table */}
-          <div className="space-y-1.5">
-            <h3 className="font-bold text-xs sm:text-sm uppercase tracking-wide">
-              Registro Nominal de Participantes, Calificación y Trazabilidad
-            </h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-xs sm:text-sm uppercase tracking-wide">
+                Registro Nominal de Participantes, Calificación y Trazabilidad
+              </h3>
+              <span className="text-xs text-slate-700 italic">
+                (Firma en casilla limpia sin tachaduras)
+              </span>
+            </div>
             <table className="w-full border-collapse border border-black text-xs sm:text-sm">
               <thead>
                 <tr className="bg-slate-200 border-b border-black font-bold">
-                  <th className="p-2 border border-black text-center w-10">N°</th>
-                  <th className="p-2 border border-black">Nombre del Trabajador</th>
-                  <th className="p-2 border border-black w-28">Cédula</th>
-                  <th className="p-2 border border-black">Cargo / Ocupación</th>
-                  <th className="p-2 border border-black text-center w-20">Asistió</th>
-                  <th className="p-2 border border-black text-center w-24">Nota (0-100)</th>
-                  <th className="p-2 border border-black text-center w-28">Resultado</th>
-                  <th className="p-2 border border-black text-center w-28">Firma Digital</th>
+                  <th className="p-2.5 border border-black text-center w-10">N°</th>
+                  <th className="p-2.5 border border-black">Nombre del Trabajador</th>
+                  <th className="p-2.5 border border-black w-28">Cédula</th>
+                  <th className="p-2.5 border border-black">Cargo / Ocupación</th>
+                  <th className="p-2.5 border border-black text-center w-20">Asistió</th>
+                  <th className="p-2.5 border border-black text-center w-24">Nota (0-100)</th>
+                  <th className="p-2.5 border border-black text-center w-28">Resultado</th>
+                  <th className="p-2.5 border border-black text-center w-36">Firma del Trabajador</th>
                 </tr>
               </thead>
               <tbody>
@@ -130,9 +144,9 @@ export function PrintTemplates({
                   asistencias.map((asist, idx) => {
                     const isApproved = (asist.calificacion ?? 0) >= 70;
                     return (
-                      <tr key={asist.id} className="border-b border-black">
-                        <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
-                        <td className="p-2 border border-black font-bold">{asist.nombre}</td>
+                      <tr key={asist.id} className="border-b border-black h-12">
+                        <td className="p-2 border border-black text-center font-mono font-bold">{idx + 1}</td>
+                        <td className="p-2 border border-black font-bold text-slate-900">{asist.nombre}</td>
                         <td className="p-2 border border-black font-mono">{asist.cedula}</td>
                         <td className="p-2 border border-black">{asist.cargo}</td>
                         <td className="p-2 border border-black text-center font-bold">
@@ -150,37 +164,39 @@ export function PrintTemplates({
                             ? 'APROBADO'
                             : 'REPROBADO'}
                         </td>
-                        <td className="p-2 border border-black text-center text-xs font-mono">
-                          {asist.firmaRegistrada ? 'CERTIFICADA' : 'SIN FIRMA'}
+                        {/* Casilla de firma limpia, amplia y espaciosa sin líneas punteadas */}
+                        <td className="p-1 border border-black text-center align-middle bg-white">
+                          {asist.firmaRegistrada ? (
+                            <div className="text-[11px] font-bold text-emerald-800 uppercase">
+                              Firma Digital Verificada
+                            </div>
+                          ) : (
+                            <div className="w-full h-9 bg-white" />
+                          )}
                         </td>
                       </tr>
                     );
                   })}
 
-                {/* Renglones en blanco adicionales o exclusivos */}
+                {/* Renglones en blanco limpios para diligenciamiento manual a mano */}
                 {Array.from({ length: blankRowsCount }, (_, i) => i + 1).map((n) => {
                   const baseCount = includeSystemWorkers ? asistencias.length : 0;
                   return (
-                    <tr key={`blank-acta-${n}`} className="border-b border-black h-9">
-                      <td className="p-2 border border-black text-center font-mono text-slate-500">
+                    <tr key={`blank-acta-${n}`} className="border-b border-black h-12">
+                      <td className="p-2 border border-black text-center font-mono text-slate-700">
                         {baseCount + n}
                       </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '___________________________'}
-                      </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '_____________'}
-                      </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '_________________'}
-                      </td>
+                      <td className="p-2 border border-black bg-white" />
+                      <td className="p-2 border border-black bg-white" />
+                      <td className="p-2 border border-black bg-white" />
                       <td className="p-2 border border-black text-center">
-                        <div className="w-4 h-4 border border-black mx-auto" />
+                        <div className="w-5 h-5 border border-black mx-auto" />
                       </td>
-                      <td className="p-2 border border-black text-center text-slate-400 font-mono">___</td>
-                      <td className="p-2 border border-black text-center text-slate-400 font-mono">___</td>
-                      <td className="p-2 border border-black text-center align-bottom pb-1">
-                        <div className="w-full border-b border-dotted border-slate-500" />
+                      <td className="p-2 border border-black text-center bg-white" />
+                      <td className="p-2 border border-black text-center bg-white" />
+                      {/* Casilla de firma totalmente limpia para que la persona firme a mano */}
+                      <td className="p-1 border border-black text-center align-middle bg-white">
+                        <div className="w-full h-9 bg-white" />
                       </td>
                     </tr>
                   );
@@ -190,53 +206,47 @@ export function PrintTemplates({
           </div>
 
           {/* Section 3: SG-SST Effectiveness Evaluation */}
-          <div className="border border-black p-3 space-y-2 bg-white print-avoid-break">
+          <div className="border border-black p-3.5 space-y-2 bg-white print-avoid-break">
             <h3 className="font-bold text-xs sm:text-sm uppercase">Evaluación de Cobertura y Eficacia del Entrenamiento</h3>
             <div className="grid grid-cols-4 gap-3 text-center text-xs sm:text-sm">
-              <div className="border border-black p-2">
+              <div className="border border-black p-2 bg-slate-50">
                 <span className="block font-bold">Cobertura Total</span>
                 <span className="font-mono text-base font-black">{metricas.porcentajeCobertura}%</span> ({metricas.asistentesTotal}/{metricas.convocadosTotal})
               </div>
-              <div className="border border-black p-2">
+              <div className="border border-black p-2 bg-slate-50">
                 <span className="block font-bold">Aprobación Evaluados</span>
                 <span className="font-mono text-base font-black">{metricas.porcentajeAprobacion}%</span> ({metricas.aprobadosTotal}/{metricas.evaluadosTotal})
               </div>
-              <div className="border border-black p-2">
-                <span className="block font-bold">Promedio Notas</span>
+              <div className="border border-black p-2 bg-slate-50">
+                <span className="block font-bold">Promedio Calificación</span>
                 <span className="font-mono text-base font-black">{metricas.promedioCalificacion} / 100</span>
               </div>
-              <div className="border border-black p-2">
+              <div className="border border-black p-2 bg-slate-50">
                 <span className="block font-bold">Dictamen SG-SST</span>
                 <span className="font-bold text-xs sm:text-sm">
                   {metricas.resultadoEficacia === 'EFICAZ' ? 'EFICAZ (CUMPLE META)' : 'REQUIERE REFUERZO'}
                 </span>
               </div>
             </div>
-            <p className="text-xs text-slate-700 mt-1.5">
-              <strong>Observaciones del Evaluador:</strong> {sesion.observaciones || 'Capacitación ejecutada conforme al plan.'}
+            <p className="text-xs sm:text-sm text-slate-800 mt-2">
+              <strong>Observaciones del Evaluador:</strong> {sesion.observaciones || 'Capacitación ejecutada conforme a lo programado en el plan anual.'}
             </p>
           </div>
 
           {/* Section 4: Dual Signatures */}
-          <div className="grid grid-cols-2 gap-8 pt-5 print-avoid-break">
-            <div className="border-t border-black text-center pt-2">
-              <div className="font-bold text-sm uppercase">{sesion.capacitadorNombre}</div>
-              <div className="text-xs text-slate-700">{sesion.capacitadorEntidad}</div>
-              <div className="text-xs font-mono text-slate-500">{sesion.capacitadorLicencia}</div>
-              <div className="text-xs font-mono text-slate-400 mt-0.5">
-                Hash: {sesion.firmaCapacitador?.hash || 'Firma Manuscrita / Digital Verificada'}
-              </div>
-              <div className="text-xs font-bold text-slate-800 uppercase mt-1">Firma del Capacitador / Instructor</div>
+          <div className="grid grid-cols-2 gap-10 pt-6 print-avoid-break">
+            <div className="border-t border-black text-center pt-2.5">
+              <div className="font-bold text-sm sm:text-base uppercase">{sesion.capacitadorNombre}</div>
+              <div className="text-xs sm:text-sm text-slate-700">{sesion.capacitadorEntidad}</div>
+              <div className="text-xs sm:text-sm text-slate-600 font-mono">Licencia / ID: {sesion.capacitadorLicencia}</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-900 uppercase mt-2">Firma del Capacitador / Instructor</div>
             </div>
 
-            <div className="border-t border-black text-center pt-2">
-              <div className="font-bold text-sm uppercase">{company.responsableSST.nombre}</div>
-              <div className="text-xs text-slate-700">{company.responsableSST.cargo}</div>
-              <div className="text-xs font-mono text-slate-500">{company.responsableSST.licencia}</div>
-              <div className="text-xs font-mono text-slate-400 mt-0.5">
-                Hash: {sesion.firmaResponsableSST?.hash || company.responsableSST.hashFirma}
-              </div>
-              <div className="text-xs font-bold text-slate-800 uppercase mt-1">
+            <div className="border-t border-black text-center pt-2.5">
+              <div className="font-bold text-sm sm:text-base uppercase">{company.responsableSST.nombre}</div>
+              <div className="text-xs sm:text-sm text-slate-700">{company.responsableSST.cargo}</div>
+              <div className="text-xs sm:text-sm text-slate-600 font-mono">Licencia SST: {company.responsableSST.licencia}</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-900 uppercase mt-2">
                 Convalidación Responsable del SG-SST
               </div>
             </div>
@@ -246,29 +256,29 @@ export function PrintTemplates({
 
       {/* TEMPLATE 2: LISTA DE ASISTENCIA FÍSICA (SIN COLUMNA DE NOTAS) */}
       {template === 'LISTA_ASISTENCIA' && plan && (
-        <div className="space-y-4 text-xs sm:text-sm">
+        <div className="space-y-4 text-sm sm:text-base">
           {/* Institutional Header */}
           <table className="w-full border-collapse border border-black mb-3">
             <tbody>
               <tr>
-                <td className="w-1/4 p-3 border border-black text-center align-middle bg-white">
-                  <div className="font-black text-base uppercase text-slate-900">{company.name}</div>
-                  <div className="text-xs font-mono text-slate-700 mt-0.5">NIT: {company.nit}</div>
-                  <div className="text-xs font-bold text-slate-700 mt-0.5">{company.claseRiesgo}</div>
+                <td className="w-1/4 p-3.5 border border-black text-center align-middle bg-white">
+                  <div className="font-black text-base sm:text-lg uppercase text-slate-900">{company.name}</div>
+                  <div className="text-xs sm:text-sm font-mono text-slate-700 mt-1">NIT: {company.nit}</div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-700 mt-0.5">{company.claseRiesgo} • CIIU {company.ciiu}</div>
                 </td>
-                <td className="w-2/4 p-3 border border-black text-center align-middle bg-white">
-                  <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                <td className="w-2/4 p-3.5 border border-black text-center align-middle bg-white">
+                  <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700">
                     SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO
                   </div>
-                  <h1 className="text-base sm:text-lg font-black uppercase text-black mt-1">
+                  <h1 className="text-base sm:text-xl font-black uppercase text-black mt-1">
                     PLANILLA DE CONTROL DE ASISTENCIA EN CAMPO
                   </h1>
-                  <div className="text-xs text-slate-600 font-semibold mt-0.5">
+                  <div className="text-xs sm:text-sm text-slate-700 font-semibold mt-1">
                     Registro de campo para inducción, entrenamiento y charlas operativas (Decreto 1072/2015)
                   </div>
                 </td>
-                <td className="w-1/4 p-3 border border-black text-xs font-mono leading-relaxed bg-white">
-                  <div><strong>Código:</strong> {plan.codigo}</div>
+                <td className="w-1/4 p-3.5 border border-black text-xs sm:text-sm leading-relaxed bg-white">
+                  <div><strong>Código Plan:</strong> {plan.codigo}</div>
                   <div><strong>Fecha:</strong> {plan.fechaProgramada}</div>
                   <div><strong>Lugar:</strong> {plan.areaDirigida}</div>
                 </td>
@@ -277,16 +287,25 @@ export function PrintTemplates({
           </table>
 
           {/* Activity Data */}
-          <div className="border border-black p-3 text-xs sm:text-sm space-y-1.5 print-avoid-break">
+          <div className="border border-black p-3.5 text-xs sm:text-sm space-y-2 print-avoid-break">
             <div><strong>Tema de la Sesión:</strong> {plan.tema}</div>
             <div><strong>Objetivo Formativo:</strong> {plan.objetivo}</div>
-            <div className="grid grid-cols-3 gap-3 pt-1.5 border-t border-black text-xs sm:text-sm">
-              <div><strong>Área:</strong> {plan.areaDirigida}</div>
-              <div><strong>Modalidad:</strong> {plan.modalidad.replace(/_/g, ' ')}</div>
-              <div><strong>Duración Estimada:</strong> {plan.duracionHoras} Horas</div>
+            <div className="grid grid-cols-3 gap-3 pt-2 border-t border-black text-xs sm:text-sm">
+              <div><strong>Área / Lugar:</strong> {plan.areaDirigida}</div>
+              <div>
+                <strong>Modalidad:</strong>{' '}
+                {plan.modalidad === 'PRESENCIAL_TEORICO_PRACTICO'
+                  ? 'Presencial Teórico-Práctico'
+                  : plan.modalidad === 'TALLER_PUESTO_TRABAJO'
+                  ? 'Taller en Puesto'
+                  : plan.modalidad === 'CHARLA_5_MIN'
+                  ? 'Charla de 5 Minutos'
+                  : 'Virtual'}
+              </div>
+              <div><strong>Duración:</strong> {plan.duracionHoras} Horas</div>
             </div>
             {plan.implementosRequeridos && plan.implementosRequeridos.length > 0 && (
-              <div className="pt-1.5 border-t border-dotted border-black text-xs break-words overflow-hidden">
+              <div className="pt-2 border-t border-black text-xs sm:text-sm break-words overflow-hidden">
                 <strong>Implementos, Equipos y EPP Obligatorios en Campo:</strong>{' '}
                 <span className="break-words break-all max-w-full inline-block leading-relaxed">
                   {plan.implementosRequeridos.join(' • ')}
@@ -296,64 +315,60 @@ export function PrintTemplates({
           </div>
 
           {/* Clean Physical Table WITHOUT grades column */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between text-xs sm:text-sm font-bold uppercase">
               <span>Registro de Asistentes Convocados</span>
               <span className="text-xs font-normal italic">
-                (Firma obligatoria al ingreso de la jornada formativa)
+                (Firma autógrafa obligatoria al ingreso de la jornada formativa)
               </span>
             </div>
             <table className="w-full border-collapse border border-black text-xs sm:text-sm">
               <thead>
                 <tr className="bg-slate-200 border-b border-black font-bold">
-                  <th className="p-2 border border-black text-center w-10">N°</th>
-                  <th className="p-2 border border-black">Nombre Completo del Trabajador</th>
-                  <th className="p-2 border border-black w-32">Cédula de Ciudadanía</th>
-                  <th className="p-2 border border-black">Cargo / Puesto</th>
-                  <th className="p-2 border border-black text-center w-16">Asiste</th>
-                  <th className="p-2 border border-black text-center w-56">Firma Física del Trabajador</th>
+                  <th className="p-2.5 border border-black text-center w-10">N°</th>
+                  <th className="p-2.5 border border-black">Nombre Completo del Trabajador</th>
+                  <th className="p-2.5 border border-black w-36">Cédula de Ciudadanía</th>
+                  <th className="p-2.5 border border-black">Cargo / Puesto de Trabajo</th>
+                  <th className="p-2.5 border border-black text-center w-20">Asiste</th>
+                  <th className="p-2.5 border border-black text-center w-64">Firma Física del Trabajador</th>
                 </tr>
               </thead>
               <tbody>
-                {/* 1. Trabajadores registrados del sistema (si fueron incluidos) */}
+                {/* 1. Trabajadores registrados del sistema (si fueron seleccionados) */}
                 {includeSystemWorkers &&
                   asistencias.map((asist, idx) => (
-                    <tr key={asist.id} className="border-b border-black h-11">
-                      <td className="p-2 border border-black text-center font-mono">{idx + 1}</td>
-                      <td className="p-2 border border-black font-bold">{asist.nombre}</td>
+                    <tr key={asist.id} className="border-b border-black h-14">
+                      <td className="p-2 border border-black text-center font-mono font-bold">{idx + 1}</td>
+                      <td className="p-2 border border-black font-bold text-slate-900">{asist.nombre}</td>
                       <td className="p-2 border border-black font-mono">{asist.cedula}</td>
                       <td className="p-2 border border-black">{asist.cargo}</td>
                       <td className="p-2 border border-black text-center">
                         <div className="w-5 h-5 border border-black mx-auto" />
                       </td>
-                      <td className="p-2 border border-black text-center align-bottom pb-1.5">
-                        <div className="w-full border-b border-dotted border-slate-500" />
+                      {/* Casilla de firma limpia y despejada para firmar con esfero */}
+                      <td className="p-1 border border-black text-center align-middle bg-white">
+                        <div className="w-full h-11 bg-white" />
                       </td>
                     </tr>
                   ))}
 
-                {/* 2. Renglones en blanco para diligenciamiento manual a mano */}
+                {/* 2. Renglones en blanco limpios para diligenciamiento manual a mano */}
                 {Array.from({ length: blankRowsCount }, (_, i) => i + 1).map((n) => {
                   const baseCount = includeSystemWorkers ? asistencias.length : 0;
                   return (
-                    <tr key={`blank-${n}`} className="border-b border-black h-11">
-                      <td className="p-2 border border-black text-center font-mono text-slate-500">
+                    <tr key={`blank-${n}`} className="border-b border-black h-14">
+                      <td className="p-2 border border-black text-center font-mono text-slate-700">
                         {baseCount + n}
                       </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '___________________________'}
-                      </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '_____________'}
-                      </td>
-                      <td className="p-2 border border-black text-slate-300 font-mono text-xs">
-                        {includeSystemWorkers ? '' : '_________________'}
-                      </td>
+                      <td className="p-2 border border-black bg-white" />
+                      <td className="p-2 border border-black bg-white" />
+                      <td className="p-2 border border-black bg-white" />
                       <td className="p-2 border border-black text-center">
                         <div className="w-5 h-5 border border-black mx-auto" />
                       </td>
-                      <td className="p-2 border border-black text-center align-bottom pb-1.5">
-                        <div className="w-full border-b border-dotted border-slate-500" />
+                      {/* Casilla de firma totalmente limpia para firmar con esfero */}
+                      <td className="p-1 border border-black text-center align-middle bg-white">
+                        <div className="w-full h-11 bg-white" />
                       </td>
                     </tr>
                   );
@@ -363,14 +378,14 @@ export function PrintTemplates({
           </div>
 
           {/* Signatures of Trainer & SST Manager */}
-          <div className="grid grid-cols-2 gap-8 pt-6 print-avoid-break">
-            <div className="border-t border-black text-center pt-2">
-              <div className="font-bold text-sm uppercase">Firma del Capacitador / Instructor</div>
-              <div className="text-xs text-slate-700 mt-1">C.C. / Licencia: _____________________________</div>
+          <div className="grid grid-cols-2 gap-10 pt-7 print-avoid-break">
+            <div className="border-t border-black text-center pt-2.5">
+              <div className="font-bold text-sm sm:text-base uppercase">Firma del Capacitador / Instructor</div>
+              <div className="text-xs sm:text-sm text-slate-700 mt-1">C.C. / Licencia: {sesion?.capacitadorLicencia || '_______________________'}</div>
             </div>
-            <div className="border-t border-black text-center pt-2">
-              <div className="font-bold text-sm uppercase">Firma del Responsable del SG-SST</div>
-              <div className="text-xs text-slate-700 mt-1">{company.responsableSST.nombre} • {company.responsableSST.licencia}</div>
+            <div className="border-t border-black text-center pt-2.5">
+              <div className="font-bold text-sm sm:text-base uppercase">Firma del Responsable del SG-SST</div>
+              <div className="text-xs sm:text-sm text-slate-700 mt-1">{company.responsableSST.nombre} • Licencia: {company.responsableSST.licencia}</div>
             </div>
           </div>
         </div>

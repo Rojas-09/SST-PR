@@ -118,7 +118,7 @@ export function ClayTopHeader({
                 onOpenCompanySwitcher();
               }
             }}
-            className={`flex items-center gap-2 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl border text-left transition-all group shadow-2xs w-full sm:w-auto sm:min-w-[220px] max-w-full sm:max-w-md anim-button ${
+            className={`flex items-center gap-2 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl border text-left transition-all group shadow-2xs w-full sm:w-auto sm:min-w-[190px] max-w-[200px] xs:max-w-[240px] md:max-w-[280px] lg:max-w-md anim-button ${
               isSSTLeader
                 ? 'bg-slate-50/90 hover:bg-blue-50/70 border-slate-200 hover:border-blue-300 cursor-pointer'
                 : 'bg-slate-50/70 hover:bg-slate-100 border-slate-200 cursor-pointer'
@@ -277,14 +277,14 @@ export function ClayTopHeader({
 
       {/* Right Clay-style controls */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-        {/* Riesgo & ARL Status Pill */}
+        {/* Riesgo & ARL Status Pill (Desktop only to prevent tablet overlap) */}
         <button
           type="button"
           onClick={onOpenSettings}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+          className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
         >
           <Shield className="w-4 h-4 text-emerald-600" />
-          <span>{company.claseRiesgo || 'Riesgo IV'} • {company.arl || (company.id === 'servic-crear' ? 'SURA' : 'Positiva')}</span>
+          <span className="truncate max-w-[180px]">{company.claseRiesgo || 'Riesgo IV'} • {company.arl || (company.id === 'servic-crear' ? 'SURA' : 'Positiva')}</span>
         </button>
 
         {/* Help icon (hidden on small phones to save header space) */}

@@ -216,7 +216,7 @@ export default function App() {
         />
 
         {/* Dynamic Views with single scroll container */}
-        <main className="flex-1 overflow-y-auto bg-slate-50/50 pb-16">
+        <main className="flex-1 overflow-y-auto bg-slate-50/50 pb-16 relative z-10">
           <div key={activeView} className="anim-page-view">
             {/* Executive Dashboard with Recharts and Integrated AI Copilot */}
             {activeView === 'inicio' && (
@@ -368,16 +368,16 @@ export default function App() {
           onSelectHazard={handleSelectHazard}
         />
 
-        {/* Floating trigger button if assistant is closed */}
-        {!isChatOpen && (
+        {/* Floating trigger button if assistant is closed (never covers modals or mobile footer buttons) */}
+        {!isChatOpen && !isSettingsOpen && !isContactsOpen && (
           <button
             type="button"
             onClick={() => setIsChatOpen(true)}
-            className="fixed bottom-5 right-5 z-40 bg-[#1877F2] hover:bg-[#1464CC] text-white p-3 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer transition-transform hover:scale-105"
+            className="fixed bottom-5 right-5 z-20 print:hidden hidden sm:flex bg-[#1877F2] hover:bg-[#1464CC] text-white p-2.5 sm:p-3 rounded-full shadow-2xl items-center gap-2 cursor-pointer transition-transform hover:scale-105"
             title="Abrir Asistente SST Copilot"
           >
             <Sparkles className="w-4 h-4 text-white" />
-            <span className="text-[12.5px] font-medium pr-1">SST Copilot</span>
+            <span className="text-[12px] font-medium pr-1">SST Copilot</span>
           </button>
         )}
 

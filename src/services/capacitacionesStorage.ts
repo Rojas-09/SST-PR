@@ -9,6 +9,7 @@ import {
 } from '../types/capacitaciones';
 import { getCompanyDataset } from '../data/companiesData';
 import { CapacitacionRecord } from '../types';
+import { workersStorage } from './workersStorage';
 
 const getStorageKeys = (companyId: string) => ({
   PLANES: `sst_planes_capacitacion_${companyId}_v5`,
@@ -385,9 +386,10 @@ class CapacitacionesStorageService {
       updatedAt: new Date().toISOString(),
     };
 
-    // Create attendee entries
+    // Create attendee entries from workersStorage or company dataset
+    const companyWorkers = workersStorage.getWorkers(this.activeCompanyId);
     const attendeeRecords: AsistenciaCalificacion[] = convocadosIds.map((empId) => {
-      const emp = companyData.employees.find((e) => e.id === empId);
+      const emp = companyWorkers.find((e) => e.id === empId) || companyData.employees.find((e) => e.id === empId);
       return {
         id: `ASIS-${sesionId}-${empId}`,
         sesionId,
@@ -395,7 +397,7 @@ class CapacitacionesStorageService {
         nombre: emp?.nombre || 'Trabajador',
         cedula: emp?.cedula || '0.000.000',
         cargo: emp?.cargo || 'Operario',
-        area: newPlan.areaDirigida,
+        area: (emp as any)?.area || newPlan.areaDirigida,
         asistio: false,
         calificacion: null,
         firmaRegistrada: false,

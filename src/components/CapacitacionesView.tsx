@@ -46,6 +46,7 @@ import { CargaEvidenciasModal } from './capacitaciones/CargaEvidenciasModal';
 import { ReaperturaActaModal } from './capacitaciones/ReaperturaActaModal';
 import { DocumentoImpresionModal } from './capacitaciones/DocumentoImpresionModal';
 import { GestionTrabajadoresModal } from './capacitaciones/GestionTrabajadoresModal';
+import { CrearCapacitacionPanel } from './capacitaciones/CrearCapacitacionPanel';
 
 interface CapacitacionesViewProps {
   hazards: HazardRecord[];
@@ -81,6 +82,8 @@ export function CapacitacionesView({
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [activePrintTemplate, setActivePrintTemplate] = useState<PrintTemplateType>('ACTA_OFICIAL');
   const [isWorkersCrudOpen, setIsWorkersCrudOpen] = useState(false);
+  const [isCreatingPlan, setIsCreatingPlan] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
 
   // Subscribe to persistent storage events
   useEffect(() => {
@@ -202,97 +205,138 @@ export function CapacitacionesView({
             </div>
           </div>
 
-          {/* Module Navigation Tabs */}
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 sm:p-2 rounded-2xl border border-slate-200 overflow-x-auto max-w-full w-full sm:w-auto">
-            <button
-              type="button"
-              onClick={() => setModuleTab('CRONOGRAMA')}
-              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
-                moduleTab === 'CRONOGRAMA'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Calendar className="w-4 h-4 text-blue-600" />
-              <span>Cronograma 12 Meses</span>
-            </button>
+          {/* Module Navigation Tabs & Quick Action */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full w-full sm:w-auto flex-wrap">
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 sm:p-2 rounded-2xl border border-slate-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCreatingPlan(false);
+                  setModuleTab('CRONOGRAMA');
+                }}
+                className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                  moduleTab === 'CRONOGRAMA' && !isCreatingPlan
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Calendar className="w-4 h-4 text-blue-600" />
+                <span>Cronograma 12 Meses</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setModuleTab('SESION')}
-              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
-                moduleTab === 'SESION'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <UserCheck className="w-4 h-4 text-blue-600" />
-              <span>Sesión y Calificaciones</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCreatingPlan(false);
+                  setModuleTab('SESION');
+                }}
+                className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                  moduleTab === 'SESION' && !isCreatingPlan
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <UserCheck className="w-4 h-4 text-blue-600" />
+                <span>Sesión y Calificaciones</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setModuleTab('IMPRESION')}
-              className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
-                moduleTab === 'IMPRESION'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Printer className="w-4 h-4 text-blue-600" />
-              <span>Informes e Impresión</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCreatingPlan(false);
+                  setModuleTab('IMPRESION');
+                }}
+                className={`whitespace-nowrap shrink-0 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                  moduleTab === 'IMPRESION' && !isCreatingPlan
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Printer className="w-4 h-4 text-blue-600" />
+                <span>Informes e Impresión</span>
+              </button>
 
+              <button
+                type="button"
+                onClick={() => setIsWorkersCrudOpen(true)}
+                className="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs"
+                title="Gestionar base de datos de trabajadores del SG-SST (CRUD)"
+              >
+                <Users className="w-4 h-4 text-white" />
+                <span>Nómina SG-SST</span>
+              </button>
+            </div>
+
+            {/* Botón Principal: + Programar Capacitación (Siempre visible arriba sin scroll) */}
             <button
               type="button"
-              onClick={() => setIsWorkersCrudOpen(true)}
-              className="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs"
-              title="Gestionar base de datos de trabajadores del SG-SST (CRUD)"
+              onClick={() => setIsCreatingPlan(true)}
+              className="whitespace-nowrap shrink-0 px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer bg-blue-600 hover:bg-blue-500 text-white shadow-md hover:shadow-blue-500/25"
+              title="Crear y programar una nueva capacitación en la parte superior"
             >
-              <Users className="w-4 h-4 text-white" />
-              <span>Nómina SG-SST</span>
+              <PlusCircle className="w-4 h-4" />
+              <span>+ Programar Capacitación</span>
             </button>
           </div>
         </div>
 
-        {/* Global Summary Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-100">
-          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cumplimiento Legal</span>
-            <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono mt-1.5">{pctCumplimiento}%</div>
-            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">
-              {ejecutadasCount} de {totalCount} ejecutadas
-            </span>
-          </div>
+        {/* Global Summary Metric Cards: Only visible on Cronograma tab and when NOT creating a plan, eliminating wasted space */}
+        {moduleTab === 'CRONOGRAMA' && !isCreatingPlan && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-100">
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cumplimiento Legal</span>
+              <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono mt-1.5">{pctCumplimiento}%</div>
+              <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">
+                {ejecutadasCount} de {totalCount} ejecutadas
+              </span>
+            </div>
 
-          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Capacitaciones Pendientes</span>
-            <div className="text-3xl sm:text-4xl font-black text-blue-600 font-mono mt-1.5">{programadasCount}</div>
-            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con fecha programada activa</span>
-          </div>
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Capacitaciones Pendientes</span>
+              <div className="text-3xl sm:text-4xl font-black text-blue-600 font-mono mt-1.5">{programadasCount}</div>
+              <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con fecha programada activa</span>
+            </div>
 
-          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Reprogramadas</span>
-            <div className="text-3xl sm:text-4xl font-black text-amber-600 font-mono mt-1.5">{reprogramadasCount}</div>
-            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con justificación histórica</span>
-          </div>
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Reprogramadas</span>
+              <div className="text-3xl sm:text-4xl font-black text-amber-600 font-mono mt-1.5">{reprogramadasCount}</div>
+              <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Con justificación histórica</span>
+            </div>
 
-          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cobertura Promedio</span>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-600 font-mono mt-1.5">98.5%</div>
-            <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Meta Res. 0312: ≥ 85%</span>
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider block">Cobertura Promedio</span>
+              <div className="text-3xl sm:text-4xl font-black text-emerald-600 font-mono mt-1.5">98.5%</div>
+              <span className="text-xs sm:text-sm text-slate-600 mt-1 block font-medium">Meta Res. 0312: ≥ 85%</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
+      {/* TOP-LEVEL CREATION PANEL: Appears right at the top without scrolling */}
+      {isCreatingPlan && (
+        <CrearCapacitacionPanel
+          company={company}
+          hazards={hazards}
+          selectedYear={selectedYear}
+          onClose={() => setIsCreatingPlan(false)}
+          onCreated={(newPlanId) => {
+            setIsCreatingPlan(false);
+            refreshData();
+            setSelectedPlanId(newPlanId);
+            setModuleTab('CRONOGRAMA');
+          }}
+        />
+      )}
+
       {/* VIEW TAB 1: 12-Month Matrix Schedule */}
-      {moduleTab === 'CRONOGRAMA' && (
+      {moduleTab === 'CRONOGRAMA' && !isCreatingPlan && (
         <CronogramaAnualMatriz
           planes={planes}
           hazards={hazards}
           company={company}
           onSelectPlan={handleSelectPlanFromMatrix}
           onRefreshData={refreshData}
+          onOpenCreatePlan={() => setIsCreatingPlan(true)}
         />
       )}
 
