@@ -99,7 +99,7 @@ export function ClayTopHeader({
           <button
             type="button"
             onClick={onOpenMobileMenu}
-            className="md:hidden p-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors shrink-0"
+            className="lg:hidden p-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors shrink-0"
             title="Abrir menú"
             aria-label="Abrir menú de navegación"
           >
@@ -287,22 +287,25 @@ export function ClayTopHeader({
           <span className="truncate max-w-[180px]">{company.claseRiesgo || 'Riesgo IV'} • {company.arl || (company.id === 'servic-crear' ? 'SURA' : 'Positiva')}</span>
         </button>
 
-        {/* Help icon (hidden on small phones to save header space) */}
+        {/* Help icon / Guía técnica Res. 0312 & GTC 45 */}
         <button
           type="button"
           onClick={() => onNavigate('diagnostico-0312')}
-          className="hidden sm:flex w-8 h-8 rounded-lg border border-slate-200 hover:bg-slate-50 items-center justify-center text-slate-600 cursor-pointer transition-colors"
+          className="hidden sm:inline-flex items-center justify-center gap-1.5 h-9 min-w-[36px] px-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 cursor-pointer transition-colors shadow-2xs shrink-0"
           title="Guía técnica Resolución 0312 y GTC 45"
+          aria-label="Guía técnica Resolución 0312 y GTC 45"
         >
-          <HelpCircle className="w-4 h-4" />
+          <HelpCircle className="w-4 h-4 text-slate-500 shrink-0" />
+          <span className="hidden lg:inline text-xs font-semibold text-slate-700">Guía 0312</span>
         </button>
 
         {/* Notification bell with alert indicator */}
         <button
           type="button"
           onClick={() => onNavigate('gestion-peligros')}
-          className="w-8 h-8 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-600 relative cursor-pointer transition-colors"
+          className="h-9 w-9 min-w-[36px] rounded-xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-600 hover:text-slate-900 relative cursor-pointer transition-colors shadow-2xs shrink-0"
           title={`${criticalCount} alertas críticas activas`}
+          aria-label={`${criticalCount} alertas críticas activas`}
         >
           <Bell className="w-4 h-4" />
           {criticalCount > 0 && (

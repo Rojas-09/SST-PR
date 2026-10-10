@@ -49,8 +49,8 @@ export function VencimientosView({
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 sm:p-7 lg:p-8 shadow-md border border-slate-700/50 relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-96 bg-gradient-to-l from-amber-500/15 via-blue-500/15 to-transparent pointer-events-none" />
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
               <span className="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs sm:text-[13px] font-mono uppercase px-3 py-1 rounded-md font-semibold tracking-wider">
                 CONTROL DE CADUCIDADES & AUDITORÍA
@@ -65,14 +65,14 @@ export function VencimientosView({
               Gestión Integral de Vencimientos y Compromisos SG-SST
             </h1>
             
-            <p className="text-sm sm:text-base text-slate-200 mt-2 max-w-3xl leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-200 mt-2 max-w-4xl leading-relaxed">
               Monitoreo y trazabilidad obligatoria de inspecciones GTC 45, reposición de EPP (Dec. 1072),
               exámenes ocupacionales periódicos, recargas de extintores y capacitaciones legales de la Res. 0312.
             </p>
           </div>
 
           {/* Selector de Vista (Tabs) */}
-          <div className="flex items-center gap-2 bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700/80 shadow-inner shrink-0 self-start md:self-auto">
+          <div className="flex items-center gap-2 bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700/80 shadow-inner shrink-0 self-start lg:self-auto">
             <button
               type="button"
               onClick={() => setActiveTab('LISTA')}

@@ -51,6 +51,7 @@ export function GestionTrabajadoresModal({
   const [formEPS, setFormEPS] = useState('SURA EPS');
   const [formARL, setFormARL] = useState(company.arl || 'Positiva');
   const [formFeedback, setFormFeedback] = useState<string | null>(null);
+  const [workerIdToDelete, setWorkerIdToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -131,12 +132,11 @@ export function GestionTrabajadoresModal({
     setTimeout(() => setFormFeedback(null), 3000);
   };
 
-  const handleDeleteWorker = (id: string, nombre: string) => {
-    if (window.confirm(`¿Está seguro de eliminar a "${nombre}" de la nómina de trabajadores del SG-SST?`)) {
-      workersStorage.deleteWorker(company.id, id);
-      loadWorkers();
-      if (onWorkersChanged) onWorkersChanged();
-    }
+  const handleConfirmDeleteWorker = (id: string) => {
+    workersStorage.deleteWorker(company.id, id);
+    setWorkerIdToDelete(null);
+    loadWorkers();
+    if (onWorkersChanged) onWorkersChanged();
   };
 
   const filteredWorkers = workers.filter((w) => {
@@ -450,23 +450,45 @@ export function GestionTrabajadoresModal({
                     </div>
 
                     {canManage && (
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => handleStartEdit(w)}
-                          className="p-1.5 hover:bg-slate-200 text-slate-600 rounded-lg cursor-pointer transition-colors"
-                          title="Editar trabajador"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteWorker(w.id, w.nombre)}
-                          className="p-1.5 hover:bg-red-50 text-red-500 hover:text-red-700 rounded-lg cursor-pointer transition-colors"
-                          title="Eliminar trabajador"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {workerIdToDelete === w.id ? (
+                          <div className="flex items-center gap-1.5 bg-red-50 p-1 rounded-lg border border-red-200 animate-in fade-in">
+                            <span className="text-[11px] text-red-700 font-bold px-1">¿Eliminar?</span>
+                            <button
+                              type="button"
+                              onClick={() => handleConfirmDeleteWorker(w.id)}
+                              className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-[11px] font-bold cursor-pointer transition-colors"
+                            >
+                              Sí
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setWorkerIdToDelete(null)}
+                              className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded text-[11px] font-bold border border-slate-200 cursor-pointer transition-colors"
+                            >
+                              No
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleStartEdit(w)}
+                              className="min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 hover:bg-slate-200 text-slate-600 rounded-lg cursor-pointer transition-colors flex items-center justify-center"
+                              title="Editar trabajador"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setWorkerIdToDelete(w.id)}
+                              className="min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 hover:bg-red-50 text-red-500 hover:text-red-700 rounded-lg cursor-pointer transition-colors flex items-center justify-center"
+                              title="Eliminar trabajador"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>

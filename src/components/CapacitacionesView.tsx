@@ -6,6 +6,7 @@ import {
   UserCheck,
   CheckCircle2,
   AlertTriangle,
+  AlertCircle,
   PlusCircle,
   FileText,
   Search,
@@ -84,6 +85,7 @@ export function CapacitacionesView({
   const [isWorkersCrudOpen, setIsWorkersCrudOpen] = useState(false);
   const [isCreatingPlan, setIsCreatingPlan] = useState(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
 
   // Subscribe to persistent storage events
   useEffect(() => {
@@ -149,7 +151,8 @@ export function CapacitacionesView({
       activePlan.criterioEficaciaMinima
     );
     if (!result.success) {
-      alert(result.error);
+      setActionFeedback(result.error || 'No fue posible ejecutar la sesión');
+      setTimeout(() => setActionFeedback(null), 4000);
     } else {
       refreshData();
     }
@@ -179,17 +182,24 @@ export function CapacitacionesView({
 
   return (
     <div className="space-y-6 px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 w-full max-w-[1780px] mx-auto font-sans text-slate-800 text-sm sm:text-base">
+      {actionFeedback && (
+        <div className="fixed top-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl border border-slate-700 shadow-xl flex items-center gap-2 text-xs sm:text-sm animate-in fade-in">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>{actionFeedback}</span>
+        </div>
+      )}
+
       {/* RBAC Top Bar: Role Simulation & Authentication State */}
       <CapacitacionesRBACBar />
 
       {/* Main Header */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-xs space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
               <GraduationCap className="w-7 h-7" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   Programa de Capacitación y Entrenamiento SST
@@ -198,7 +208,7 @@ export function CapacitacionesView({
                   Res. 0312 / Est. 2.2.1 • Dec. 1072
                 </span>
               </div>
-              <p className="text-sm sm:text-base text-slate-600 mt-1 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-600 mt-1 leading-relaxed max-w-4xl">
                 Plan anual, control de asistencias, calificación individual con auditoría y expedientes en{' '}
                 <strong className="text-slate-900">{company.name}</strong>.
               </p>
@@ -206,7 +216,7 @@ export function CapacitacionesView({
           </div>
 
           {/* Module Navigation Tabs & Quick Action */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full w-full sm:w-auto flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full w-full lg:w-auto flex-wrap">
             <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 sm:p-2 rounded-2xl border border-slate-200">
               <button
                 type="button"

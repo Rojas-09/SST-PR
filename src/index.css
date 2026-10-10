@@ -76,17 +76,11 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Sin barras de scroll horizontales: todo se ve de una sola vez.
-     Las tablas se reparten el ancho disponible en vez de desbordarse,
-     y cualquier texto largo se parte en varias líneas. */
-  table {
-    table-layout: fixed;
+  /* Contenedores de tabla con desplazamiento horizontal fluido para tablet y escritorio */
+  .table-scroll-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
-  }
-
-  th, td {
-    overflow-wrap: break-word;
-    word-break: normal;
   }
 
   /* Los chips, filtros y pestañas fluyen en varias líneas en vez de desbordar */
@@ -94,80 +88,6 @@
     display: flex;
     flex-wrap: wrap;
     overflow-x: visible;
-  }
-
-  /* En pantallas chicas y medianas las tablas densas se vuelven tarjetas apiladas o garantizan scroll seguro */
-  @media (max-width: 1023px) {
-    .table-stack,
-    .table-stack-lg,
-    .table-stack tbody,
-    .table-stack-lg tbody,
-    .table-stack tr,
-    .table-stack-lg tr,
-    .table-stack td,
-    .table-stack-lg td {
-      display: block;
-      width: 100%;
-    }
-    .table-stack thead,
-    .table-stack-lg thead {
-      display: none;
-    }
-    .table-stack tr,
-    .table-stack-lg tr {
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgb(15 23 42 / 0.05);
-    }
-    .table-stack tr:last-child,
-    .table-stack-lg tr:last-child {
-      margin-bottom: 0;
-    }
-    .table-stack tbody > tr:hover,
-    .table-stack-lg tbody > tr:hover {
-      background: #FFFFFF;
-    }
-    .table-stack td,
-    .table-stack-lg td {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 6px 0;
-      border: none !important;
-      text-align: left;
-    }
-    .table-stack td::before,
-    .table-stack-lg td::before {
-      content: attr(data-label);
-      flex: 0 0 auto;
-      width: 38%;
-      font-weight: 700;
-      font-size: 11px;
-      line-height: 1.5;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      color: #64748B;
-    }
-    .table-stack td > *,
-    .table-stack-lg td > * {
-      flex: 1 1 auto;
-      min-width: 0;
-      text-align: right;
-    }
-    /* Filas de estado vacio (colSpan): mensaje centrado sin etiqueta */
-    .table-stack td:not([data-label]),
-    .table-stack-lg td:not([data-label]) {
-      display: block;
-      text-align: center;
-    }
-    .table-stack td:not([data-label])::before,
-    .table-stack-lg td:not([data-label])::before {
-      content: none;
-    }
   }
 }
 

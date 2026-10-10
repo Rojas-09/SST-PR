@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { HazardRecord, CompanyInfo, ActiveView } from '../types';
 import { SignatureCarlosMendez, SignatureRodrigoGomez, QrAuditStamp } from './SignatureSvgs';
+import { safePrint } from '../utils/browserSafe';
 
 interface ActasEntregaViewProps {
   hazards: HazardRecord[];
@@ -145,8 +146,8 @@ export function ActasEntregaView({
   return (
     <div className="w-full max-w-[1780px] mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-5 sm:py-6 space-y-6 font-sans text-sm sm:text-base text-slate-800">
       {/* Header Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans">
-        <div>
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 font-sans">
+        <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="text-xs font-sans font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
               DECRETO 1072/2015 ART. 2.2.4.6.24 • RESOLUCIÓN 0312 ÍTEM 4.2.6
@@ -161,10 +162,10 @@ export function ActasEntregaView({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() => safePrint()}
             className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs sm:text-sm font-sans font-semibold flex items-center gap-2 cursor-pointer shadow-2xs transition-colors"
           >
             <Printer className="w-4 h-4 text-slate-500" />
@@ -651,7 +652,7 @@ export function ActasEntregaView({
               </button>
               <button
                 type="button"
-                onClick={() => window.print()}
+                onClick={() => safePrint()}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[13px] font-sans font-medium flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
               >
                 <Printer className="w-4 h-4" />

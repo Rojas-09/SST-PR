@@ -609,7 +609,7 @@ export function CalendarioVencimientos({
     <section id="seccion-calendario-sst" className="font-sans text-[13px] text-slate-800 space-y-4">
       {/* HEADER: Title, Month Navigation & Quick Stats */}
       <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs space-y-3">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 shrink-0">
@@ -624,13 +624,13 @@ export function CalendarioVencimientos({
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               Cronograma Mensual de Vencimientos y Actividades Clave
             </h2>
-            <p className="text-[12px] sm:text-[12.5px] text-slate-600 mt-0.5 max-w-3xl leading-relaxed">
+            <p className="text-[12px] sm:text-[12.5px] text-slate-600 mt-0.5 max-w-4xl leading-relaxed">
               Visualización temporal de capacitaciones obligatorias (Res. 0312), inspecciones técnicas GTC 45, reintegros laborales y actas de EPP.
             </p>
           </div>
 
           {/* Month Controller Navigation */}
-          <div className="flex items-center gap-2 self-start md:self-auto shrink-0 flex-wrap">
+          <div className="flex items-center gap-2 self-start lg:self-auto shrink-0 flex-wrap">
             <button
               type="button"
               onClick={handleGoToDefault}

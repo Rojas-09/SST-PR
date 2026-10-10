@@ -429,20 +429,20 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
         >
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-900 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200/70 inline-block">
                 Actas y Entregas EPP
               </span>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 shadow-2xs">
                 <ShieldCheck className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-2.5">
-              <span className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl font-black text-slate-900 font-mono">
+              <span className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl font-black text-purple-950 font-mono tracking-tight">
                 {eppFirmadas}/{hazards.length}
               </span>
               <span className="text-xs sm:text-sm text-purple-700 font-semibold">Actas firmadas</span>
             </div>
-            <p className="text-xs sm:text-sm xl:text-[14px] text-slate-500 mt-1.5 leading-relaxed">
+            <p className="text-xs sm:text-sm xl:text-[14px] text-slate-600 mt-1.5 leading-relaxed">
               {eppPendientes > 0 ? `${eppPendientes} pendiente de firma operario` : '100% de dotación auditada'}
             </p>
           </div>
@@ -455,8 +455,8 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
 
       {/* NEW Executive Summary Widget: Próximos Vencimientos Inmediatos */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 xl:p-7 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-          <div>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2.5">
               <span className="p-2 rounded-xl bg-amber-100 text-amber-800">
                 <Clock className="w-5 h-5" />
@@ -465,12 +465,12 @@ Se ha registrado su consulta sobre "${query}". El Sistema de Gestión de ${compa
                 Alertas y Próximos Vencimientos Legales SG-SST
               </h2>
             </div>
-            <p className="text-xs sm:text-sm lg:text-[14px] text-slate-500 mt-1.5">
+            <p className="text-xs sm:text-sm lg:text-[14px] text-slate-500 mt-1.5 max-w-4xl leading-relaxed">
               Compromisos de inspección, recargas, exámenes médicos y capacitaciones con vencimiento inminente en {company.name}.
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
               type="button"
               onClick={() => onNavigate('vencimientos')}

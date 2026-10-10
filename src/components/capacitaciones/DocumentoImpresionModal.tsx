@@ -25,6 +25,7 @@ import { CompanyInfo, HazardRecord } from '../../types';
 import { PrintTemplates } from './PrintTemplates';
 import { GestionTrabajadoresModal } from './GestionTrabajadoresModal';
 import { useAuthRole } from '../../context/AuthRoleContext';
+import { safePrint, safeOpenWindow } from '../../utils/browserSafe';
 
 interface DocumentoImpresionModalProps {
   isOpen: boolean;
@@ -215,8 +216,7 @@ export function DocumentoImpresionModal({
       ? `<script>
     window.addEventListener('load', function() {
       setTimeout(function() {
-        window.focus();
-        window.print();
+        try { window.focus(); window.print(); } catch(e) { console.warn(e); }
       }, 350);
     });
   </script>`
@@ -234,7 +234,7 @@ export function DocumentoImpresionModal({
       </div>
     </div>
     <div style="display:flex; gap:10px;">
-      <button onclick="window.print()" style="background:#2563eb; color:#fff; border:none; padding:8px 18px; border-radius:8px; font-weight:bold; font-size:12.5px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+      <button onclick="try{window.print()}catch(e){console.warn(e)}" style="background:#2563eb; color:#fff; border:none; padding:8px 18px; border-radius:8px; font-weight:bold; font-size:12.5px; cursor:pointer; display:flex; align-items:center; gap:6px;">
         🖨️ Imprimir Esta Hoja
       </button>
       <button onclick="window.close()" style="background:#334155; color:#cbd5e1; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12.5px; cursor:pointer;">
@@ -254,33 +254,23 @@ export function DocumentoImpresionModal({
     if (!printContent) return;
 
     try {
-      const printWindow = window.open('', '_blank', 'width=1000,height=850,menubar=no,toolbar=no');
+      const printWindow = safeOpenWindow('', '_blank', 'width=1000,height=850,menubar=no,toolbar=no');
       if (printWindow) {
         printWindow.document.open();
         printWindow.document.write(getCleanDocumentHtml(printContent.innerHTML, false));
         printWindow.document.close();
+      } else {
+        safePrint();
       }
     } catch (e) {
-      console.error('Error abriendo ventana limpia:', e);
+      console.warn('Ventana limpia restringida en entorno seguro, ejecutando impresión en lienzo:', e);
+      safePrint();
     }
   };
 
-  // Botón 2: Imprimir (Abre la ventana limpia y dispara inmediatamente window.print() de esa sola hoja)
-  // ESTO GARANTIZA QUE SE IMPRIMA 1 SOLA HOJA (EL DOCUMENTO LIMPIO) Y NUNCA LAS 3 HOJAS DEL DASHBOARD
+  // Botón 2: Imprimir documento oficial
   const handleExecutePrint = () => {
-    const printContent = document.getElementById('printable-sheet-target');
-    if (!printContent) return;
-
-    try {
-      const printWindow = window.open('', '_blank', 'width=1000,height=850,menubar=no,toolbar=no');
-      if (printWindow) {
-        printWindow.document.open();
-        printWindow.document.write(getCleanDocumentHtml(printContent.innerHTML, true));
-        printWindow.document.close();
-      }
-    } catch (e) {
-      console.error('Error al imprimir documento:', e);
-    }
+    safePrint();
   };
 
   return (

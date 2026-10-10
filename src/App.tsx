@@ -138,8 +138,8 @@ export default function App() {
   return (
     <AuthRoleProvider activeCompanyId={company.id}>
       <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 text-[13px] relative">
-        {/* Desktop Sidebar */}
-      <div className="hidden md:flex flex-col shrink-0 h-screen z-10">
+        {/* Desktop Sidebar (hidden on tablet < 1024px and mobile to give 100% width) */}
+      <div className="hidden lg:flex flex-col shrink-0 h-screen z-10">
         <Sidebar
           activeView={activeView}
           onNavigate={(view) => {
@@ -159,9 +159,9 @@ export default function App() {
         />
       </div>
 
-      {/* Mobile Sliding Drawer Sidebar */}
+      {/* Mobile & Tablet Sliding Drawer Sidebar */}
       {isMobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 md:hidden flex">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
             onClick={() => setIsMobileSidebarOpen(false)}
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"

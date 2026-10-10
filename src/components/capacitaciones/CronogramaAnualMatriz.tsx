@@ -498,7 +498,7 @@ export function CronogramaAnualMatriz({
   const handlePhysicalDelete = (plan: PlanCapacitacion) => {
     const result = capacitacionesStorage.deletePlanPhysical(plan.id);
     if (!result.success) {
-      alert(result.error);
+      console.warn('No fue posible eliminar físicamente el plan:', result.error);
     } else {
       onRefreshData();
     }
@@ -777,18 +777,7 @@ export function CronogramaAnualMatriz({
                                   sesion &&
                                   capacitacionesStorage.getEvidenciasBySesionId(sesion.id).length > 0;
 
-                                if (plan.estado === 'PROGRAMADA' && !hasAttendances && !hasEvidences) {
-                                  if (
-                                    confirm(
-                                      `¿Desea eliminar físicamente el plan "${plan.codigo}"? Como no tiene asistencias ni evidencias, se permite purga física.`
-                                    )
-                                  ) {
-                                    handlePhysicalDelete(plan);
-                                  }
-                                } else {
-                                  // Must logically annul!
-                                  setAnularPlanTarget(plan);
-                                }
+                                setAnularPlanTarget(plan);
                               }}
                               className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer"
                               title="Anular o eliminar actividad"

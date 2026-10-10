@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan ejecutado con éxito: corrección integral de diseño y adaptabilidad para tablets (768px-1024px) en todos los módulos de SG-SST. Se liberó el 100% de la pantalla ocultando la barra lateral fija en favor del menú hamburguesa, se reorganizaron los encabezados para dar prioridad al título completo arriba y botones abajo, se equilibraron las cuadrículas de métricas en 2 columnas simétricas, se dio nitidez total a las imágenes y se reubicaron las notificaciones flotantes.",
+  "updatedAt":  "2026-10-10T19:14:46.872005416Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

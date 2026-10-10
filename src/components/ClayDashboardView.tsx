@@ -397,215 +397,359 @@ export function ClayDashboardView({
         </div>
       </div>
 
-      {/* The Clay Table Container */}
-      <div className="border border-slate-200 rounded-2xl overflow-x-auto bg-white shadow-2xs">
-        <table className="table-stack-lg w-full text-left border-collapse text-sm sm:text-base">
-          <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/80 text-xs sm:text-sm font-bold text-slate-700">
-              <th className="py-3 px-3.5 font-bold w-[24%]">Nombre del Registro</th>
-              <th className="py-3 px-2 text-center w-[4%] font-bold" title="Favorito">★</th>
-              <th className="py-3 px-3 font-bold w-[16%]">Etiquetas / Estado</th>
-              <th className="py-3 px-3 font-bold w-[13%]">Fecha de Creación</th>
-              <th className="py-3 px-3 font-bold w-[13%]">Última Edición</th>
-              <th className="py-3 px-3 font-bold w-[14%]">Responsable</th>
-              <th className="py-3 px-3 font-bold w-[10%]">Acceso</th>
-              <th className="py-3 px-2 text-center w-[6%] font-bold"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {tableRows.map((row) => {
-              const isFav = !!favorites[row.id];
-              return (
-                <tr
-                  key={row.id}
-                  onClick={() => {
-                    if (row.hazardRef) {
-                      onSelectHazard(row.hazardRef);
-                    } else if (row.targetView) {
-                      onNavigate(row.targetView);
-                    }
-                  }}
-                  className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
-                >
-                  {/* Nombre & Icon */}
-                  <td data-label="Nombre del Registro" className="py-3.5 px-3.5">
-                    <div className="flex items-start gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
-                        {row.category === 'incapacidades' ? (
-                          <Calendar className="w-4 h-4 text-blue-600" />
-                        ) : row.category === 'diagnostico' ? (
-                          <FileCheck className="w-4 h-4 text-emerald-600" />
-                        ) : (
-                          <FileSpreadsheet className="w-4 h-4 text-slate-700" />
-                        )}
-                      </div>
-                      <div>
-                        <span className="font-semibold text-slate-900 group-hover:text-blue-600 block leading-snug">
-                          {row.title}
-                        </span>
-                        <span className="text-xs font-mono-data text-slate-400">
-                          {row.code}
-                        </span>
-                      </div>
+      {/* VISTA MÓVIL: TARJETAS INTELIGENTES (< md) */}
+      <div className="block md:hidden space-y-3 font-sans">
+        {tableRows.length === 0 ? (
+          <div className="p-8 text-center text-slate-400 text-xs sm:text-sm italic bg-white rounded-2xl border border-slate-200">
+            No se encontraron registros que coincidan con la búsqueda.
+          </div>
+        ) : (
+          tableRows.map((row) => {
+            const isFav = !!favorites[row.id];
+            return (
+              <div
+                key={`mobile-${row.id}`}
+                onClick={() => {
+                  if (row.hazardRef) {
+                    onSelectHazard(row.hazardRef);
+                  } else if (row.targetView) {
+                    onNavigate(row.targetView);
+                  }
+                }}
+                className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs hover:border-blue-300 transition-all cursor-pointer space-y-3"
+              >
+                {/* Cabecera de la Tarjeta: Ícono, Título, Código y Estrella */}
+                <div className="flex items-start justify-between gap-2.5">
+                  <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
+                      {row.category === 'incapacidades' ? (
+                        <Calendar className="w-4 h-4 text-blue-600" />
+                      ) : row.category === 'diagnostico' ? (
+                        <FileCheck className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <FileSpreadsheet className="w-4 h-4 text-slate-700" />
+                      )}
                     </div>
-                  </td>
-
-                  {/* Favorito Star */}
-                  <td data-label="Favorito" className="py-3.5 px-2 text-center">
-                    <button
-                      type="button"
-                      onClick={(e) => toggleFavorite(row.id, e)}
-                      className="p-1 hover:text-amber-500 cursor-pointer transition-colors"
-                      title={isFav ? 'Quitar de favoritos' : 'Marcar favorito'}
-                    >
-                      <Star
-                        className={`w-4 h-4 ${
-                          isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
-                        }`}
-                      />
-                    </button>
-                  </td>
-
-                  {/* Tags */}
-                  <td data-label="Etiquetas / Estado" className="py-3.5 px-3">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      {row.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
-                            tag.color === 'red'
-                              ? 'bg-red-50 text-red-700 border-red-200'
-                              : tag.color === 'purple'
-                              ? 'bg-purple-50 text-purple-700 border-purple-200'
-                              : tag.color === 'emerald'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              : tag.color === 'amber'
-                              ? 'bg-amber-50 text-amber-800 border-amber-200'
-                              : 'bg-blue-50 text-blue-700 border-blue-200'
-                          }`}
-                        >
-                          {tag.label}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-
-                  {/* Creado el */}
-                  <td data-label="Fecha de Creación" className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
-                    {row.createdAt}
-                  </td>
-
-                  {/* Última edición */}
-                  <td data-label="Última Edición" className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
-                    {row.lastOpened}
-                  </td>
-
-                  {/* Responsable */}
-                  <td data-label="Responsable" className="py-3.5 px-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-900 text-amber-400 text-xs font-bold flex items-center justify-center">
-                        CM
-                      </div>
-                      <span className="text-xs sm:text-sm text-slate-700 font-medium">
-                        {row.owner}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-slate-900 text-sm leading-snug line-clamp-2">
+                        {row.title}
+                      </h3>
+                      <span className="text-[11.5px] font-mono-data text-slate-400 mt-0.5 block">
+                        {row.code}
                       </span>
                     </div>
-                  </td>
+                  </div>
 
-                  {/* Acceso */}
-                  <td data-label="Acceso" className="py-3.5 px-3">
-                    <span className="text-xs sm:text-sm text-slate-500 font-medium hover:text-slate-900">
-                      {row.access}
-                    </span>
-                  </td>
+                  <button
+                    type="button"
+                    onClick={(e) => toggleFavorite(row.id, e)}
+                    className="p-2 -mr-1 -mt-1 hover:text-amber-500 cursor-pointer transition-colors shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    title={isFav ? 'Quitar de favoritos' : 'Marcar favorito'}
+                  >
+                    <Star
+                      className={`w-4 h-4 ${
+                        isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                      }`}
+                    />
+                  </button>
+                </div>
 
-                  {/* More Menu (...) with Context Menu matching Clay */}
-                  <td data-label="Acciones" className="py-3 px-2 text-center relative">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveMenuId(activeMenuId === row.id ? null : row.id);
-                      }}
-                      className="p-1 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-colors"
+                {/* Etiquetas / Estado */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {row.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
+                        tag.color === 'red'
+                          ? 'bg-red-50 text-red-700 border-red-200'
+                          : tag.color === 'purple'
+                          ? 'bg-purple-50 text-purple-700 border-purple-200'
+                          : tag.color === 'emerald'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : tag.color === 'amber'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-blue-50 text-blue-700 border-blue-200'
+                      }`}
                     >
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
 
-                    {/* Clay Context Menu Popup */}
-                    {activeMenuId === row.id && (
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute right-3 top-8 w-52 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-40 text-left text-[12.5px] text-slate-700 animate-in fade-in"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveMenuId(null);
-                            if (row.hazardRef) onSelectHazard(row.hazardRef);
-                            else if (row.targetView) onNavigate(row.targetView);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
-                        >
-                          <Info className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Ver detalle técnico</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveMenuId(null);
-                            if (row.hazardRef) onSelectHazard(row.hazardRef);
-                            else if (row.targetView) onNavigate(row.targetView);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
-                        >
-                          <Edit2 className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Editar valoración</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            toggleFavorite(row.id, e);
-                            setActiveMenuId(null);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
-                        >
-                          <Star className="w-3.5 h-3.5 text-amber-500" />
-                          <span>{isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setActiveMenuId(null)}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
-                        >
-                          <Copy className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Duplicar registro</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setActiveMenuId(null)}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
-                        >
-                          <FolderInput className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Mover a proceso</span>
-                        </button>
-                        <div className="my-1 border-t border-slate-100" />
-                        <button
-                          type="button"
-                          onClick={() => setActiveMenuId(null)}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-red-50 text-red-600 cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                          <span>Eliminar registro</span>
-                        </button>
+                {/* Metadatos: Responsable y Fechas */}
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-[11.5px] text-slate-500">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <div className="w-5 h-5 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold flex items-center justify-center shrink-0">
+                      CM
+                    </div>
+                    <span className="truncate text-slate-700 font-medium">{row.owner}</span>
+                  </div>
+
+                  <div className="text-right truncate">
+                    <span>{row.lastOpened}</span>
+                  </div>
+                </div>
+
+                {/* Barra de Acciones Móviles con Hitbox Ergonómico (>= 44px) */}
+                <div className="pt-1 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (row.hazardRef) {
+                        onSelectHazard(row.hazardRef);
+                      } else if (row.targetView) {
+                        onNavigate(row.targetView);
+                      }
+                    }}
+                    className="flex-1 min-h-[44px] px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                  >
+                    <span>Abrir Expediente</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (row.hazardRef) {
+                        onSelectHazard(row.hazardRef);
+                      } else if (row.targetView) {
+                        onNavigate(row.targetView);
+                      }
+                    }}
+                    className="min-h-[44px] px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                    <span>Detalle</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* VISTA TABLET Y ESCRITORIO: TABLA CON SCROLL HORIZONTAL (>= md) */}
+      <div className="hidden md:block border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
+        {/* Tablet Scroll Cue Banner */}
+        <div className="md:flex xl:hidden px-4 py-2 bg-slate-50/80 border-b border-slate-200 text-xs text-slate-500 items-center justify-between">
+          <span className="flex items-center gap-1.5">
+            <span className="font-semibold text-slate-700">Vista Tablet:</span>
+            Desliza horizontalmente la tabla para explorar todas las columnas.
+          </span>
+          <span className="text-[11px] font-mono text-slate-400">{tableRows.length} filas</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-sm sm:text-base min-w-[880px]">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/80 text-xs sm:text-sm font-bold text-slate-700">
+                <th className="py-3 px-3.5 font-bold w-[26%]">Nombre del Registro</th>
+                <th className="py-3 px-2 text-center w-[4%] font-bold" title="Favorito">★</th>
+                <th className="py-3 px-3 font-bold w-[16%]">Etiquetas / Estado</th>
+                <th className="py-3 px-3 font-bold w-[13%]">Fecha de Creación</th>
+                <th className="py-3 px-3 font-bold w-[13%]">Última Edición</th>
+                <th className="py-3 px-3 font-bold w-[14%]">Responsable</th>
+                <th className="py-3 px-3 font-bold w-[8%]">Acceso</th>
+                <th className="py-3 px-2 text-center w-[6%] font-bold"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {tableRows.map((row) => {
+                const isFav = !!favorites[row.id];
+                return (
+                  <tr
+                    key={row.id}
+                    onClick={() => {
+                      if (row.hazardRef) {
+                        onSelectHazard(row.hazardRef);
+                      } else if (row.targetView) {
+                        onNavigate(row.targetView);
+                      }
+                    }}
+                    className="hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                  >
+                    {/* Nombre & Icon */}
+                    <td className="py-3.5 px-3.5">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
+                          {row.category === 'incapacidades' ? (
+                            <Calendar className="w-4 h-4 text-blue-600" />
+                          ) : row.category === 'diagnostico' ? (
+                            <FileCheck className="w-4 h-4 text-emerald-600" />
+                          ) : (
+                            <FileSpreadsheet className="w-4 h-4 text-slate-700" />
+                          )}
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-900 group-hover:text-blue-600 block leading-snug">
+                            {row.title}
+                          </span>
+                          <span className="text-xs font-mono-data text-slate-400">
+                            {row.code}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+
+                    {/* Favorito Star */}
+                    <td className="py-3.5 px-2 text-center">
+                      <button
+                        type="button"
+                        onClick={(e) => toggleFavorite(row.id, e)}
+                        className="p-1 hover:text-amber-500 cursor-pointer transition-colors"
+                        title={isFav ? 'Quitar de favoritos' : 'Marcar favorito'}
+                      >
+                        <Star
+                          className={`w-4 h-4 ${
+                            isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                          }`}
+                        />
+                      </button>
+                    </td>
+
+                    {/* Tags */}
+                    <td className="py-3.5 px-3">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {row.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                              tag.color === 'red'
+                                ? 'bg-red-50 text-red-700 border-red-200'
+                                : tag.color === 'purple'
+                                ? 'bg-purple-50 text-purple-700 border-purple-200'
+                                : tag.color === 'emerald'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : tag.color === 'amber'
+                                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                : 'bg-blue-50 text-blue-700 border-blue-200'
+                            }`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+
+                    {/* Creado el */}
+                    <td className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
+                      {row.createdAt}
+                    </td>
+
+                    {/* Última edición */}
+                    <td className="py-3.5 px-3 text-slate-600 text-xs sm:text-sm">
+                      {row.lastOpened}
+                    </td>
+
+                    {/* Responsable */}
+                    <td className="py-3.5 px-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-slate-900 text-amber-400 text-xs font-bold flex items-center justify-center">
+                          CM
+                        </div>
+                        <span className="text-xs sm:text-sm text-slate-700 font-medium truncate max-w-[140px]">
+                          {row.owner}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Acceso */}
+                    <td className="py-3.5 px-3">
+                      <span className="text-xs sm:text-sm text-slate-500 font-medium hover:text-slate-900">
+                        {row.access}
+                      </span>
+                    </td>
+
+                    {/* More Menu (...) with Context Menu matching Clay */}
+                    <td className="py-3 px-2 text-center relative">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveMenuId(activeMenuId === row.id ? null : row.id);
+                        }}
+                        className="p-1 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 cursor-pointer transition-colors"
+                      >
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+
+                      {/* Clay Context Menu Popup */}
+                      {activeMenuId === row.id && (
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="absolute right-3 top-8 w-52 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-40 text-left text-[12.5px] text-slate-700 animate-in fade-in"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveMenuId(null);
+                              if (row.hazardRef) onSelectHazard(row.hazardRef);
+                              else if (row.targetView) onNavigate(row.targetView);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
+                          >
+                            <Info className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Ver detalle técnico</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveMenuId(null);
+                              if (row.hazardRef) onSelectHazard(row.hazardRef);
+                              else if (row.targetView) onNavigate(row.targetView);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
+                          >
+                            <Edit2 className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Editar valoración</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              toggleFavorite(row.id, e);
+                              setActiveMenuId(null);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
+                          >
+                            <Star className="w-3.5 h-3.5 text-amber-500" />
+                            <span>{isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveMenuId(null)}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
+                          >
+                            <Copy className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Duplicar registro</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveMenuId(null)}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-slate-50 text-slate-800 cursor-pointer"
+                          >
+                            <FolderInput className="w-3.5 h-3.5 text-slate-400" />
+                            <span>Mover a proceso</span>
+                          </button>
+                          <div className="my-1 border-t border-slate-100" />
+                          <button
+                            type="button"
+                            onClick={() => setActiveMenuId(null)}
+                            className="w-full flex items-center gap-2.5 px-3 py-1.5 hover:bg-red-50 text-red-600 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                            <span>Eliminar registro</span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Direct Banner to Incapacidades if user wants to see it immediately */}

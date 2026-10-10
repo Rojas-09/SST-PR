@@ -136,8 +136,8 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
       )}
 
       {/* Header matching Clay styling */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-5">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 text-xs font-mono-data text-slate-400 uppercase tracking-wide">
             <span>SG-SST COLOMBIA</span>
             <span>•</span>
@@ -146,20 +146,20 @@ export function AusentismoView({ company, incapacidades, onAddIncapacidad }: Aus
           <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
             Control de Ausentismo e Incapacidades Laborales
           </h1>
-          <p className="text-sm sm:text-base text-slate-500 mt-1">
+          <p className="text-sm sm:text-base text-slate-500 mt-1 max-w-4xl leading-relaxed">
             Registro oficial de eventos de salud, diagnóstico CIE-10, cálculo de días perdidos e indicadores de severidad.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <span className="px-3.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-data font-semibold text-slate-700">
             {company.name} • {company.claseRiesgo}
           </span>
         </div>
       </div>
 
-      {/* 4 Clay-style KPI Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5">
+      {/* 4 Clay-style KPI Summary Cards: Balanced 2-columns on tablet */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
           <span className="text-xs sm:text-sm font-medium text-slate-500 block mb-1">Días Perdidos Totales</span>
           <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono-data">{totalDias}</div>

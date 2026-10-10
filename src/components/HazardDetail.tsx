@@ -3,6 +3,7 @@ import { ArrowLeft, FileCheck, LayoutGrid, Edit3, AlertOctagon, CheckSquare, Clo
 import { HazardRecord, CompanyInfo, ActiveView } from '../types';
 import { CompactSeverityTable } from './Gtc45MatrixGrid';
 import { ConstanciaTecnicaCard } from './ConstanciaTecnicaCard';
+import { safePrint } from '../utils/browserSafe';
 
 interface HazardDetailProps {
   hazard: HazardRecord;
@@ -95,7 +96,7 @@ export function HazardDetail({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => window.print()}
+              onClick={() => safePrint()}
               className="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-normal rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
             >
               <FileCheck className="w-4 h-4 text-slate-500" /> Imprimir Ficha
@@ -207,17 +208,19 @@ export function HazardDetail({
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {hazard.evidenciaFotos.map((foto, idx) => (
-                  <div key={idx} className="group relative rounded-lg border border-slate-200 overflow-hidden bg-slate-900">
-                    <img
-                      src={foto.url}
-                      alt={foto.caption}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-36 object-cover object-center group-hover:scale-102 transition-transform duration-200 opacity-90 group-hover:opacity-100"
-                    />
-                    <div className="p-2 bg-slate-900/90 text-white">
-                      <p className="text-[12px] font-normal leading-snug">
+                  <div key={idx} className="group relative rounded-xl border border-slate-200 overflow-hidden bg-slate-900 shadow-2xs">
+                    <div className="w-full h-44 sm:h-48 bg-slate-950 overflow-hidden relative">
+                      <img
+                        src={foto.url}
+                        alt={foto.caption}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-2.5 bg-slate-900 text-white border-t border-slate-800">
+                      <p className="text-xs font-medium leading-snug text-slate-100">
                         {foto.caption}
                       </p>
                     </div>

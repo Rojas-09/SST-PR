@@ -12,6 +12,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { HazardRecord, CompanyInfo, ActiveView } from '../types';
+import { safePrint } from '../utils/browserSafe';
 import {
   SignatureCarlosMendez,
   SignatureRodrigoGomez,
@@ -72,7 +73,7 @@ export function MatrixView({
   }, [hazards, filterProceso, filterNivel]);
 
   const handlePrint = () => {
-    window.print();
+    safePrint();
   };
 
   const handleExportExcel = () => {
@@ -117,7 +118,7 @@ export function MatrixView({
   };
 
   const handleDownloadPdf = () => {
-    window.print();
+    safePrint();
   };
 
   return (

@@ -467,9 +467,9 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 xl:p-10 w-full max-w-[1780px] mx-auto space-y-6 bg-[#F8F9FF] min-h-screen text-slate-800 text-sm sm:text-base">
-      {/* Toast Notification on Save */}
+      {/* Toast Notification on Save (bottom right, never covers header) */}
       {saveSuccessNotification && (
-        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed bottom-5 right-5 left-5 sm:left-auto sm:max-w-md z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-bottom-2">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
           <div className="text-xs sm:text-sm">
             <p className="font-bold">Diagnóstico Guardado y Acta Convalidada</p>
@@ -478,9 +478,9 @@ export function DiagnosticoRes0312({ company, onUpdateCompany }: DiagnosticoRes0
         </div>
       )}
 
-      {/* Toast Notification on PDF Download */}
+      {/* Toast Notification on PDF Download (bottom right, never covers header) */}
       {pdfDownloaded && (
-        <div className="fixed top-5 right-5 left-5 sm:left-auto sm:max-w-[calc(100vw-2.5rem)] z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="fixed bottom-5 right-5 left-5 sm:left-auto sm:max-w-md z-50 bg-[#0F172A] text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 transition-all animate-in fade-in slide-in-from-bottom-2">
           <FileDown className="w-5 h-5 text-amber-400 shrink-0" />
           <div className="text-xs sm:text-sm">
             <p className="font-bold">Formato Técnico Generado (.pdf)</p>
